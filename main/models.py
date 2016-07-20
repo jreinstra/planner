@@ -4,6 +4,7 @@ from django.db import models
 
 # Create your models here.
 
+# try this: https://docs.djangoproject.com/en/dev/topics/db/models/#abstract-base-classes
 # Need: choices for some fields & 'updated_at' and 'created_at'
 class Commentable(models.Model):
     pass
@@ -36,7 +37,6 @@ class Student(models.Model):
 
 class Review(Commentable):
     author = models.ForeignKey(Student, related_name="reviews")
-    course = models.ForeignKey(Course, related_name="reviews")
     
     rating = models.IntegerField()
     grade = models.CharField(max_length=2) # add choices here
