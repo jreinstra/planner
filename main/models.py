@@ -9,13 +9,17 @@ from django.db import models
 class Commentable(models.Model):
     pass
 
-class Subject(models.Model):
+class School(models.Model):
+    name = models.CharField(max_length=100)
+
+class Department(models.Model):
+    school = models.ForeignKey(School, related_name="departments")
     name = models.CharField(max_length=100)
     description = models.TextField()
 
 class Requirement(models.Model):
     name = models.CharField(max_length=100)
-    subject = models.ForeignKey(Subject, related_name="requirements")
+    department = models.ForeignKey(Department, related_name="requirements")
     eligible_classes = models.ManyToManyField('Course', related_name="requirements")
     num_units = models.IntegerField()
     num_classes = models.IntegerField()
@@ -26,10 +30,11 @@ class Course(Commentable):
     description = models.TextField()
 
 class Instructor(models.Model):
+    sunet = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
-    photo_url = models.URLField()
-    phone_number = models.IntegerField()
-    email = models.CharField(max_length=40)
+    photo_url = models.URLField(blank=True)
+    phone_number = models.IntegerField(blank=True)
+    email = models.CharField(max_length=40, blank=True)
 
 class Student(models.Model):
     # needed? - could just use User
