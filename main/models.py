@@ -11,11 +11,18 @@ class Commentable(models.Model):
 
 class School(models.Model):
     name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
 
 class Department(models.Model):
+    code = models.CharField(max_length=20, primary_key=True)
     school = models.ForeignKey(School, related_name="departments")
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
+    
+    def __str__(self):
+        return "%s (%s)" % (self.name, self.code)
 
 class Requirement(models.Model):
     name = models.CharField(max_length=100)
@@ -28,6 +35,11 @@ class Course(Commentable):
     long_name = models.CharField(max_length=150)
     instructors = models.ManyToManyField('Instructor', related_name="courses")
     description = models.TextField()
+    
+class CourseCode(models.Model):
+    code = models.CharField(max_length=20, primary_key=True)
+    title = models.CharField(max_length=200)
+    course = models.ForeignKey(Course, related_name="codes")
 
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)
