@@ -32,14 +32,49 @@ class Requirement(models.Model):
     num_classes = models.IntegerField()
     
 class Course(Commentable):
+    course_id = models.IntegerField(primary_key=True)
+    
+    year = models.CharField(max_length=10)
     long_name = models.CharField(max_length=150)
-    instructors = models.ManyToManyField('Instructor', related_name="courses")
     description = models.TextField()
+    
+    repeatable = models.BooleanField()
+    grading = models.CharField(max_length=40)
+    min_units = models.IntegerField()
+    max_units = models.IntegerField()
+    
+    department = models.ForeignKey(Department, related_name="courses")
+    instructors = models.ManyToManyField('Instructor', related_name="courses")
     
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
     title = models.CharField(max_length=200)
     course = models.ForeignKey(Course, related_name="codes")
+    
+class CourseSection(models.Model):
+    section_id = models.IntegerField(primary_key=True)
+    
+    term = models.CharField(max_length=20)
+    section_number = models.IntegerField()
+    
+    # These will need to be crawled more frequently
+    num_enrolled = models.IntegerField()
+    max_enrolled = models.IntegerField()
+    num_waitlist = models.IntegerField()
+    max_waitlist = models.IntegerField()
+    enroll_status = models.CharField(max_length=15)
+    
+    course = models.ForeignKey(Course, related_name="sections")
+    
+class CourseSchedule(models.Model):
+    start_date = models.CharField(max_length=15)
+    end_date = models.CharField(max_length=15)
+    start_time = models.CharField(max_length=15)
+    end_time = models.CharField(max_length=15)
+    days = models.CharField(max_length=50)
+    
+    section = models.OneToOneField(CourseSection, related_name="schedule")
+    instructor = models.ForeignKey('Instructor', related_name="sections")
 
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)

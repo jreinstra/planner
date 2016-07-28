@@ -30,7 +30,15 @@ def populate_departments():
                 dept_obj.save()
                 
 def populate_courses():
-    pass
+    dept_codes = [dept.code for dept in Department.objects.all()]
+    #print dept_codes
+    courses = get_xml("http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=AA")
+    # this doesn't get anything ... 
+    print "length:", len(courses.get("xml").get("courses").findall("course"))
+    for course in courses.findall("course"):
+        print "course:", course
+        print "admin:", course.findall("administrativeInformation")[0][0]
+        raise Exception
                 
 # next: http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=AA
 
@@ -38,12 +46,11 @@ def get_xml(url):
     r = requests.get(url)
     if r.status_code != 200:
         raise BadAPIError(r.text)
-    return ElementTree.fromstring(r.text)
+    # x = str(r.text.encode("utf-8"))
+    return ElementTree.fromstring(str(r.text.encode("utf-8")))
     
 class BadAPIError(Exception):
     pass
 
-populate_departments()
-
-print School.objects.all()
-print Department.objects.all()
+#populate_departments()
+populate_courses()
