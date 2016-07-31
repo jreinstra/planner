@@ -4,8 +4,8 @@ from django.db import models
 
 # Create your models here.
 
-# try this: https://docs.djangoproject.com/en/dev/topics/db/models/#abstract-base-classes
-# Need: choices for some fields & 'updated_at' and 'created_at'
+# try this: http://django-haystack.readthedocs.io/en/v2.5.0/tutorial.html#installation
+# TODO: choices for some fields & 'updated_at' and 'created_at'
 class Commentable(models.Model):
     pass
 
@@ -51,9 +51,10 @@ class CourseCode(models.Model):
     title = models.CharField(max_length=200)
     course = models.ForeignKey(Course, related_name="codes")
     
-class CourseSection(models.Model):
-    section_id = models.IntegerField(primary_key=True)
+    def __str__(self):
+        return self.code
     
+class CourseSection(models.Model):    
     term = models.CharField(max_length=20)
     section_number = models.IntegerField()
     

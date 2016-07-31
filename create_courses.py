@@ -43,7 +43,7 @@ def populate_courses():
             c = Course()
             c.course_id = course_id
             c.year = course[0].text
-            c.long_name = course[3].text
+            c.long_name = course[3].text.split("(")[0].strip()
             c.description = course[4].text or "No description provided."
             c.repeatable = False if course[6].text == "false" else True
             c.grading = course[7].text
@@ -53,7 +53,6 @@ def populate_courses():
             c.save()
             for section in course[11].findall("section"):
                 se = CourseSection()
-                se.section_id = int(str(c.course_id) + section[0].text)
                 se.term = section[1].text
                 se.section_number = int(section[6].text)
                 se.num_enrolled = int(section[8].text)
@@ -87,8 +86,15 @@ def populate_courses():
                 sc.save()
         else:
             c = Course.objects.get(course_id=course_id)
-        # add code if not exists here
-        # raise Exception
+        
+        code_str = course[1].text + course[2].text
+        code = CourseCode.objects.filter(code=code_str)
+        if code.exists() is False:
+            code = CourseCode()
+            code.code = code_str
+            code.title = course[3].text
+            code.course = c
+            code.save()
                 
 # next: http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=AA
 
