@@ -65,6 +65,7 @@ class CourseSection(models.Model):
     enroll_status = models.CharField(max_length=15)
     
     course = models.ForeignKey(Course, related_name="sections")
+    instructor = models.ForeignKey('Instructor', related_name="sections", blank=True, null=True)
     
 class CourseSchedule(models.Model):
     start_date = models.CharField(max_length=15)
@@ -74,13 +75,12 @@ class CourseSchedule(models.Model):
     days = models.CharField(max_length=50)
     
     section = models.OneToOneField(CourseSection, related_name="schedule")
-    instructor = models.ForeignKey('Instructor', related_name="sections")
 
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
     photo_url = models.URLField(blank=True)
-    phone_number = models.IntegerField(blank=True)
+    phone_number = models.IntegerField(blank=True, null=True)
     email = models.CharField(max_length=40, blank=True)
 
 class Student(models.Model):
