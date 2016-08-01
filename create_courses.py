@@ -10,6 +10,8 @@ application = get_wsgi_application()
 
 from main.models import *
 
+# TODO: django.db.utils.DataError: value too long for type character varying(50)
+
 def populate_departments():
     schools = get_xml("http://explorecourses.stanford.edu/?view=xml-20120105")
     for school in schools.findall("school"):
