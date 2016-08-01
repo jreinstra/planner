@@ -35,6 +35,7 @@ class Course(Commentable):
     course_id = models.IntegerField(primary_key=True)
     
     year = models.CharField(max_length=10)
+    # consider renaming "long_name" to title
     long_name = models.CharField(max_length=150)
     description = models.TextField()
     
