@@ -1,8 +1,35 @@
-<html>
+{% load staticfiles %}
+
+<html lang="en">
 <head>
     <title>{% block title %}{% endblock %} | Planner</title>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/primer/3.0.1/primer.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'main/main.css' %}">
 </head>
 <body>
+    <header class="masthead">
+        <div class="container">
+            <a href="/" class="masthead-logo">
+                <span class="mega-octicon octicon-calendar"></span>
+                Cardinal Planner
+            </a>
+            
+            <nav class="masthead-nav">
+                <a class="active" href="/">Home</a>
+                <a href="/about">Classes</a>
+                <a href="https://github.com/primer/primer" target="_blank">GitHub</a>
+                <a href="https://github.com/primer/primer/blob/master/README.md#install" target="_blank">Install</a>
+            </nav>
+        </div>
+    </header>
     {% block content %}{% endblock %}
+    <div class="container">
+        <footer class="footer">
+            Created by John Reinstra and Akshay Kalose.<br>
+            Have any feedback? <strong>Contact us.</strong>
+        </footer>
+    </div>
 </body>
 </html>
