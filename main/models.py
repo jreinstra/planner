@@ -4,7 +4,6 @@ from django.db import models
 
 # Create your models here.
 
-# try this: http://django-haystack.readthedocs.io/en/v2.5.0/tutorial.html#installation
 # TODO: choices for some fields & 'updated_at' and 'created_at'
 class Commentable(models.Model):
     pass
@@ -45,7 +44,6 @@ class Course(Commentable):
     max_units = models.IntegerField()
     
     department = models.ForeignKey(Department, related_name="courses")
-    instructors = models.ManyToManyField('Instructor', related_name="courses")
     
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
@@ -74,7 +72,7 @@ class CourseSchedule(models.Model):
     end_date = models.CharField(max_length=15)
     start_time = models.CharField(max_length=15)
     end_time = models.CharField(max_length=15)
-    days = models.CharField(max_length=50)
+    days = models.CharField(max_length=100)
     
     section = models.OneToOneField(CourseSection, related_name="schedule")
 
