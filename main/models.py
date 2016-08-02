@@ -38,6 +38,7 @@ class Course(Commentable):
     long_name = models.CharField(max_length=150)
     description = models.TextField()
     
+    general_requirements = models.CharField(max_length=100)
     repeatable = models.BooleanField()
     grading = models.CharField(max_length=40)
     min_units = models.IntegerField()
