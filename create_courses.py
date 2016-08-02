@@ -48,6 +48,7 @@ def populate_courses():
                 c.year = course[0].text
                 c.long_name = course[3].text.split("(")[0].strip()
                 c.description = course[4].text or "No description provided."
+                c.general_requirements = course[5].text or ""
                 c.repeatable = False if course[6].text == "false" else True
                 c.grading = course[7].text
                 c.min_units = int(course[8].text)
