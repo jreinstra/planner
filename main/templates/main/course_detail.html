@@ -1,0 +1,14 @@
+{% extends "main/base.html" %}
+
+{% block title %} {{object.long_name}} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>{{ object.codes.all.0.code }}: {{object.long_name}}</h1>
+    <p class="lead">
+        {{ object.description }}
+    </p>
+</div>
+
+{% endblock %}
