@@ -1,11 +1,15 @@
 import json
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.generic.detail import DetailView
 
 from main.utils import get_query
 from main.models import CourseCode, Course
 
 # Create your views here.
+
+class CourseDetailView(DetailView):
+    model = Course
 
 # adapted from: http://julienphalip.com/post/2825034077/adding-search-to-a-django-site-in-a-snap
 def search(request):
@@ -25,7 +29,8 @@ def search(request):
             results.append({
                 "code": entry.code,
                 "title": entry.title,
-                "description": entry.course.description
+                "description": entry.course.description,
+                "course_id": entry.course.pk
             })
         return r_success(results)
     else:
