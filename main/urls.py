@@ -5,6 +5,6 @@ from . import views
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name="main/index.html"), name="index"),
-    url(r'^search/$', views.search, name="search"),
+    url(r'^search/$', views.Search.as_view(), name="search"),
     url(r'^courses/(?P<pk>[0-9]+)/$', views.CourseDetailView.as_view(), name='course_detail'),
 ]

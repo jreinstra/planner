@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
+    'rest_framework'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -68,6 +69,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'planner.wsgi.application'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 
 # Internationalization
