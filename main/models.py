@@ -89,6 +89,7 @@ class Student(models.Model):
 
 class Review(Commentable):
     author = models.ForeignKey(Student, related_name="reviews")
+    course = models.ForeignKey(Course, related_name="reviews")
     
     rating = models.IntegerField()
     grade = models.CharField(max_length=2) # add choices here
@@ -96,6 +97,9 @@ class Review(Commentable):
     
     helpful_votes = models.ManyToManyField(Student, related_name="liked_reviews")
     unhelpful_votes = models.ManyToManyField(Student, related_name="+")
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
 
 class Comment(Commentable):
     author = models.ForeignKey(Student, related_name="comments")
