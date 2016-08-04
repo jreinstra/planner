@@ -80,9 +80,8 @@ class CourseSchedule(models.Model):
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
-    photo_url = models.URLField(blank=True)
-    phone_number = models.IntegerField(blank=True, null=True)
-    email = models.CharField(max_length=40, blank=True)
+    phone_number = models.CharField(max_length=15, default="")
+    bio = models.TextField(default="")
 
 class Student(models.Model):
     # needed? - could just use User
