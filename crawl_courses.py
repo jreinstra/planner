@@ -1,7 +1,6 @@
 import os
 import sys
 import requests
-from bs4 import BeautifulSoup
 from xml.etree import ElementTree
 
 from django.core.wsgi import get_wsgi_application
