@@ -88,14 +88,20 @@ class Student(models.Model):
     pass
 
 class Review(Commentable):
-    author = models.ForeignKey(Student, related_name="reviews")
+    author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
+    reply_to = models.ForeignKey(Course, related_name="reviews")
     
     rating = models.IntegerField()
-    grade = models.CharField(max_length=2) # add choices here
+    grade = models.CharField(max_length=2, null=True) # add choices here
     text = models.TextField()
     
     helpful_votes = models.ManyToManyField(Student, related_name="liked_reviews")
     unhelpful_votes = models.ManyToManyField(Student, related_name="+")
+    
+    is_crawled = models.BooleanField(default=False)
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
 
 class Comment(Commentable):
     author = models.ForeignKey(Student, related_name="comments")
