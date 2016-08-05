@@ -48,6 +48,7 @@ class Course(Commentable):
     
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
+    alt_code = models.CharField(max_length=20)
     title = models.CharField(max_length=200)
     course = models.ForeignKey(Course, related_name="codes")
     

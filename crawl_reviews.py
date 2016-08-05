@@ -24,7 +24,7 @@ reviews = json.loads(open("reviews.json", "r").read())
 
 Review.objects.filter(is_crawled=True).delete()
 for review in reviews:
-    code = review["course"].replace(" ", "")
+    code = review["course"]
     course_query = CourseCode.objects.filter(code=code)
     if course_query.exists():
         r = Review()
