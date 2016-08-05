@@ -24,7 +24,7 @@ class Search(APIView):
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
 
-            entry_query = get_query(query_string, ['code', 'title',])
+            entry_query = get_query(query_string, ['code', 'alt_code', 'title',])
 
             found_entries = CourseCode.objects.filter(entry_query)
             if found_entries.count() == 0:

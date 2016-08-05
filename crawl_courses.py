@@ -32,7 +32,7 @@ def populate_courses():
     depts = Department.objects.all()
     
     # Only load five depts for now (to save time)
-    for dept in depts[:5]:
+    for dept in depts:
         print "Loading courses for:", dept.code
         courses = get_xml("http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code)
         # this doesn't get anything ... 
@@ -90,11 +90,12 @@ def populate_courses():
             else:
                 c = Course.objects.get(course_id=course_id)
 
-            code_str = course[1].text + course[2].text
+            code_str = course[1].text + " " + course[2].text
             code = CourseCode.objects.filter(code=code_str)
             if code.exists() is False:
                 code = CourseCode()
                 code.code = code_str
+                code.alt_code = code_str.replace(" ", "")
                 code.title = course[3].text
                 code.course = c
                 code.save()
