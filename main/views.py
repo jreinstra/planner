@@ -10,6 +10,7 @@ from rest_framework import status
 
 from main.utils import get_query
 from main.models import CourseCode, Course
+from main.serializers import CourseSerializer
 
 # Create your views here.
 
@@ -41,6 +42,16 @@ class Search(APIView):
             return r_success(results)
         else:
             return r_failure("Search parameter 'q' is required.")
+        
+        
+class CourseDetail(APIView):
+    def get(self, request, pk=None):
+        courses = Course.objects.filter(pk=pk)
+
+        if courses.count() == 1:
+            return r_success(CourseSerializer(courses[0]).data)
+        else:
+            return r_failure("Course not found.")
     
 
 def r_success(result):
