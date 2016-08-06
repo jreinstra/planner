@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^courses/(?P<pk>[0-9]+)/$', views.CourseDetailView.as_view(), name='course_detail'),
     
     # API routes
-    url(r'^api/search/$', views.Search.as_view(), name="search"),
+    url(r'^api/search/$', views.Search.as_view(), name="api_search"),
+    url(r'^api/courses/(?P<pk>[0-9]+)/$', views.CourseDetail.as_view(), name="api_course_detail"),
 ]
