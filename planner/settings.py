@@ -35,8 +35,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Main App
     'main',
-    'rest_framework'
+    # Third party apps
+    'rest_framework',
+    'corsheaders'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -48,7 +51,11 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    # Third party middleware
+    'corsheaders.middleware.CorsMiddleware',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'planner.urls'
 
