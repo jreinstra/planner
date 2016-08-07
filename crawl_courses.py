@@ -45,7 +45,7 @@ def populate_courses():
                 c = Course()
                 c.course_id = course_id
                 c.year = course[0].text
-                c.long_name = course[3].text.split("(")[0].strip()
+                c.title = course[3].text.split("(")[0].strip()
                 c.description = course[4].text or "No description provided."
                 c.general_requirements = course[5].text or ""
                 c.repeatable = False if course[6].text == "false" else True
@@ -56,7 +56,8 @@ def populate_courses():
                 c.save()
                 for section in course[11].findall("section"):
                     se = CourseSection()
-                    se.term = section[1].text
+                    se.year = section[1].text.split(" ")[0]
+                    se.term = section[1].text.split(" ")[1]
                     se.section_number = int(section[6].text)
                     se.num_enrolled = int(section[8].text)
                     se.max_enrolled = int(section[9].text)
@@ -77,16 +78,13 @@ def populate_courses():
                         else:
                             instructor_obj = instructor_obj[0]
                         se.instructor = instructor_obj
-                    se.save()
 
-                    sc = CourseSchedule()
-                    sc.start_date = schedule[0].text or ""
-                    sc.end_date = schedule[1].text or ""
-                    sc.start_time = schedule[2].text or ""
-                    sc.end_time = schedule[3].text or ""
-                    sc.days = schedule[5].text
-                    sc.section = se
-                    sc.save()
+                    se.start_date = schedule[0].text or ""
+                    se.end_date = schedule[1].text or ""
+                    se.start_time = schedule[2].text or ""
+                    se.end_time = schedule[3].text or ""
+                    se.days = schedule[5].text
+                    se.save()
             else:
                 c = Course.objects.get(course_id=course_id)
 

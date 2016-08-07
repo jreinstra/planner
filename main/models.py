@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+import time
 # Create your models here.
 
 # TODO: choices for some fields & 'updated_at' and 'created_at'
@@ -33,9 +34,7 @@ class Requirement(models.Model):
 class Course(Commentable):
     course_id = models.IntegerField(primary_key=True)
     
-    year = models.CharField(max_length=10)
-    # consider renaming "long_name" to title
-    long_name = models.CharField(max_length=150)
+    title = models.CharField(max_length=150)
     description = models.TextField()
     
     general_requirements = models.CharField(max_length=100)
@@ -46,6 +45,13 @@ class Course(Commentable):
     
     department = models.ForeignKey(Department, related_name="courses")
     
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(Course, self).save(*args, **kwargs)
+    
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
     alt_code = models.CharField(max_length=20)
@@ -55,8 +61,9 @@ class CourseCode(models.Model):
     def __str__(self):
         return self.code
     
-class CourseSection(models.Model):    
-    term = models.CharField(max_length=20)
+class CourseSection(models.Model):
+    year = models.CharField(max_length=10)
+    term = models.CharField(max_length=15)
     section_number = models.IntegerField()
     
     # These will need to be crawled more frequently
@@ -69,20 +76,33 @@ class CourseSection(models.Model):
     course = models.ForeignKey(Course, related_name="sections")
     instructor = models.ForeignKey('Instructor', related_name="sections", blank=True, null=True)
     
-class CourseSchedule(models.Model):
     start_date = models.CharField(max_length=15)
     end_date = models.CharField(max_length=15)
     start_time = models.CharField(max_length=15)
     end_time = models.CharField(max_length=15)
     days = models.CharField(max_length=100)
     
-    section = models.OneToOneField(CourseSection, related_name="schedule")
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(CourseSection, self).save(*args, **kwargs)
 
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15, default="")
     bio = models.TextField(default="")
+    
+    is_updated = models.BooleanField(default=False)
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(Instructor, self).save(*args, **kwargs)
 
 class Student(models.Model):
     # needed? - could just use User
@@ -103,6 +123,11 @@ class Review(Commentable):
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        if self.is_crawled is False:
+            update_fields(self)
+        return super(Review, self).save(*args, **kwargs)
 
 class Comment(Commentable):
     author = models.ForeignKey(Student, related_name="comments")
@@ -110,3 +135,16 @@ class Comment(Commentable):
     
     text = models.CharField(max_length=250)
     likes = models.ManyToManyField(Student, related_name="liked_comments")
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(Comment, self).save(*args, **kwargs)
+    
+    
+def update_fields(self):
+    if not self.created_at:
+        self.created_at = int(time.time())
+    self.updated_at = int(time.time())

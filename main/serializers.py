@@ -7,6 +7,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = (
-            'year', 'long_name', 'description', 'general_requirements',
+            'year', 'title', 'description', 'general_requirements',
             'repeatable', 'grading', 'min_units', 'max_units', 'department',
         )
+        depth = 1
