@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from main.utils import get_query
-from main.models import CourseCode, Course
-from main.serializers import CourseSerializer
+from main.models import CourseCode, Course, Instructor
+from main.serializers import CourseSerializer, InstructorSerializer
 
 # Create your views here.
 
@@ -52,6 +52,16 @@ class CourseDetail(APIView):
             return r_success(CourseSerializer(courses[0]).data)
         else:
             return r_failure("Course not found.")
+        
+        
+class InstructorDetail(APIView):
+    def get(self, request, sunet=None):
+        instructors = Instructor.objects.filter(sunet=sunet)
+
+        if instructors.count() == 1:
+            return r_success(InstructorSerializer(instructors[0]).data)
+        else:
+            return r_failure("Instructor not found.")
     
 
 def r_success(result):
