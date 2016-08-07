@@ -31,3 +31,15 @@ The **central goal** to create the best way (by far) for students to plan their 
   - Specify major / minors / subjects you like
   - Displays your coverage of graduation requirements (general and for major/minor)
   - Trello-like dragging and dropping of classes (w/ AJAX)
+  
+## Conceptual Development Plan Outline
+- August 7
+  - Finish crawling for course & reviews data
+  - Implement basic course search & info frontend
+- August 14
+  - Implement reviews & comments functionality
+  - Add pages for instructors
+- August 21
+  - Fully implement user authentication with Stanford WebAuth
+  - Add user settings & profile
+  - Add aggregate course & instructor data
