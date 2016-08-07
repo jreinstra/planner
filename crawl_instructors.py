@@ -8,10 +8,11 @@ application = get_wsgi_application()
 
 from main.models import Instructor
 
-total = Instructor.objects.all().count()
+query = Instructor.objects.filter(is_updated=False)
+total = query.count()
 i = 0
 print "Fetching data for %s instructors." % total
-for instructor in Instructor.objects.all():
+for instructor in query:
     sunet = instructor.sunet
     print "Loading data for '%s'...(%s of %s)" % (sunet, i, total)
     r = requests.get("https://explorecourses.stanford.edu/instructor/" + sunet)
@@ -25,6 +26,7 @@ for instructor in Instructor.objects.all():
         for element in soup.find(id="profileNavigation").findAll("span"):
             if element.get_text() != "	" + sunet + "I'm-not-a-bot@stanforddocument.write('.edu');":
                 instructor.phone_number = element.get_text()
-
+        
+        instructor.is_updated = True
         instructor.save()
     i += 1
