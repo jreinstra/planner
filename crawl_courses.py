@@ -83,7 +83,7 @@ def populate_courses():
                     se.end_date = schedule[1].text or ""
                     se.start_time = schedule[2].text or ""
                     se.end_time = schedule[3].text or ""
-                    se.days = schedule[5].text
+                    se.days = get_days(schedule[5].text)
                     se.save()
             else:
                 c = Course.objects.get(course_id=course_id)
@@ -106,6 +106,17 @@ def get_xml(url):
         raise BadAPIError(r.text)
     # x = str(r.text.encode("utf-8"))
     return ElementTree.fromstring(str(r.text.encode("utf-8")))
+
+def get_days(str_in):
+    return " ".join(
+        [
+            s for s in str_in.replace(
+                "\t", " "
+            ).replace(
+                "\n", " "
+            ).split(" ") if len(s) > 0
+        ]
+    )
 
 """def get_xml_f(url):
     return ElementTree.fromstring(open("courses.xml", "r").read())
