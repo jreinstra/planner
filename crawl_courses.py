@@ -26,7 +26,7 @@ def populate_departments():
             else:
                 dept_obj = Department.objects.get(code=dept_code)
                 
-            dept_obj.name = department.get("name")
+            dept_obj.name = department.get("longname")
             dept_obj.code = dept_code
             dept_obj.school = school_obj
             dept_obj.save()
