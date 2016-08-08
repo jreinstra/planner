@@ -79,7 +79,7 @@ def populate_courses():
                     if instructor_obj.exists() is False:
                         instructor_obj = Instructor()
                         instructor_obj.sunet = instructor[4].text
-                        instructor_obj.name = instructor[1].text + " " + instructor[3].text
+                        instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
                         instructor_obj.save()
                     else:
                         instructor_obj = instructor_obj[0]
