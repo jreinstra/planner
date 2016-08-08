@@ -17,11 +17,19 @@ from main.serializers import CourseSerializer, InstructorSerializer
 class CourseDetailView(DetailView):
     model = Course
 
-# adapted from: http://julienphalip.com/post/2825034077/adding-search-to-a-django-site-in-a-snap
+# adapted from: http://goo.gl/z9g4S2
 class Search(APIView):
     def get(self, request):
         query_string = ''
         found_entries = None
+        
+        limit = request.GET.get("limit", 10)
+        
+        try:
+            limit = int(limit)
+        except ValueError:
+            return r_failure("Parameter 'limit' must be an integer.")
+            
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
 
@@ -32,7 +40,7 @@ class Search(APIView):
                 entry_query = get_query(query_string, ['description',])
                 found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
             results = []
-            for entry in found_entries:
+            for entry in found_entries[:limit]:
                 results.append({
                     "code": entry.code,
                     "title": entry.title,
