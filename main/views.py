@@ -42,7 +42,7 @@ class Search(APIView):
             
             course_ids = []
             results = []
-            for entry in found_entries[:limit]:
+            for entry in found_entries:
                 course_id = entry.course.pk
                 if entry.course.pk not in course_ids:
                     results.append({
@@ -52,6 +52,9 @@ class Search(APIView):
                         "course_id": course_id
                     })
                     course_ids.append(course_id)
+                    
+                    if len(results) == limit:
+                        break
             return r_success(results)
         else:
             return r_failure("Search parameter 'q' is required.")
