@@ -39,14 +39,19 @@ class Search(APIView):
             if found_entries.count() == 0:
                 entry_query = get_query(query_string, ['description',])
                 found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
+            
+            course_ids = []
             results = []
             for entry in found_entries[:limit]:
-                results.append({
-                    "code": entry.code,
-                    "title": entry.title,
-                    "description": entry.course.description,
-                    "course_id": entry.course.pk
-                })
+                course_id = entry.course.pk
+                if entry.course.pk not in course_ids:
+                    results.append({
+                        "code": entry.code,
+                        "title": entry.title,
+                        "description": entry.course.description,
+                        "course_id": course_id
+                    })
+                    course_ids.append(course_id)
             return r_success(results)
         else:
             return r_failure("Search parameter 'q' is required.")
