@@ -74,15 +74,15 @@ class CourseSection(models.Model):
     max_enrolled = models.IntegerField()
     num_waitlist = models.IntegerField()
     max_waitlist = models.IntegerField()
-    enroll_status = models.CharField(max_length=15)
+    enroll_status = models.CharField(max_length=32)
     
     course = models.ForeignKey(Course, related_name="sections")
     instructor = models.ForeignKey('Instructor', related_name="sections", blank=True, null=True)
     
-    start_date = models.CharField(max_length=15)
-    end_date = models.CharField(max_length=15)
-    start_time = models.CharField(max_length=15)
-    end_time = models.CharField(max_length=15)
+    start_date = models.CharField(max_length=31)
+    end_date = models.CharField(max_length=30)
+    start_time = models.CharField(max_length=29)
+    end_time = models.CharField(max_length=28)
     days = models.CharField(max_length=100)
     
     created_at = models.IntegerField()
