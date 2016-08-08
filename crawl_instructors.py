@@ -27,6 +27,6 @@ for instructor in query:
             if element.get_text() != "	" + sunet + "I'm-not-a-bot@stanforddocument.write('.edu');":
                 instructor.phone_number = element.get_text()
         
-        instructor.is_updated = True
-        instructor.save()
+    instructor.is_updated = True
+    instructor.save()
     i += 1
