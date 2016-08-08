@@ -43,3 +43,4 @@ The **central goal** to create the best way (by far) for students to plan their 
   - Fully implement user authentication with Stanford WebAuth
   - Add user settings & profile
   - Add aggregate course & instructor data
+  - Begin crawling & APIs for requirements data
