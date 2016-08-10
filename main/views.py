@@ -14,9 +14,6 @@ from main.serializers import CourseSerializer, InstructorSerializer
 
 # Create your views here.
 
-class CourseDetailView(DetailView):
-    model = Course
-
 # adapted from: http://goo.gl/z9g4S2
 class Search(APIView):
     def get(self, request):
