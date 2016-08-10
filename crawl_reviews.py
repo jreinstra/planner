@@ -23,6 +23,7 @@ def str_to_timestamp(date_str):
 reviews = json.loads(open("reviews.json", "r").read())
 
 Review.objects.filter(is_crawled=True).delete()
+total_added = 0
 for review in reviews:
     code = review["course"]
     course_query = CourseCode.objects.filter(code=code)
@@ -36,4 +37,6 @@ for review in reviews:
         r.created_at = str_to_timestamp(review["created_at"])
         r.updated_at = str_to_timestamp(review["updated_at"])
         r.save()
-        print "Review added to", code
+        total_added += 1
+        if total_added % 50 == 0:
+            print "Added %s reviews" % total_added
