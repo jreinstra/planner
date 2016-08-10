@@ -24,7 +24,7 @@ for instructor in query:
             instructor.bio = main_elements[1].get_text()
 
         for element in soup.find(id="profileNavigation").findAll("span"):
-            if "I'm-not-a-bot@stanforddocument.write(" not in element.get_text():
+            if "I'm-not-a-bot@" not in element.get_text():
                 instructor.phone_number = element.get_text()
         
     instructor.is_updated = True
