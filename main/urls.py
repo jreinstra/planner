@@ -1,7 +1,10 @@
 from django.conf.urls import include, url
-from django.views.generic import TemplateView
-
+from rest_framework import routers
 from . import views
+
+router = routers.DefaultRouter()
+router.register(r'reviews', views.ReviewViewSet)
+router.register(r'comments', views.CommentViewSet)
 
 urlpatterns = [
     # API routes
@@ -9,7 +12,6 @@ urlpatterns = [
     url(r'^api/courses/(?P<pk>[0-9]+)/$', views.CourseDetail.as_view(), name="api_course_detail"),
     url(r'^api/instructors/(?P<sunet>[\w-]+)/$', views.InstructorDetail.as_view(), name="api_instructor_detail"),
     
-    # CRUD for Reviews & Comments:
-    # http://www.django-rest-framework.org/tutorial/quickstart/
-    # http://www.django-rest-framework.org/api-guide/viewsets/
+    # API router
+    url(r'^api/', include(router.urls))
 ]

@@ -55,6 +55,9 @@ class Course(Commentable):
         update_fields(self)
         return super(Course, self).save(*args, **kwargs)
     
+    def __str__(self):
+        return self.title
+    
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
     alt_code = models.CharField(max_length=20)
@@ -112,11 +115,37 @@ class Student(models.Model):
     pass
 
 class Review(Commentable):
+    RATING_OPTIONS = (
+        (1, "1 star"),
+        (2, "2 stars"),
+        (3, "3 stars"),
+        (4, "4 stars"),
+        (5, "5 stars"),
+    )
+    
+    GRADE_OPTIONS = (
+        ("A+", "A+"),
+        ("A", "A"),
+        ("A-", "A-"),
+        ("B+", "B+"),
+        ("B", "B"),
+        ("B-", "B-"),
+        ("C+", "C+"),
+        ("C", "C"),
+        ("C-", "C-"),
+        ("D+", "D+"),
+        ("D", "D"),
+        ("D-", "D-"),
+        ("F", "F"),
+        ("CR", "Credit"),
+        ("NC", "No credit"),
+    )
+    
     author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
     reply_to = models.ForeignKey(Course, related_name="reviews")
     
-    rating = models.IntegerField()
-    grade = models.CharField(max_length=2, null=True) # add choices here
+    rating = models.IntegerField(choices=RATING_OPTIONS)
+    grade = models.CharField(max_length=2, null=True, choices=GRADE_OPTIONS)
     text = models.TextField()
     
     helpful_votes = models.ManyToManyField(Student, related_name="liked_reviews")
@@ -133,7 +162,7 @@ class Review(Commentable):
         return super(Review, self).save(*args, **kwargs)
 
 class Comment(Commentable):
-    author = models.ForeignKey(Student, related_name="comments")
+    author = models.ForeignKey(Student, related_name="comments", null=True, blank=True)
     reply_to = models.ForeignKey(Commentable, related_name="comments")
     
     text = models.CharField(max_length=250)
