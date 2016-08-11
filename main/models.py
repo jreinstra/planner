@@ -1,14 +1,38 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 import time
 # Create your models here.
 
 # TODO: choices for some fields & 'updated_at' and 'created_at'
-class Commentable(models.Model):
+class Student(models.Model):
+    # needed? - could just use User
     pass
 
+
+class Comment(models.Model):
+    author = models.ForeignKey(Student, related_name="comments", null=True, blank=True)
+    
+    # generic 'reply_to' field
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    comments = GenericRelation('self')
+    
+    text = models.CharField(max_length=250)
+    likes = models.ManyToManyField(Student, related_name="liked_comments")
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(Comment, self).save(*args, **kwargs)
+    
+    
 class School(models.Model):
     name = models.CharField(max_length=100)
     description_html = models.TextField(default="")
@@ -34,8 +58,9 @@ class Requirement(models.Model):
     num_units = models.IntegerField()
     num_classes = models.IntegerField()
     
-class Course(Commentable):
+class Course(models.Model):
     course_id = models.IntegerField(primary_key=True)
+    comments = GenericRelation(Comment)
     
     title = models.CharField(max_length=150)
     description = models.TextField()
@@ -54,6 +79,9 @@ class Course(Commentable):
     def save(self, *args, **kwargs):
         update_fields(self)
         return super(Course, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.title
     
 class CourseCode(models.Model):
     code = models.CharField(max_length=20, primary_key=True)
@@ -103,20 +131,49 @@ class Instructor(models.Model):
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
     
+    comments = GenericRelation(Comment)
+    
     def save(self, *args, **kwargs):
         update_fields(self)
         return super(Instructor, self).save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.name
+    
 
-class Student(models.Model):
-    # needed? - could just use User
-    pass
-
-class Review(Commentable):
+class Review(models.Model):
+    RATING_OPTIONS = (
+        (1, "1 star"),
+        (2, "2 stars"),
+        (3, "3 stars"),
+        (4, "4 stars"),
+        (5, "5 stars"),
+    )
+    
+    GRADE_OPTIONS = (
+        ("A+", "A+"),
+        ("A", "A"),
+        ("A-", "A-"),
+        ("B+", "B+"),
+        ("B", "B"),
+        ("B-", "B-"),
+        ("C+", "C+"),
+        ("C", "C"),
+        ("C-", "C-"),
+        ("D+", "D+"),
+        ("D", "D"),
+        ("D-", "D-"),
+        ("F", "F"),
+        ("CR", "Credit"),
+        ("NC", "No credit"),
+    )
+    
     author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
     reply_to = models.ForeignKey(Course, related_name="reviews")
+    comments = GenericRelation(Comment)
     
-    rating = models.IntegerField()
-    grade = models.CharField(max_length=2, null=True) # add choices here
+    rating = models.IntegerField(choices=RATING_OPTIONS)
+    grade = models.CharField(max_length=2, null=True, choices=GRADE_OPTIONS)
     text = models.TextField()
     
     helpful_votes = models.ManyToManyField(Student, related_name="liked_reviews")
@@ -131,20 +188,6 @@ class Review(Commentable):
         if self.is_crawled is False:
             update_fields(self)
         return super(Review, self).save(*args, **kwargs)
-
-class Comment(Commentable):
-    author = models.ForeignKey(Student, related_name="comments")
-    reply_to = models.ForeignKey(Commentable, related_name="comments")
-    
-    text = models.CharField(max_length=250)
-    likes = models.ManyToManyField(Student, related_name="liked_comments")
-    
-    created_at = models.IntegerField()
-    updated_at = models.IntegerField()
-    
-    def save(self, *args, **kwargs):
-        update_fields(self)
-        return super(Comment, self).save(*args, **kwargs)
     
     
 def update_fields(self):

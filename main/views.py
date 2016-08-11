@@ -6,11 +6,11 @@ from django.views.generic.detail import DetailView
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 
 from main.utils import get_query
-from main.models import CourseCode, Course, Instructor
-from main.serializers import CourseSerializer, InstructorSerializer
+from main.models import CourseCode, Course, Instructor, Review, Comment
+from main.serializers import *
 
 # Create your views here.
 
@@ -75,6 +75,16 @@ class InstructorDetail(APIView):
             return r_success(InstructorSerializer(instructors[0]).data)
         else:
             return r_failure("Instructor not found.")
+        
+        
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+    
+    
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
     
 
 def r_success(result):
