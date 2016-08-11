@@ -8,6 +8,31 @@ import time
 # Create your models here.
 
 # TODO: choices for some fields & 'updated_at' and 'created_at'
+class Student(models.Model):
+    # needed? - could just use User
+    pass
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(Student, related_name="comments", null=True, blank=True)
+    
+    # generic 'reply_to' field
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    comments = GenericRelation('self')
+    
+    text = models.CharField(max_length=250)
+    likes = models.ManyToManyField(Student, related_name="liked_comments")
+    
+    created_at = models.IntegerField()
+    updated_at = models.IntegerField()
+    
+    def save(self, *args, **kwargs):
+        update_fields(self)
+        return super(Comment, self).save(*args, **kwargs)
+    
+    
 class School(models.Model):
     name = models.CharField(max_length=100)
     description_html = models.TextField(default="")
@@ -35,7 +60,7 @@ class Requirement(models.Model):
     
 class Course(models.Model):
     course_id = models.IntegerField(primary_key=True)
-    comments = GenericRelation('Comment')
+    comments = GenericRelation(Comment)
     
     title = models.CharField(max_length=150)
     description = models.TextField()
@@ -106,7 +131,7 @@ class Instructor(models.Model):
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
     
-    comments = GenericRelation('Comment')
+    comments = GenericRelation(Comment)
     
     def save(self, *args, **kwargs):
         update_fields(self)
@@ -114,10 +139,7 @@ class Instructor(models.Model):
     
     def __str__(self):
         return self.name
-
-class Student(models.Model):
-    # needed? - could just use User
-    pass
+    
 
 class Review(models.Model):
     RATING_OPTIONS = (
@@ -148,7 +170,7 @@ class Review(models.Model):
     
     author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
     reply_to = models.ForeignKey(Course, related_name="reviews")
-    comments = GenericRelation('Comment')
+    comments = GenericRelation(Comment)
     
     rating = models.IntegerField(choices=RATING_OPTIONS)
     grade = models.CharField(max_length=2, null=True, choices=GRADE_OPTIONS)
@@ -166,25 +188,6 @@ class Review(models.Model):
         if self.is_crawled is False:
             update_fields(self)
         return super(Review, self).save(*args, **kwargs)
-
-class Comment(models.Model):
-    author = models.ForeignKey(Student, related_name="comments", null=True, blank=True)
-    
-    # generic 'reply_to' field
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-    comments = GenericRelation('self')
-    
-    text = models.CharField(max_length=250)
-    likes = models.ManyToManyField(Student, related_name="liked_comments")
-    
-    created_at = models.IntegerField()
-    updated_at = models.IntegerField()
-    
-    def save(self, *args, **kwargs):
-        update_fields(self)
-        return super(Comment, self).save(*args, **kwargs)
     
     
 def update_fields(self):
