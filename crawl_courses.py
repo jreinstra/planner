@@ -1,5 +1,6 @@
 import os
 import sys
+import grequests
 import requests
 from xml.etree import ElementTree
 
@@ -33,81 +34,86 @@ def populate_departments():
                 
 def populate_courses():
     depts = Department.objects.all()
+    rs = [
+        grequests.get(
+            "http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code,
+            callback=populate_course
+        ) for dept in depts
+    ]
+    grequests.map(rs, size=10)
     
-    # Only load five depts for now (to save time)
-    for dept in depts:
-        print "Loading courses for:", dept.code
-        courses = get_xml("http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code)
-        # this doesn't get anything ... 
-        #print "length:", len(courses.get("xml").get("courses").findall("course"))
-        for course in courses[2].findall("course"):
-            admin = course.findall("administrativeInformation")[0]
-            course_id = int(admin[0].text)
-            # TODO: check if courses of different years have different IDs
-            if Course.objects.filter(course_id=course_id).exists() is False:
-                c = Course()
-            else:
-                c = Course.objects.get(course_id=course_id)
-                
-            c.course_id = course_id
-            c.year = course[0].text
-            c.title = course[3].text.split("(")[0].strip()
-            c.description = course[4].text or "No description provided."
-            c.general_requirements = course[5].text or ""
-            c.repeatable = False if course[6].text == "false" else True
-            c.grading = course[7].text
-            c.min_units = int(course[8].text)
-            c.max_units = int(course[9].text)
-            c.department = dept
-            c.save()
-            for section in course[11].findall("section"):
-                se = CourseSection()
-                se.year = section[1].text.split(" ")[0]
-                se.term = section[1].text.split(" ")[1]
-                se.section_number = int(section[6].text)
-                se.num_enrolled = int(section[8].text)
-                se.max_enrolled = int(section[9].text)
-                se.num_waitlist = int(section[10].text)
-                se.max_waitlist = int(section[11].text)
-                se.enroll_status = section[12].text
-                se.course = c
+def populate_course(r, **kwargs):
+    print "Loading courses for:", r.url.split("=")[-1]
+    courses = get_xml_r(r)
+    
+    for course in courses[2].findall("course"):
+        admin = course.findall("administrativeInformation")[0]
+        course_id = int(admin[0].text)
+        # TODO: check if courses of different years have different IDs
+        if Course.objects.filter(course_id=course_id).exists() is False:
+            c = Course()
+        else:
+            c = Course.objects.get(course_id=course_id)
 
-                schedule = section[16][0]
-                if len(schedule[6]) > 0:
-                    instructor = schedule[6][0]
-                    instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
-                    if instructor_obj.exists() is False:
-                        instructor_obj = Instructor()
-                        instructor_obj.sunet = instructor[4].text
-                        instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
-                        instructor_obj.save()
-                    else:
-                        instructor_obj = instructor_obj[0]
-                    se.instructor = instructor_obj
+        c.course_id = course_id
+        c.year = course[0].text
+        c.title = course[3].text.split("(")[0].strip()
+        c.description = course[4].text or "No description provided."
+        c.general_requirements = course[5].text or ""
+        c.repeatable = False if course[6].text == "false" else True
+        c.grading = course[7].text
+        c.min_units = int(course[8].text)
+        c.max_units = int(course[9].text)
+        c.department = dept
+        c.save()
+        for section in course[11].findall("section"):
+            se = CourseSection()
+            se.year = section[1].text.split(" ")[0]
+            se.term = section[1].text.split(" ")[1]
+            se.section_number = int(section[6].text)
+            se.num_enrolled = int(section[8].text)
+            se.max_enrolled = int(section[9].text)
+            se.num_waitlist = int(section[10].text)
+            se.max_waitlist = int(section[11].text)
+            se.enroll_status = section[12].text
+            se.course = c
 
-                se.start_date = schedule[0].text or ""
-                se.end_date = schedule[1].text or ""
-                se.start_time = schedule[2].text or ""
-                se.end_time = schedule[3].text or ""
-                se.days = get_days(schedule[5].text)
-                se.save()
+            schedule = section[16][0]
+            if len(schedule[6]) > 0:
+                instructor = schedule[6][0]
+                instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
+                if instructor_obj.exists() is False:
+                    instructor_obj = Instructor()
+                    instructor_obj.sunet = instructor[4].text
+                    instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
+                    instructor_obj.save()
+                else:
+                    instructor_obj = instructor_obj[0]
+                se.instructor = instructor_obj
 
-            code_str = course[1].text + " " + course[2].text
-            code = CourseCode.objects.filter(code=code_str)
-            if code.exists() is False:
-                code = CourseCode()
-            else:
-                code = code[0]
-            code.code = code_str
-            code.alt_code = code_str.replace(" ", "")
-            code.title = course[3].text
-            code.course = c
-            code.save()
-                
-# next: http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=AA
+            se.start_date = schedule[0].text or ""
+            se.end_date = schedule[1].text or ""
+            se.start_time = schedule[2].text or ""
+            se.end_time = schedule[3].text or ""
+            se.days = get_days(schedule[5].text)
+            se.save()
+
+        code_str = course[1].text + " " + course[2].text
+        code = CourseCode.objects.filter(code=code_str)
+        if code.exists() is False:
+            code = CourseCode()
+        else:
+            code = code[0]
+        code.code = code_str
+        code.alt_code = code_str.replace(" ", "")
+        code.title = course[3].text
+        code.course = c
+        code.save()
 
 def get_xml(url):
-    r = requests.get(url)
+    return get_xml_r(requests.get(url))
+
+def get_xml_r(r):
     if r.status_code != 200:
         raise BadAPIError(r.text)
     # x = str(r.text.encode("utf-8"))
@@ -133,5 +139,7 @@ def get_xml_s(url):
 class BadAPIError(Exception):
     pass
 
+print "Loading departments..."
 populate_departments()
+print "Loading courses..."
 populate_courses()
