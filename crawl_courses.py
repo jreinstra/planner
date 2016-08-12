@@ -38,6 +38,7 @@ def populate_courses():
     for dept in depts:
         print "Loading courses for:", dept.code
         courses = get_xml("http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code)
+        print "loaded. saving..."
         # this doesn't get anything ... 
         #print "length:", len(courses.get("xml").get("courses").findall("course"))
         for course in courses[2].findall("course"):

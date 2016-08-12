@@ -1,5 +1,5 @@
 import os
-import requests
+import grequests
 from bs4 import BeautifulSoup
 
 from django.core.wsgi import get_wsgi_application
@@ -8,15 +8,38 @@ application = get_wsgi_application()
 
 from main.models import Instructor
 
+# counter from here: https://goo.gl/RdsUZH
+class FeedbackCounter:
+    """Object to provide a feedback callback keeping track of total calls."""
+    def __init__(self):
+        self.counter = 0
+
+    def feedback(self, r, **kwargs):
+        self.counter += 1
+        print("{0} fetched, {1} total.".format(r.url.split("/")[-1], self.counter))
+        return r
+
+
+fbc = FeedbackCounter()
+
 query = Instructor.objects.filter(is_updated=False)
 total = query.count()
-i = 0
+instructor_list = list(query)
+
 print "Fetching data for %s instructors." % total
-for instructor in query:
-    sunet = instructor.sunet
-    print "Loading data for '%s'...(%s of %s)" % (sunet, i, total)
-    r = requests.get("https://explorecourses.stanford.edu/instructor/" + sunet)
-    if r.status_code == 200:
+rs = [
+    grequests.get(
+        "https://explorecourses.stanford.edu/instructor/" + i.sunet,
+        callback=fbc.feedback
+    ) for i in instructor_list
+]
+resp = grequests.map(rs, size=10)
+print "Batch requests loaded."
+for i in range(0, len(resp)):
+    instructor = instructor_list[i]
+    r = resp[i]
+    print "Saving data for '%s'...(%s of %s)" % (instructor.sunet, i, total)
+    if r is not None and r.status_code == 200:
         soup = BeautifulSoup(r.text, 'html.parser')
 
         main_elements = soup.find(id="homeSearch").findAll("span")
@@ -29,4 +52,3 @@ for instructor in query:
         
     instructor.is_updated = True
     instructor.save()
-    i += 1
