@@ -20,7 +20,7 @@ for instructor in query:
         soup = BeautifulSoup(r.text, 'html.parser')
 
         main_elements = soup.find(id="homeSearch").findAll("span")
-        if main_elements[0].get_text() == "Personal bio":
+        if len(main_elements) > 0 and main_elements[0].get_text() == "Personal bio":
             instructor.bio = main_elements[1].get_text()
 
         for element in soup.find(id="profileNavigation").findAll("span"):
