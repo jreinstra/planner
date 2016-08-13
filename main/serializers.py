@@ -9,7 +9,7 @@ class CommentRelatedField(serializers.RelatedField):
     
 class ContentObjectRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return type(value).__name__ + ":" + str(value.pk)
+        return type(value).__name__.lower() + ":" + str(value.pk)
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -55,5 +55,5 @@ class CommentSerializer(serializers.ModelSerializer):
             'updated_at', 'comments'
         )
         read_only_fields = (
-            'content_object','created_at', 'updated_at', 'likes', 'comments'
+            'content_object', 'created_at', 'updated_at', 'likes', 'comments'
         )
