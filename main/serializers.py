@@ -7,11 +7,41 @@ class CommentRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         return [CommentSerializer(item).data for item in value.get_queryset()]
     
-class ContentObjectRelatedField(serializers.RelatedField):
-    def to_representation(self, value):
+class ContentObjectRelatedField(serializers.Field):
+    CLASS_NAMES = {
+        "course": Course,
+        "instructor": Instructor,
+        "review": Review,
+        "comment": Comment
+    }
+    
+    def get_attribute(self, obj):
+        return obj
+    
+    def to_representation(self, obj):
+        value = obj.content_object
         return type(value).__name__.lower() + ":" + str(value.pk)
-
-
+    
+    def to_internal_value(self, data):
+        print "data", data
+        try:
+            params = data.split(":")
+            name = params[0]
+            obj_id = params[1]
+        except Exception:
+            raise serializers.ValidationError("Invalid format: must be 'object:id'")
+        try:
+            query_obj = self.CLASS_NAMES[name]
+        except KeyError:
+            raise serializers.ValidationError("Object name must be: " + ", ".join([x[0] for x in CLASS_NAMES.items()]))
+        try:
+            if name == "instructor":
+                return self.CLASS_NAMES[name].objects.get(sunet=obj_id)
+            else:
+                return self.CLASS_NAMES[name].objects.get(id=int(obj_id))
+        except Exception as e:
+            raise serializers.ValidationError(str(e))
+        
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -36,7 +66,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = (
-            'id', 'reply_to', 'rating', 'grade', 'text',
+            'id', 'course', 'rating', 'grade', 'text',
             'helpful_votes', 'unhelpful_votes', 'created_at', 'updated_at', 'comments'
         )
         read_only_fields = (
@@ -46,7 +76,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         
 class CommentSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
-    content_object = ContentObjectRelatedField(read_only=True)
+    content_object = ContentObjectRelatedField()
     
     class Meta:
         model = Comment
@@ -55,5 +85,5 @@ class CommentSerializer(serializers.ModelSerializer):
             'updated_at', 'comments'
         )
         read_only_fields = (
-            'content_object', 'created_at', 'updated_at', 'likes', 'comments'
+            'created_at', 'updated_at', 'likes', 'comments'
         )

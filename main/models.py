@@ -169,7 +169,7 @@ class Review(models.Model):
     )
     
     author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
-    reply_to = models.ForeignKey(Course, related_name="reviews")
+    course = models.ForeignKey(Course, related_name="reviews")
     comments = GenericRelation(Comment)
     
     rating = models.IntegerField(choices=RATING_OPTIONS)
