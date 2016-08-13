@@ -22,7 +22,7 @@ class FeedbackCounter:
 
 fbc = FeedbackCounter()
 
-query = Instructor.objects.filter(is_updated=False)
+query = Instructor.objects.all()
 total = query.count()
 instructor_list = list(query)
 
