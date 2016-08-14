@@ -42,5 +42,7 @@ The **central goal** to create the best way (by far) for students to plan their 
 - August 21
   - Fully implement user authentication
   - Add user settings & profile
-  - Add aggregate course & instructor data
+  - Add & display aggregate course & instructor data
   - Begin crawling & APIs for requirements data
+- August 28
+  - Implement basic drag & drop four year course planner
