@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Main App
     'main',
+    'frontend',
     # Third party apps
     'rest_framework',
     'corsheaders'
