@@ -50,12 +50,12 @@ def populate_course(r, **kwargs):
         admin = course.findall("administrativeInformation")[0]
         course_id = int(admin[0].text)
         # TODO: check if courses of different years have different IDs
-        if Course.objects.filter(course_id=course_id).exists() is False:
+        if Course.objects.filter(id=course_id).exists() is False:
             c = Course()
         else:
-            c = Course.objects.get(course_id=course_id)
+            c = Course.objects.get(id=course_id)
 
-        c.course_id = course_id
+        c.id = course_id
         c.year = course[0].text
         c.title = course[3].text.split("(")[0].strip()
         c.description = course[4].text or "No description provided."

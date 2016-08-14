@@ -43,11 +43,14 @@ class ContentObjectRelatedField(serializers.Field):
             raise serializers.ValidationError(str(e))
         
 class CourseSerializer(serializers.ModelSerializer):
+    comments = CommentRelatedField(read_only=True)
+    
     class Meta:
         model = Course
         fields = (
             'title', 'description', 'general_requirements', 'repeatable',
-            'grading', 'min_units', 'max_units', 'department', 'sections'
+            'grading', 'min_units', 'max_units', 'department', 'sections',
+            'reviews', 'comments', 'codes'
         )
         depth = 1
         

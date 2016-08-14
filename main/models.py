@@ -59,7 +59,7 @@ class Requirement(models.Model):
     num_classes = models.IntegerField()
     
 class Course(models.Model):
-    course_id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     comments = GenericRelation(Comment)
     
     title = models.CharField(max_length=150)
