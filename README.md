@@ -40,7 +40,7 @@ The **central goal** to create the best way (by far) for students to plan their 
   - Implement reviews & comments functionality
   - Add pages for instructors
 - August 21
-  - Fully implement user authentication with Stanford WebAuth
+  - Fully implement user authentication
   - Add user settings & profile
   - Add aggregate course & instructor data
   - Begin crawling & APIs for requirements data
