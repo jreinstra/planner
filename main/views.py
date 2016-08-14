@@ -46,7 +46,7 @@ class Search(APIView):
                         "code": entry.code,
                         "title": entry.title,
                         "description": entry.course.description,
-                        "course_id": course_id
+                        "id": course_id
                     })
                     course_ids.append(course_id)
                     
