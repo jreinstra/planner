@@ -49,3 +49,14 @@ _features in italics_ = Nice to have features that aren't mission-critical.
   - Begin crawling & APIs for requirements data
 - August 28
   - Implement basic drag & drop four year course planner
+- September 4
+  - Improve website design & layout
+  - Work on "nice to have" features
+  - Bug fixes
+- September 11
+  - Open to beta testers (5-20 people we invite)
+  - Work on "nice to have" features
+  - Bug fixes & minor improvements
+- September 18
+  - Any final preparations for website launch
+  - Announce website and begin promoting
