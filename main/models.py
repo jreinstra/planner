@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
+from jsonfield import JSONField
+
 import time
 # Create your models here.
 
@@ -72,6 +74,9 @@ class Course(models.Model):
     max_units = models.IntegerField()
     
     department = models.ForeignKey(Department, related_name="courses")
+    
+    average_rating = models.FloatField(null=True, blank=True, default=None)
+    grade_distribution = JSONField(default=None)
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
