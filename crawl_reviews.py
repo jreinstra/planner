@@ -29,7 +29,7 @@ for review in reviews:
     course_query = CourseCode.objects.filter(code=code)
     if course_query.exists():
         r = Review()
-        r.reply_to = course_query[0].course
+        r.course = course_query[0].course
         r.rating = review["rating"]
         r.grade = review["grade"]
         r.text = review["text"]
