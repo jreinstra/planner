@@ -25,7 +25,6 @@ for course in Course.objects.all():
                 grade_counts[review.grade] += 1
             total_reviews += 1
         average_rating = int(10 * average_rating / total_reviews) / 10.0
-        print average_rating, course.pk
         grade_distribution = json.dumps([(option[0], grade_counts[option[0]]) for option in Review.GRADE_OPTIONS])
         
     course.average_rating = average_rating
