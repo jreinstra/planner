@@ -50,7 +50,11 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = (
             'title', 'description', 'general_requirements', 'repeatable',
             'grading', 'min_units', 'max_units', 'department', 'sections',
-            'reviews', 'comments', 'codes'
+            'reviews', 'comments', 'codes', 'average_rating',
+            'grade_distribution'
+        )
+        read_only_fields = (
+            'comments', 'average_rating', 'grade_distribution'
         )
         depth = 1
         
