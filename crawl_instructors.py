@@ -1,12 +1,20 @@
 import os
 import grequests
+import time
 from bs4 import BeautifulSoup
 
 from django.core.wsgi import get_wsgi_application
 os.environ["DJANGO_SETTINGS_MODULE"] = "planner.settings"
 application = get_wsgi_application()
 
+from django.db.models import Q
 from main.models import Instructor
+
+# Can't raise these numbers much higher without getting bad responses
+MAX_INSTRUCTORS = 200
+MAX_BATCH = 10
+DAYS_OLD_TO_UPDATE = 14
+CUTOFF_TIMESTAMP = int(time.time()) - 86400 * DAYS_OLD_TO_UPDATE
 
 # counter from here: https://goo.gl/RdsUZH
 class FeedbackCounter:
@@ -22,18 +30,21 @@ class FeedbackCounter:
 
 fbc = FeedbackCounter()
 
-query = Instructor.objects.all()
-total = query.count()
+query = Instructor.objects.filter(
+    Q(is_updated=False) |
+    Q(updated_at__lt=CUTOFF_TIMESTAMP)
+).order_by('updated_at')
+total = min(query.count(), MAX_INSTRUCTORS)
 instructor_list = list(query)
 
-print "Fetching data for %s instructors." % total
+print "Fetching data for %s instructors (%s total old)." % (total, query.count())
 rs = [
     grequests.get(
         "https://explorecourses.stanford.edu/instructor/" + i.sunet,
         callback=fbc.feedback
-    ) for i in instructor_list
+    ) for i in instructor_list[:MAX_INSTRUCTORS]
 ]
-resp = grequests.map(rs, size=10)
+resp = grequests.map(rs, size=MAX_BATCH)
 print "Batch requests loaded."
 for i in range(0, len(resp)):
     instructor = instructor_list[i]
@@ -52,3 +63,4 @@ for i in range(0, len(resp)):
         
     instructor.is_updated = True
     instructor.save()
+    print "...saved."
