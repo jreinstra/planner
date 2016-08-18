@@ -43,7 +43,8 @@ def populate_courses():
     grequests.map(rs, size=10)
     
 def populate_course(r, **kwargs):
-    print "Loading courses for:", r.url.split("=")[-1]
+    dept = Department.objects.get(code=r.url.split("=")[-1])
+    print "Loading courses for:", dept.code
     courses = get_xml_r(r)
     
     for course in courses[2].findall("course"):
@@ -109,6 +110,8 @@ def populate_course(r, **kwargs):
         code.title = course[3].text
         code.course = c
         code.save()
+    print "Finished", dept.code
+
 
 def get_xml(url):
     return get_xml_r(requests.get(url))
