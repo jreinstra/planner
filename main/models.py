@@ -194,6 +194,33 @@ class Review(models.Model):
             update_fields(self)
         return super(Review, self).save(*args, **kwargs)
     
+# Models for course planner
+class Degree(models.Model):
+    DEGREE_TYPES = (
+        (1, "Bachelor's"),
+        (2, "Minor"),
+        (3, "Coterminal")
+    )
+    
+    department = models.ForeignKey(Department, related_name="degrees")
+    degree_type = models.IntegerField(choices=DEGREE_TYPES)
+
+class Plan(models.Model):
+    student = models.OneToOneField(Student, related_name="plan")
+    degrees = models.ManyToManyField(Degree, related_name="plans")
+    
+class PlanQuarter(models.Model):
+    TERMS = (
+        ("Fall", "Fall"),
+        ("Winter", "Winter"),
+        ("Spring", "Spring")
+    )
+    
+    plan = models.ForeignKey(Plan, related_name="quarters")
+    year = models.CharField(max_length=10)
+    term = models.CharField(max_length=6, choices=TERMS)
+    courses = models.ManyToManyField(Course, related_name="plan_quarters")
+    
     
 def update_fields(self):
     if not self.created_at:
