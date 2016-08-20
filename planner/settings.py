@@ -52,8 +52,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # Third party middleware
-    'corsheaders.middleware.CorsMiddleware',
 )
 
 ROOT_URLCONF = 'planner.urls'
