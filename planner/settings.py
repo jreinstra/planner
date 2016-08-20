@@ -40,8 +40,7 @@ INSTALLED_APPS = (
     'frontend',
     # Third party apps
     'rest_framework',
-    'rest_framework.authtoken',
-    'corsheaders'
+    'rest_framework.authtoken'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -56,8 +55,6 @@ MIDDLEWARE_CLASSES = (
     # Third party middleware
     'corsheaders.middleware.CorsMiddleware',
 )
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'planner.urls'
 
