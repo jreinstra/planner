@@ -5,8 +5,9 @@ from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 
 from main.utils import get_query
 from main.models import CourseCode, Course, Instructor, Review, Comment
@@ -15,7 +16,7 @@ from main.serializers import *
 # Create your views here.
 
 # adapted from: http://goo.gl/z9g4S2
-class Search(APIView):
+class Search(APIView):    
     def get(self, request):
         query_string = ''
         found_entries = None
@@ -57,34 +58,36 @@ class Search(APIView):
             return r_failure("Search parameter 'q' is required.")
         
         
-class CourseDetail(APIView):
-    def get(self, request, pk=None):
-        courses = Course.objects.filter(pk=pk)
-
-        if courses.count() == 1:
-            return r_success(CourseSerializer(courses[0]).data)
-        else:
-            return r_failure("Course not found.")
+class CourseViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    viewsets.GenericViewSet):    
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
         
         
-class InstructorDetail(APIView):
-    def get(self, request, sunet=None):
-        instructors = Instructor.objects.filter(sunet=sunet)
-
-        if instructors.count() == 1:
-            return r_success(InstructorSerializer(instructors[0]).data)
-        else:
-            return r_failure("Instructor not found.")
+class InstructorViewSet(mixins.ListModelMixin,
+                        mixins.RetrieveModelMixin,
+                        viewsets.GenericViewSet):
+    queryset = Instructor.objects.all()
+    serializer_class = InstructorSerializer
         
         
 class ReviewViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
     serializer_class = ReviewSerializer
-    queryset = Review.objects.all()
+    
+    def get_queryset(self):
+        return self.request.user.reviews.all()
     
     
 class CommentViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
     serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
+    
+    def get_queryset(self):
+        return self.request.user.comments.all()
     
 
 def r_success(result):

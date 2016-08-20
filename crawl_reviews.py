@@ -9,6 +9,15 @@ application = get_wsgi_application()
 
 from main.models import Review, CourseCode
 
+"""try:
+    DEFAULT_USER = User.objects.get(username="anon")
+except User.DoesNotExist:
+    DEFAULT_USER = User.objects.create_user(
+        username="anon",
+        email="anon@no.email",
+        password=uuid.uuid4()
+    )"""
+
 
 def str_to_timestamp(date_str):
     return int(

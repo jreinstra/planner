@@ -23,7 +23,6 @@ class ContentObjectRelatedField(serializers.Field):
         return type(value).__name__.lower() + ":" + str(value.pk)
     
     def to_internal_value(self, data):
-        print "data", data
         try:
             params = data.split(":")
             name = params[0]
@@ -41,6 +40,7 @@ class ContentObjectRelatedField(serializers.Field):
                 return self.CLASS_NAMES[name].objects.get(id=int(obj_id))
         except Exception as e:
             raise serializers.ValidationError(str(e))
+            
         
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
@@ -51,10 +51,10 @@ class CourseSerializer(serializers.ModelSerializer):
             'title', 'description', 'general_requirements', 'repeatable',
             'grading', 'min_units', 'max_units', 'department', 'sections',
             'reviews', 'comments', 'codes', 'average_rating',
-            'grade_distribution'
+            'grade_distribution', 'id'
         )
         read_only_fields = (
-            'comments', 'average_rating', 'grade_distribution'
+            'comments', 'average_rating', 'grade_distribution', 'id'
         )
         depth = 1
         
@@ -74,10 +74,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = (
             'id', 'course', 'rating', 'grade', 'text',
-            'helpful_votes', 'unhelpful_votes', 'created_at', 'updated_at', 'comments'
+            'helpful_votes', 'unhelpful_votes', 'created_at', 'updated_at',
+            'comments', 'author'
         )
         read_only_fields = (
-            'created_at', 'updated_at', 'helpful_votes', 'unhelpful_votes', 'comments'
+            'created_at', 'updated_at', 'helpful_votes', 'unhelpful_votes',
+            'comments', 'author'
         )
         
         
@@ -92,5 +94,5 @@ class CommentSerializer(serializers.ModelSerializer):
             'updated_at', 'comments'
         )
         read_only_fields = (
-            'created_at', 'updated_at', 'likes', 'comments'
+            'created_at', 'updated_at', 'likes', 'comments', 'author'
         )
