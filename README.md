@@ -1,6 +1,18 @@
 # Cardinal Planner
 This is the main code repository for the cardinal planner project.
 
+## Setting up your local environment
+
+Follow the below checklist to setup your local Django environment:
+
+- Set up and enter a [new virtual environment
+](https://hackercodex.com/guide/python-development-environment-on-mac-osx/)- Clone the repository into a new folder
+- Go into the new folder
+- Install all pip requirements: `pip install -r requirements.txt`
+- Run all migrations: `python manage.py migrate`
+- Copy the file `planner/local_settings_sample.py` into `planner/local_settings.py`
+- Start the server by running: `python manage.py runserver`.  It'll be up at `localhost:8080`
+
 ## Central Goal
 The **central goal** to create the best way (by far) for students to plan their long term and short term schedules.
 
