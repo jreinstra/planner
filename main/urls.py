@@ -10,7 +10,8 @@ router.register(r'courses', views.CourseViewSet, base_name="courses")
 
 urlpatterns = [
     # API routes
-    url(r'^search/?$', views.Search.as_view(), name="api_search"),
+    url(r'^search/$', views.Search.as_view(), name="api_search"),
+    url(r'^login/$', views.Login.as_view(), name="login"),
     
     # API router
     url(r'^', include(router.urls))

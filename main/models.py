@@ -190,9 +190,6 @@ class Review(models.Model):
     updated_at = models.IntegerField()
     
     def save(self, *args, **kwargs):
-        print "author:", self.author
-        if self.author is None:
-            self.author = DEFAULT_USER.pk
         if self.is_crawled is False:
             update_fields(self)
         return super(Review, self).save(*args, **kwargs)
