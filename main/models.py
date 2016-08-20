@@ -1,22 +1,22 @@
 from __future__ import unicode_literals
 
+import time
+
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 from jsonfield import JSONField
 
-import time
 # Create your models here.
+class Student(models.Model):
+    user = models.OneToOneField(User, related_name="student")
+    sunet = models.CharField(max_length=10, null=True, blank=True)
 
 # TODO: choices for some fields & 'updated_at' and 'created_at'
-class Student(models.Model):
-    # needed? - could just use User
-    pass
-
-
 class Comment(models.Model):
-    author = models.ForeignKey(Student, related_name="comments", null=True, blank=True)
+    author = models.ForeignKey(User, related_name="comments")
     
     # generic 'reply_to' field
     content_type = models.ForeignKey(ContentType)
@@ -25,7 +25,7 @@ class Comment(models.Model):
     comments = GenericRelation('self')
     
     text = models.CharField(max_length=250)
-    likes = models.ManyToManyField(Student, related_name="liked_comments")
+    likes = models.ManyToManyField(User, related_name="liked_comments")
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
@@ -110,7 +110,7 @@ class CourseSection(models.Model):
     enroll_status = models.CharField(max_length=32)
     
     course = models.ForeignKey(Course, related_name="sections")
-    instructor = models.ForeignKey('Instructor', related_name="sections", blank=True, null=True)
+    instructor = models.ForeignKey('Instructor', related_name="sections", null=True, blank=True)
     
     start_date = models.CharField(max_length=31)
     end_date = models.CharField(max_length=30)
@@ -173,7 +173,7 @@ class Review(models.Model):
         ("NC", "No credit"),
     )
     
-    author = models.ForeignKey(Student, related_name="reviews", null=True, blank=True)
+    author = models.ForeignKey(User, related_name="reviews")
     course = models.ForeignKey(Course, related_name="reviews")
     comments = GenericRelation(Comment)
     
@@ -181,8 +181,8 @@ class Review(models.Model):
     grade = models.CharField(max_length=2, null=True, choices=GRADE_OPTIONS)
     text = models.TextField()
     
-    helpful_votes = models.ManyToManyField(Student, related_name="liked_reviews")
-    unhelpful_votes = models.ManyToManyField(Student, related_name="+")
+    helpful_votes = models.ManyToManyField(User, related_name="liked_reviews")
+    unhelpful_votes = models.ManyToManyField(User, related_name="+")
     
     is_crawled = models.BooleanField(default=False)
     
@@ -206,7 +206,7 @@ class Degree(models.Model):
     degree_type = models.IntegerField(choices=DEGREE_TYPES)
 
 class Plan(models.Model):
-    student = models.OneToOneField(Student, related_name="plan")
+    student = models.OneToOneField(User, related_name="plan")
     degrees = models.ManyToManyField(Degree, related_name="plans")
     
 class PlanQuarter(models.Model):
