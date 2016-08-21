@@ -41,6 +41,10 @@ class ContentObjectRelatedField(serializers.Field):
         except Exception as e:
             raise serializers.ValidationError(str(e))
             
+class VotesField(serializers.Field):
+    def to_representation(self, value):
+        return value.all().count()
+            
         
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
@@ -48,10 +52,10 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = (
-            'title', 'description', 'general_requirements', 'repeatable',
-            'grading', 'min_units', 'max_units', 'department', 'sections',
-            'reviews', 'comments', 'codes', 'average_rating',
-            'grade_distribution', 'id'
+            'id', 'title', 'description', 'general_requirements',
+            'repeatable', 'grading', 'min_units', 'max_units', 'department',
+            'sections', 'reviews', 'comments', 'codes', 'average_rating',
+            'grade_distribution',
         )
         read_only_fields = (
             'comments', 'average_rating', 'grade_distribution', 'id'
@@ -69,6 +73,8 @@ class InstructorSerializer(serializers.ModelSerializer):
         
 class ReviewSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
+    helpful_votes = VotesField(read_only=True)
+    unhelpful_votes = VotesField(read_only=True)
     
     class Meta:
         model = Review
@@ -86,6 +92,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     content_object = ContentObjectRelatedField()
+    likes = VotesField(read_only=True)
     
     class Meta:
         model = Comment

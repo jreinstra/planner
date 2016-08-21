@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status, viewsets, mixins
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import ValidationError
 
 from main.utils import get_query
 from main.models import CourseCode, Course, Instructor, Review, Comment
@@ -28,7 +29,7 @@ class Search(APIView):
         try:
             limit = int(limit)
         except ValueError:
-            return r_failure("Parameter 'limit' must be an integer.")
+            raise ValidationError("Parameter 'limit' must be an integer.")
             
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
@@ -55,16 +56,16 @@ class Search(APIView):
                     
                     if len(results) == limit:
                         break
-            return r_success(results)
+            return Response(results)
         else:
-            return r_failure("Search parameter 'q' is required.")
+            raise ValidationError("Search parameter 'q' is required.")
         
         
 class Login(APIView):    
     def get(self, request):
         print request.META
         if "HTTP_X_AXESS_TOKEN" not in request.META:
-            return r_failure("Header X-Access-Token is required.")
+            return ValidationError("Header X-Access-Token is required.")
         access_token = request.META["HTTP_X_AXESS_TOKEN"]
         try:
             user = User.objects.get(username=access_token)
@@ -77,7 +78,17 @@ class Login(APIView):
             token = Token.objects.create(user=user)
             token.save()
             result_token = token.key
-        return r_success(result_token)
+        return Response(result_token)
+        
+        
+class Vote(APIView):
+    OBJ_CHOICES = ("review", "comment")
+    
+    def post(self, request):
+        if "obj" not in request.POST or request.POST["obj"] not in self.OBJ_CHOICES:
+            raise ValidationError(
+                "'obj' param must be one of: %s" % ", ".join(self.OBJ_CHOICES)
+            )
         
         
         
@@ -119,16 +130,3 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(author=self.request.user)
-    
-
-def r_success(result):
-    return Response(
-        {"success":True, "result":result},
-        status=status.HTTP_200_OK
-    )
-
-def r_failure(error):
-    return Response(
-        {"success":False, "error":str(error)},
-        status=status.HTTP_400_BAD_REQUEST
-    )
