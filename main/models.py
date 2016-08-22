@@ -25,7 +25,9 @@ class Comment(models.Model):
     comments = GenericRelation('self')
     
     text = models.CharField(max_length=250)
-    likes = models.ManyToManyField(User, related_name="liked_comments")
+    
+    upvotes = models.ManyToManyField(User, related_name="liked_comments")
+    downvotes = models.ManyToManyField(User, related_name="+")
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
@@ -181,8 +183,8 @@ class Review(models.Model):
     grade = models.CharField(max_length=2, null=True, choices=GRADE_OPTIONS)
     text = models.TextField()
     
-    helpful_votes = models.ManyToManyField(User, related_name="liked_reviews")
-    unhelpful_votes = models.ManyToManyField(User, related_name="+")
+    upvotes = models.ManyToManyField(User, related_name="liked_reviews")
+    downvotes = models.ManyToManyField(User, related_name="+")
     
     is_crawled = models.BooleanField(default=False)
     
