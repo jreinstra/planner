@@ -62,11 +62,10 @@ class Search(APIView):
         
         
 class Login(APIView):    
-    def get(self, request):
-        print request.META
-        if "HTTP_X_AXESS_TOKEN" not in request.META:
-            return ValidationError("Header X-Access-Token is required.")
-        access_token = request.META["HTTP_X_AXESS_TOKEN"]
+    def post(self, request):
+        if "fb_access_token" not in request.POST:
+            return ValidationError("POST param 'fb_access_token' is required.")
+        access_token = request.POST["fb_access_token"]
         try:
             user = User.objects.get(username=access_token)
         except User.DoesNotExist:
