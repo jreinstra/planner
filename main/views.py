@@ -82,14 +82,32 @@ class Login(APIView):
         
         
 class Vote(APIView):
-    OBJ_CHOICES = ("review", "comment")
+    OBJ_CHOICES = {
+        "review": (Review, ReviewSerializer),
+        "comment":(Comment, CommentSerializer)
+    }
     
     def post(self, request):
         if "obj" not in request.POST or request.POST["obj"] not in self.OBJ_CHOICES:
             raise ValidationError(
                 "'obj' param must be one of: %s" % ", ".join(self.OBJ_CHOICES)
             )
+        obj_objs = self.OBJ_CHOICES[request.POST["obj"]]
+        obj_class = obj_objs[0]
+        try:
+            obj = obj_class.objects.get(id=request.POST["id"])
+        except obj_class.DoesNotExist, KeyError:
+            raise ValidationError("'id' must be a valid object")
         
+        obj.upvotes.remove(request.user)
+        obj.downvotes.remove(request.user)
+        
+        vote_type = request.POST.get("type")
+        if vote_type == "upvote":
+            obj.upvotes.add(request.user)
+        elif vote_type == "downvote":
+            obj.downvotes.add(request.user)
+        return Response(obj_objs[1](obj).data)
         
         
 class CourseViewSet(viewsets.ModelViewSet):    

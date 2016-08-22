@@ -73,33 +73,35 @@ class InstructorSerializer(serializers.ModelSerializer):
         
 class ReviewSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
-    helpful_votes = VotesField(read_only=True)
-    unhelpful_votes = VotesField(read_only=True)
+    upvotes = VotesField(read_only=True)
+    downvotes = VotesField(read_only=True)
     
     class Meta:
         model = Review
         fields = (
             'id', 'course', 'rating', 'grade', 'text',
-            'helpful_votes', 'unhelpful_votes', 'created_at', 'updated_at',
-            'comments', 'author'
+            'upvotes', 'downvotes', 'created_at', 'updated_at', 'comments',
+            'author'
         )
         read_only_fields = (
-            'created_at', 'updated_at', 'helpful_votes', 'unhelpful_votes',
-            'comments', 'author'
+            'created_at', 'updated_at', 'upvotes', 'downvotes', 'comments',
+            'author'
         )
         
         
 class CommentSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     content_object = ContentObjectRelatedField()
-    likes = VotesField(read_only=True)
+    upvotes = VotesField(read_only=True)
+    downvotes = VotesField(read_only=True)
     
     class Meta:
         model = Comment
         fields = (
-            'id', 'author', 'content_object', 'text', 'likes', 'created_at',
-            'updated_at', 'comments'
+            'id', 'author', 'content_object', 'text', 'upvotes', 'downvotes',
+            'created_at', 'updated_at', 'comments'
         )
         read_only_fields = (
-            'created_at', 'updated_at', 'likes', 'comments', 'author'
+            'created_at', 'updated_at', 'upvotes', 'downvotes', 'comments',
+            'author'
         )
