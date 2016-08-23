@@ -47,6 +47,10 @@ _features in italics_ = Nice to have features that aren't mission-critical.
   - _Pulls from axess to fill in classes you’ve already taken => verifies_
   - _Allow users to sign up for classes directly within platform (queries Axess API)_
   - _Learns from other users to suggest classes => some AI involved here_
+- General
+  - Homepage dashboard that's not just a search bar
+  - _Interactive welcome walkthrough/tour_
+  - _Review gamification => incentivize participation_
   
 ## Conceptual Development Plan Outline
 - August 7
