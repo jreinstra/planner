@@ -42,7 +42,7 @@ for school in School.objects.all():
                     degree = Degree(department=dept, degree_type=3)
                     degree.save()
             else:
-                print "Skip %s... (%s)" % (dept.code, r.status_code)
+                print "Skip %s... (%s)" % (dept.name, r.status_code)
                 
             dept.is_updated = True
             dept.save()

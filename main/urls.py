@@ -7,6 +7,7 @@ router.register(r'reviews', views.ReviewViewSet, base_name="reviews")
 router.register(r'comments', views.CommentViewSet, base_name="comments")
 router.register(r'instructors', views.InstructorViewSet, base_name="instructors")
 router.register(r'courses', views.CourseViewSet, base_name="courses")
+router.register(r'degrees', views.DegreeViewSet, base_name="degrees")
 
 urlpatterns = [
     # API routes

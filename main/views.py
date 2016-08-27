@@ -13,7 +13,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 
 from main.utils import get_query
-from main.models import CourseCode, Course, Instructor, Review, Comment
+from main.models import *
 from main.serializers import *
 
 # Create your views here.
@@ -109,14 +109,19 @@ class Vote(APIView):
         return Response(obj_objs[1](obj).data)
         
         
-class CourseViewSet(viewsets.ModelViewSet):    
+class CourseViewSet(viewsets.ReadOnlyModelViewSet):    
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
         
         
-class InstructorViewSet(viewsets.ModelViewSet):
+class InstructorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Instructor.objects.all()
     serializer_class = InstructorSerializer
+    
+    
+class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Degree.objects.all()
+    serializer_class = DegreeSerializer
         
         
 class ReviewViewSet(viewsets.ModelViewSet):
