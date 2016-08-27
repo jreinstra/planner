@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from main.models import Course, Instructor, Review, Comment
+from main.models import *
 
 
 class CommentRelatedField(serializers.RelatedField):
@@ -68,6 +68,14 @@ class InstructorSerializer(serializers.ModelSerializer):
         model = Instructor
         fields = (
             'sunet', 'name', 'phone_number', 'bio'
+        )
+        
+        
+class DegreeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Degree
+        fields = (
+            'id', 'department', 'degree_type'
         )
         
         
