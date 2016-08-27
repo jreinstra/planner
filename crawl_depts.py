@@ -20,7 +20,7 @@ for school in School.objects.all():
         school.description_html = str(soup.find(id="textcontainer"))
         school.save()
         
-        for dept in Department.objects.filter(school=school, is_updated=False):
+        for dept in Department.objects.filter(school=school):
             dept_slug = dept.name.replace(" ", "").replace(",", "").replace("&", "and").lower()
             dept_url = school_url + dept_slug + "/"
 

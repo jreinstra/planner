@@ -49,9 +49,7 @@ class Department(models.Model):
     school = models.ForeignKey(School, related_name="departments")
     name = models.CharField(max_length=100)
     description_html = models.TextField(default="")
-    
-    is_updated = models.BooleanField(default=False)
-    
+        
     def __str__(self):
         return "%s (%s)" % (self.name, self.code)
 
