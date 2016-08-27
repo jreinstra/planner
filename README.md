@@ -67,11 +67,12 @@ _features in italics_ = Nice to have features that aren't mission-critical.
 - August 28
   - Implement basic drag & drop four year course planner
 - September 4
+  - Open to beta testers (5-10 people we invite)
   - Improve website design & layout
   - Work on "nice to have" features
   - Bug fixes
 - September 11
-  - Open to beta testers (5-20 people we invite)
+  - Open to more beta testers (10+ people we invite)
   - Work on "nice to have" features
   - Bug fixes & minor improvements
 - September 18
