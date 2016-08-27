@@ -6,7 +6,7 @@ from django.core.wsgi import get_wsgi_application
 os.environ["DJANGO_SETTINGS_MODULE"] = "planner.settings"
 application = get_wsgi_application()
 
-from main.models import School, Department
+from main.models import School, Department, Degree
 
 for school in School.objects.all():
     school_slug = school.name.replace(" ", "").replace(",", "").replace("&", "and").lower()
@@ -29,8 +29,20 @@ for school in School.objects.all():
                 print "Updating %s..." % dept.code
                 soup = BeautifulSoup(r.text, 'html.parser')
                 dept.description_html = str(soup.find(id="textcontainer"))
+                
+                if soup.find(id="bachelorstextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=1)
+                    degree.save()
+                    
+                if soup.find(id="minortextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=2)
+                    degree.save()
+                    
+                if soup.find(id="coterminalmasterstextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=3)
+                    degree.save()
             else:
-                print "Skip %s..." % dept.code
+                print "Skip %s... (%s)" % (dept.code, r.status_code)
                 
             dept.is_updated = True
             dept.save()
