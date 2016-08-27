@@ -79,6 +79,20 @@ class DegreeSerializer(serializers.ModelSerializer):
         )
         
         
+class PlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan
+        fields = ('id', 'degrees', 'quarters')
+        read_only_fields = ('id',)
+        
+        
+class PlanQuarterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlanQuarter
+        fields = ('id', 'plan', 'year', 'term', 'courses')
+        read_only_fields = ('id', 'plan')
+        
+        
 class ReviewSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     upvotes = VotesField(read_only=True)

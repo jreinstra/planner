@@ -201,9 +201,20 @@ class Degree(models.Model):
         (2, "Minor"),
         (3, "Coterminal")
     )
+    DEGREE_DICT = {
+        1: "Bachelor's",
+        2: "Minor",
+        3: "Coterminal"
+    }
     
     department = models.ForeignKey(Department, related_name="degrees")
     degree_type = models.IntegerField(choices=DEGREE_TYPES)
+    
+    def __str__(self):
+        return "%s in %s" % (
+            self.DEGREE_DICT[self.degree_type],
+            self.department.name
+        )
 
 class Plan(models.Model):
     student = models.OneToOneField(User, related_name="plan")

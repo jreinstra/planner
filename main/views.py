@@ -152,3 +152,33 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(author=self.request.user)
+        
+        
+class PlanViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
+    serializer_class = PlanSerializer
+    
+    def get_queryset(self):
+        return Plan.objects.filter(student=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(student=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(student=self.request.user)
+        
+        
+class PlanQuarterViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
+    serializer_class = PlanQuarterSerializer
+    
+    def get_queryset(self):
+        return self.request.user.plan.quarters.all()
+    
+    def perform_create(self, serializer):
+        serializer.save(plan=self.request.user.plan)
+
+    def perform_update(self, serializer):
+        serializer.save(plan=self.request.user.plan)
