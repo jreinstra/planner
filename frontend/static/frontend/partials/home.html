@@ -16,8 +16,8 @@
   <br>
   <div class="ui segment middle aligned divided selection list">
     <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
-      <div class="content">
-        <div class="header">{{ course.code }}: {{ course.title }}</div>
+      <div class="content course-entry">
+        <div class="header">{{ course.code }}&nbsp;&nbsp;&nbsp;<span class="course-title">{{ course.title }}</span></div>
         <p>{{ course.description | limitTo:200 }}</p>
       </div>
     </div>

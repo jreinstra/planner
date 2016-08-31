@@ -29,3 +29,16 @@ body {
 .main {
   flex: 1;
 }
+
+.course-title {
+    font-weight:300;
+}
+
+.course-entry {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.course-entry p {
+    margin-top: 0.5em;
+}
