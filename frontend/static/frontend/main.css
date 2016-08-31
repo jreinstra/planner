@@ -1,0 +1,31 @@
+.ui.footer.segment {
+    margin: 3em 0em 0em;
+    padding: 0em 0em;
+}
+
+#footer .container {
+    margin: 3em;
+}
+
+#navbar, #footer {
+    border-radius:0;
+    background-color: #8c1515;
+}
+
+#navbar {
+    margin-bottom: 5em;
+}
+
+.text-center {
+    text-align: center;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+}
