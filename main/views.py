@@ -87,21 +87,21 @@ class Vote(APIView):
     }
     
     def post(self, request):
-        if "obj" not in request.POST or request.POST["obj"] not in self.OBJ_CHOICES:
+        if "obj" not in request.data or request.data["obj"] not in self.OBJ_CHOICES:
             raise ValidationError(
                 "'obj' param must be one of: %s" % ", ".join(self.OBJ_CHOICES)
             )
-        obj_objs = self.OBJ_CHOICES[request.POST["obj"]]
+        obj_objs = self.OBJ_CHOICES[request.data["obj"]]
         obj_class = obj_objs[0]
         try:
-            obj = obj_class.objects.get(id=request.POST["id"])
+            obj = obj_class.objects.get(id=request.data["id"])
         except obj_class.DoesNotExist, KeyError:
             raise ValidationError("'id' must be a valid object")
         
         obj.upvotes.remove(request.user)
         obj.downvotes.remove(request.user)
         
-        vote_type = request.POST.get("type")
+        vote_type = request.data.get("type")
         if vote_type == "upvote":
             obj.upvotes.add(request.user)
         elif vote_type == "downvote":
