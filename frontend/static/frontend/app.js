@@ -83,24 +83,24 @@
     $urlRouterProvider.otherwise('/');
   
     $locationProvider.html5Mode({
-      enabled:false,
+      enabled:true,
       requireBase: false
     });
   
     $stateProvider
       .state('home', {
         url: '/',
-        templateUrl: './static/partials/home.html',
+        templateUrl: 'static/frontend/partials/home.html',
         controller: 'HomeCtrl'
       })
       .state('course', {
         url: '/course/:id',
-        templateUrl: './static/partials/course.html',
+        templateUrl: 'static/frontend/partials/course.html',
         controller: 'CourseCtrl'
       })
       .state('instructor', {
         url: '/instructor/:sunet',
-        templateUrl: './static/partials/instructor.html',
+        templateUrl: 'static/frontend/partials/instructor.html',
         controller: 'InstructorCtrl'
       });
       

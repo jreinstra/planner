@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html ng-app="cardinalPlanner">
 <head>
@@ -6,18 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css">
+  <link rel="stylesheet" href="{% static 'frontend/main.css' %}">
   
   <script src="//code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
-  <style type="text/css">
-    .ui.footer.segment {
-      margin: 5em 0em 0em;
-      padding: 5em 0em;
-    }
-  </style>
 </head>
 <body>
   <div class="ui inverted menu">
@@ -83,8 +80,7 @@
       </div>
     </div>
   </div>
-  {% load static %}
-  <script src="{% static "./app.js" %}"></script>
-  <script src="{% static "./fb.js" %}"></script>
+  <script src="{% static 'frontend/app.js' %}"></script>
+  <script src="{% static 'frontend/fb.js' %}"></script>
 </body>
 </html>
