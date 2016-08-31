@@ -2,3 +2,16 @@
     margin: 5em 0em 0em;
     padding: 5em 0em;
 }
+
+#navbar, #footer {
+    border-radius:0;
+    background-color: #8c1515;
+}
+
+#navbar {
+    margin-bottom: 5em;
+}
+
+.text-center {
+    text-align: center;
+}
