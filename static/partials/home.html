@@ -1,0 +1,28 @@
+<h1 class="ui header">Welcome to Cardinal Planner!</h1>
+<p>Start by searching for a class:</p>
+<div class="ui text center aligned container">
+  <div class="ui large icon input" style="width: 50%;">
+    <input type="text" placeholder="Search for classess..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
+    <i class="search icon"></i>
+  </div>
+</div>
+<div class="ui container" ng-show="result">
+  <h3 class="ui header">
+    <i class="book icon"></i>
+    <div class="content">
+      Classes
+    </div>
+  </h3>
+  <div class="ui segment middle aligned divided selection list">
+    <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
+      <div class="content">
+        <div class="header">{{ course.code }}: {{ course.title }}</div>
+        <p>{{ course.description | limitTo:200 }}</p>
+      </div>
+    </div>
+    <div class="ui active loader" ng-if="loading">
+      <div class="ui loader"></div>
+    </div>
+    <div class="item" ng-if="result == false">No classes to show.</div>
+  </div>
+</div>

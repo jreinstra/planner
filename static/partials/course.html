@@ -1,0 +1,57 @@
+<h1 class="ui header"> {{ result.codes[0].code }}: {{ result.title }}</h1>
+<h2 class="ui header">Description</h2>
+<p>{{ result.description }}</p>
+{{scope}}
+<h2 class="ui header">Sections</h2>
+<table class="ui celled table">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Term</th>
+            <th>Section #</th>
+            <th>Enrollment</th>
+            <th>Instructor</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="section in result.sections">
+            <td>{{ section.year }}</td>
+            <td>{{ section.term }}</td>
+            <td>{{ section.section_number }}</td>
+            <td>{{ section.enroll_status }}</td>
+            <td><a ui-sref="instructor({sunet: section.instructor})">{{ section.instructor }}</a></td>
+        </tr>
+    </tbody>
+</table>
+<div class="ui comments">
+  <h2 class="ui dividing header">Comments</h2>
+  <div class="comment" ng-repeat="comment in result.comments">
+    <a class="avatar">
+      <i class="user icon"></i>
+    </a>
+    <div class="content">
+      <a class="author">Author</a>
+      <div class="metadata">
+        <span class="date">{{ comment.created_at | date:'medium' }}</span>
+      </div>
+      <div class="text">
+        {{ comment.text }}
+      </div>
+      <div class="actions">
+        <a class="reply">Reply</a>
+      </div>
+    </div>
+  </div>
+  <form class="ui reply form">
+    <div class="field">
+      <textarea ng-model="new_comment_text"></textarea>
+    </div>
+    <div class="ui blue labeled submit icon button" ng-click="submitNewComment()">
+      <i class="icon edit"></i> Submit Comment
+    </div>
+  </form>
+</div>
+
+<sm-comments comments="result.comments" author="comment.author" avatar="" date="comment.created_at" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}">
+  </sm-comments>
+<h2 class="ui header">Reviews</h2>
