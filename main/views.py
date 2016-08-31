@@ -64,7 +64,7 @@ class Search(APIView):
 class Login(APIView):    
     def post(self, request):
         if "fb_access_token" not in request.POST:
-            return ValidationError("POST param 'fb_access_token' is required.")
+            raise ValidationError("POST param 'fb_access_token' is required.")
         access_token = request.POST["fb_access_token"]
         try:
             user = User.objects.get(username=access_token)
