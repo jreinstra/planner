@@ -3,10 +3,6 @@ import json
 import time
 import datetime
 
-from django.core.wsgi import get_wsgi_application
-os.environ["DJANGO_SETTINGS_MODULE"] = "planner.settings"
-application = get_wsgi_application()
-
 from django.contrib.auth.models import User
 from main.models import Review, CourseCode
 

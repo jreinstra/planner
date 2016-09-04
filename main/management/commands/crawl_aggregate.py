@@ -1,11 +1,6 @@
 import os
 import json
 
-from django.core.wsgi import get_wsgi_application
-
-os.environ["DJANGO_SETTINGS_MODULE"] = "planner.settings"
-application = get_wsgi_application()
-
 from main.models import Course, Review
 
 total_courses = Course.objects.all().count()
