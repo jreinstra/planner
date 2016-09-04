@@ -3,10 +3,6 @@ import grequests
 import time
 from bs4 import BeautifulSoup
 
-from django.core.wsgi import get_wsgi_application
-os.environ["DJANGO_SETTINGS_MODULE"] = "planner.settings"
-application = get_wsgi_application()
-
 from django.db.models import Q
 from main.models import Instructor
 
