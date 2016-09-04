@@ -46,7 +46,7 @@ def populate_course(r, **kwargs):
     dept = Department.objects.get(code=r.url.split("=")[-1])
     print "Loading courses for:", dept.code
     courses = get_xml_r(r)
-    
+
     for course in courses[2].findall("course"):
         admin = course.findall("administrativeInformation")[0]
         course_id = int(admin[0].text)
@@ -68,7 +68,14 @@ def populate_course(r, **kwargs):
         c.department = dept
         c.save()
         for section in course[11].findall("section"):
-            se = CourseSection()
+            section_id = int(section[0].text)
+
+            if CourseSection.objects.filter(id=section_id).exists() is False:
+                se = CourseSection()
+                se.id = section_id
+            else:
+                se = CourseSection.objects.get(id=section_id)
+
             se.year = section[1].text.split(" ")[0]
             se.term = section[1].text.split(" ")[1]
             se.section_number = int(section[6].text)
