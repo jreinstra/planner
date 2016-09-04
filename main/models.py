@@ -138,6 +138,9 @@ class Instructor(models.Model):
     
     comments = GenericRelation(Comment)
     
+    def email(self):
+        return self.sunet + "@stanford.edu"
+    
     def save(self, *args, **kwargs):
         update_fields(self)
         return super(Instructor, self).save(*args, **kwargs)
