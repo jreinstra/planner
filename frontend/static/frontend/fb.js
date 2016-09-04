@@ -22,7 +22,7 @@ window.fbAsyncInit = function() {
     console.log(response)
     var scope = angular.element($("#login")).scope();
     scope.$apply(function(){
-        scope.response = response;
+        scope.getAuthToken(response);
     })
   });
 
