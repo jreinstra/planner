@@ -1,7 +1,6 @@
 <h1 class="ui header"> {{ result.codes[0].code }}: {{ result.title }}</h1>
 <h2 class="ui header">Description</h2>
 <p>{{ result.description }}</p>
-{{scope}}
 <h2 class="ui header">Sections</h2>
 <table class="ui celled table">
     <thead>
@@ -23,35 +22,84 @@
         </tr>
     </tbody>
 </table>
-<div class="ui comments">
-  <h2 class="ui dividing header">Comments</h2>
-  <div class="comment" ng-repeat="comment in result.comments">
-    <a class="avatar">
-      <i class="user icon"></i>
-    </a>
-    <div class="content">
-      <a class="author">Author</a>
-      <div class="metadata">
-        <span class="date">{{ comment.created_at | date:'medium' }}</span>
-      </div>
-      <div class="text">
-        {{ comment.text }}
-      </div>
-      <div class="actions">
-        <a class="reply">Reply</a>
-      </div>
+
+<h2 class="ui dividing header">Comments</h2>
+<sm-comments comments="result.comments" author="" avatar="" date="comment.created_at" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
+<div ng-if="loggedIn" class="ui comments">
+  <div ng-if="replyingTo" class="ui segment">
+    <a href="" ng-click="cancelReply()" class="ui red top right attached small label">cancel</a>
+    Replying to <b>{{ replyingTo.author }}'s</b> comment - <span sm-time-ago="replyingTo.created_at" class="reply-date"></span>
+    <div class="ui secondary segment">
+      <p>{{ replyingTo.text }}</p>
     </div>
   </div>
   <form class="ui reply form">
     <div class="field">
-      <textarea ng-model="new_comment_text"></textarea>
+      <textarea ng-model="$parent.newReply"></textarea>
     </div>
-    <div class="ui blue labeled submit icon button" ng-click="submitNewComment()">
-      <i class="icon edit"></i> Submit Comment
+    <div class="ui blue labeled submit icon button" ng-click="addReply()">
+      <i class="icon edit"></i> {{ replyingTo ? 'Add Reply' : 'Add Comment' }}
     </div>
   </form>
 </div>
+<div ng-if="!loggedIn" class="ui warning message">You must be logged in to comment.</div>
 
-<sm-comments comments="result.comments" author="comment.author" avatar="" date="comment.created_at" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}">
-  </sm-comments>
 <h2 class="ui header">Reviews</h2>
+<div class="ui comments">
+  <div ng-repeat="review in result.reviews" class="comment">
+    <div class="content">
+      <div class="metadata">
+        <div class="date">{{ review.created_at | date:'medium' }}</div>
+        <div class="rating">
+          <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
+        </div>
+        <div ng-show="review.grade" class="grade">
+          Grade: {{ review.grade }}
+        </div>
+        <div ng-if="review.is_crawled" class="label">
+          <a class="ui top right attached tiny teal label">Outside Source</a>
+        </div>
+      </div>
+      <div class="text">
+        {{ review.text }}
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-if="loggedIn && canPostReview" class="ui comments">
+  <div class="ui segment">
+    <div class="ui two column centered grid">
+  <div class="column">
+    <select ng-model="$parent.grade" class="ui dropdown">
+      <option value="">Grade</option>
+      <option value="A+">A+</option>
+      <option value="A">A</option>
+      <option value="A-">A-</option>
+      <option value="B+">B+</option>
+      <option value="B">B</option>
+      <option value="B-">B-</option>
+      <option value="C+">C+</option>
+      <option value="C">C</option>
+      <option value="C-">C-</option>
+      <option value="D+">D+</option>
+      <option value="D">D</option>
+      <option value="D-">D-</option>
+      <option value="F">F</option>
+      <option value="CR">Credit</option>
+      <option value="NC" selected="">No credit</option>
+    </select>
+  </div>
+  <div class="column"><sm-rating model="$parent.rating" total="5" type="huge star"></sm-rating></div>
+</div>
+  </div>
+  <form class="ui reply form">
+    <div class="field">
+      <textarea ng-model="$parent.newReview"></textarea>
+    </div>
+    <div class="ui blue labeled submit icon button" ng-click="addReview()">
+      <i class="icon edit"></i> Add Review
+    </div>
+  </form>
+</div>
+<div ng-if="!loggedIn && canPostReview" class="ui warning message">You must be logged in to add a review.</div>
+<div ng-if="!canPostReview" class="ui success message">You have posted a review for this course. Thank you!</div>
