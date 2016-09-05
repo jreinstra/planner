@@ -1,22 +1,22 @@
-<h1 class="ui header"> {{ result.codes[0].code }}: {{ result.title }}</h1>
+<h1 class="ui header">
+    {{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
+</h1>
 <h2 class="ui header">Description</h2>
 <p>{{ result.description }}</p>
 <h2 class="ui header">Sections</h2>
 <table class="ui celled table">
     <thead>
         <tr>
-            <th>Year</th>
             <th>Term</th>
-            <th>Section #</th>
+            <th>Schedule</th>
             <th>Enrollment</th>
             <th>Instructor</th>
         </tr>
     </thead>
     <tbody>
         <tr ng-repeat="section in result.sections">
-            <td>{{ section.year }}</td>
-            <td>{{ section.term }}</td>
-            <td>{{ section.section_number }}</td>
+            <td>{{ section.term }} {{ section.year }}</td>
+            <td>{{ section.days.split(' ').join(', ') }}</td>
             <td>{{ section.enroll_status }}</td>
             <td><a ui-sref="instructor({sunet: section.instructor})">{{ section.instructor }}</a></td>
         </tr>
