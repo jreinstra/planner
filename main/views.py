@@ -134,6 +134,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return self.request.user.reviews.all()
     
     def perform_create(self, serializer):
+        if serializer.validated_data['course'].id in \
+           [r.course.id for r in self.request.user.reviews.all()]:
+            raise ValidationError("Cannot submit multiple reviews for same course.")
+            
         serializer.save(author=self.request.user)
 
     def perform_update(self, serializer):
