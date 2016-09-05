@@ -2,6 +2,8 @@ import os
 import requests
 from bs4 import BeautifulSoup
 
+from django.core.management.base import BaseCommand
+
 from main.models import School, Department, Degree
 
 def main():
@@ -47,5 +49,9 @@ def main():
             print "** Skip %s **" % school.name
         
         
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        main()
+
 if __name__ == "__main__":
     main()

@@ -1,7 +1,10 @@
 import os
 import json
 
+from django.core.management.base import BaseCommand
+
 from main.models import Course, Review
+
 
 
 def main():
@@ -33,6 +36,9 @@ def main():
             print "Updated %s of %s courses." % (num_courses_done, total_courses)
         
         
-        
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        main()
+
 if __name__ == "__main__":
     main()

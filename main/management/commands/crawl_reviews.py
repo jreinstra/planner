@@ -3,6 +3,8 @@ import json
 import time
 import datetime
 
+from django.core.management.base import BaseCommand
+
 from django.contrib.auth.models import User
 from main.models import Review, CourseCode
 
@@ -46,5 +48,9 @@ def main():
                 print "Added %s reviews" % total_added
                 
                 
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        main()
+
 if __name__ == "__main__":
     main()
