@@ -22,24 +22,29 @@ def str_to_timestamp(date_str):
     )
 
 
-reviews = json.loads(open("reviews.json", "r").read())
+def main():
+    reviews = json.loads(open("reviews.json", "r").read())
 
-Review.objects.filter(is_crawled=True).delete()
-total_added = 0
-for review in reviews:
-    code = review["course"]
-    course_query = CourseCode.objects.filter(code=code)
-    if course_query.exists():
-        r = Review()
-        r.course = course_query[0].course
-        r.rating = review["rating"]
-        r.grade = review["grade"]
-        r.text = review["text"]
-        r.is_crawled = True
-        r.created_at = str_to_timestamp(review["created_at"])
-        r.updated_at = str_to_timestamp(review["updated_at"])
-        r.author = DEFAULT_USER
-        r.save()
-        total_added += 1
-        if total_added % 50 == 0:
-            print "Added %s reviews" % total_added
+    Review.objects.filter(is_crawled=True).delete()
+    total_added = 0
+    for review in reviews:
+        code = review["course"]
+        course_query = CourseCode.objects.filter(code=code)
+        if course_query.exists():
+            r = Review()
+            r.course = course_query[0].course
+            r.rating = review["rating"]
+            r.grade = review["grade"]
+            r.text = review["text"]
+            r.is_crawled = True
+            r.created_at = str_to_timestamp(review["created_at"])
+            r.updated_at = str_to_timestamp(review["updated_at"])
+            r.author = DEFAULT_USER
+            r.save()
+            total_added += 1
+            if total_added % 50 == 0:
+                print "Added %s reviews" % total_added
+                
+                
+if __name__ == "__main__":
+    main()
