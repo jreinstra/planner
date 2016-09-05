@@ -145,7 +145,12 @@ def get_xml_s(url):
 class BadAPIError(Exception):
     pass
 
-print "Loading departments..."
-populate_departments()
-print "Loading courses..."
-populate_courses()
+
+def main():
+    print "Loading departments..."
+    populate_departments()
+    print "Loading courses..."
+    populate_courses()
+
+if __name__ == "__main__":
+    main()

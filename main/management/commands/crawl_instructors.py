@@ -24,39 +24,44 @@ class FeedbackCounter:
         return r
 
 
-fbc = FeedbackCounter()
+def main():
+    fbc = FeedbackCounter()
 
-query = Instructor.objects.filter(
-    Q(is_updated=False) |
-    Q(updated_at__lt=CUTOFF_TIMESTAMP)
-).order_by('updated_at')
-total = min(query.count(), MAX_INSTRUCTORS)
-instructor_list = list(query)
+    query = Instructor.objects.filter(
+        Q(is_updated=False) |
+        Q(updated_at__lt=CUTOFF_TIMESTAMP)
+    ).order_by('updated_at')
+    total = min(query.count(), MAX_INSTRUCTORS)
+    instructor_list = list(query)
 
-print "Fetching data for %s instructors (%s total old)." % (total, query.count())
-rs = [
-    grequests.get(
-        "https://explorecourses.stanford.edu/instructor/" + i.sunet,
-        callback=fbc.feedback
-    ) for i in instructor_list[:MAX_INSTRUCTORS]
-]
-resp = grequests.map(rs, size=MAX_BATCH)
-print "Batch requests loaded."
-for i in range(0, len(resp)):
-    instructor = instructor_list[i]
-    r = resp[i]
-    print "Saving data for '%s'...(%s of %s)" % (instructor.sunet, i, total)
-    if r is not None and r.status_code == 200:
-        soup = BeautifulSoup(r.text, 'html.parser')
+    print "Fetching data for %s instructors (%s total old)." % (total, query.count())
+    rs = [
+        grequests.get(
+            "https://explorecourses.stanford.edu/instructor/" + i.sunet,
+            callback=fbc.feedback
+        ) for i in instructor_list[:MAX_INSTRUCTORS]
+    ]
+    resp = grequests.map(rs, size=MAX_BATCH)
+    print "Batch requests loaded."
+    for i in range(0, len(resp)):
+        instructor = instructor_list[i]
+        r = resp[i]
+        print "Saving data for '%s'...(%s of %s)" % (instructor.sunet, i, total)
+        if r is not None and r.status_code == 200:
+            soup = BeautifulSoup(r.text, 'html.parser')
 
-        main_elements = soup.find(id="homeSearch").findAll("span")
-        if len(main_elements) > 0 and main_elements[0].get_text() == "Personal bio":
-            instructor.bio = main_elements[1].get_text()
+            main_elements = soup.find(id="homeSearch").findAll("span")
+            if len(main_elements) > 0 and main_elements[0].get_text() == "Personal bio":
+                instructor.bio = main_elements[1].get_text()
 
-        for element in soup.find(id="profileNavigation").findAll("span"):
-            if "I'm-not-a-bot@" not in element.get_text():
-                instructor.phone_number = element.get_text()
-        
-    instructor.is_updated = True
-    instructor.save()
-    print "...saved."
+            for element in soup.find(id="profileNavigation").findAll("span"):
+                if "I'm-not-a-bot@" not in element.get_text():
+                    instructor.phone_number = element.get_text()
+
+        instructor.is_updated = True
+        instructor.save()
+        print "...saved."
+    
+    
+if __name__ == "__main__":
+    main()
