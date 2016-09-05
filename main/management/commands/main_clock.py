@@ -1,6 +1,8 @@
 import time
 import threading
 
+from django.core.management.base import BaseCommand
+
 from apscheduler.schedulers.background import BackgroundScheduler
 import logging
 logging.basicConfig()

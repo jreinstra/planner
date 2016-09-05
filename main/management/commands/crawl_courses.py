@@ -4,6 +4,8 @@ import grequests
 import requests
 from xml.etree import ElementTree
 
+from django.core.management.base import BaseCommand
+
 from main.models import *
 
 def populate_departments():
@@ -151,6 +153,11 @@ def main():
     populate_departments()
     print "Loading courses..."
     populate_courses()
+
+    
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        main()
 
 if __name__ == "__main__":
     main()

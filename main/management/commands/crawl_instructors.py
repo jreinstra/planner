@@ -3,6 +3,8 @@ import grequests
 import time
 from bs4 import BeautifulSoup
 
+from django.core.management.base import BaseCommand
+
 from django.db.models import Q
 from main.models import Instructor
 
@@ -63,5 +65,9 @@ def main():
         print "...saved."
     
     
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        main()
+
 if __name__ == "__main__":
     main()
