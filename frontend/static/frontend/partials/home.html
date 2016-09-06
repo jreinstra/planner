@@ -12,8 +12,8 @@
     <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
       <div class="content course-entry">
         <div class="header">
-            {{ course.code }}
-            <div class="rating">
+            {{ course.code }}<br>
+            <div class="ui right floated rating">
                 <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
             </div>
             <span class="course-title">{{ course.title }}</span>
