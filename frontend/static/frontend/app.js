@@ -59,13 +59,15 @@
     
     // Reviews
     $scope.canPostReview = true;
-    
+    $scope.loading = true;
     $http.get(BASE_URL + '/api/courses/' + $state.params.id)
       .then(function(response) {
         console.log(response);
         $scope.result = response.data;
+        $scope.loading = false;
       }, function(response) {
-        alert('Could not connect to server.')
+        alert('Could not connect to server.');
+        $scope.loading = false;
       });
     
     // Add Logic Here To Check If User canPostReview
