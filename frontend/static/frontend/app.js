@@ -129,10 +129,13 @@
   
   .controller('InstructorCtrl', function($rootScope, $scope, $state, $http, BASE_URL) {
     
+    $scope.loading = true;
     $http.get(BASE_URL + '/api/instructors/' + $state.params.sunet)
       .then(function(response) {
+        $scope.loading = false;
         $scope.result = response.data;
       }, function(response) {
+        $scope.loading = false;
         alert('Could not connect to server.')
       });
   })
