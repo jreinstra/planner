@@ -11,11 +11,11 @@
   <div class="ui segment middle aligned divided selection list">
     <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
       <div class="content course-entry">
+        <div class="ui right floated rating">
+          <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
+        </div>
         <div class="header">
             {{ course.code }}<br>
-            <div class="ui right floated rating">
-                <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
-            </div>
             <span class="course-title">{{ course.title }}</span>
           </div>
         <p>{{ course.description | limitTo:200 }}</p>
