@@ -42,3 +42,9 @@ body {
 .course-entry p {
     margin-top: 0.5em;
 }
+
+
+.ui.threaded.comments .comment .comments {
+    padding: 0px 0px 8px 8px !important;
+    margin: 16px 0px 16px 16px !important;
+}

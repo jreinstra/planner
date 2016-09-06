@@ -32,7 +32,7 @@
 </table>
 
 <h2 class="ui dividing header">Comments</h2>
-<sm-comments comments="result.comments" author="" avatar="" date="comment.created_at" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
+<sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
 <div ng-if="loggedIn" class="ui comments">
   <div ng-if="replyingTo" class="ui segment">
     <a href="" ng-click="cancelReply()" class="ui red top right attached small label">cancel</a>
@@ -57,7 +57,7 @@
   <div ng-repeat="review in result.reviews" class="comment">
     <div class="content">
       <div class="metadata">
-        <div class="date">{{ review.created_at | date:'medium' }}</div>
+        <div class="date" sm-time-ago="{{ review.created_at * 1000 }}"></div>
         <div class="rating">
           <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
         </div>
