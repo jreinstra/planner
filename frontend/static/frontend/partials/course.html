@@ -1,6 +1,14 @@
 <h1 class="ui header">
     {{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
 </h1>
+<div class="sub header">
+    Rating:
+    <div class="ui massive star rating">
+        <sm-rating model="result.average_rating" total="5" type="star" disabled="true"></sm-rating>
+    </div>
+    <br>
+    Median grade: <strong>{{ result.median_grade }}</strong>
+</div>
 <h2 class="ui header">Description</h2>
 <p>{{ result.description }}</p>
 <h2 class="ui header">Sections</h2>
@@ -57,7 +65,7 @@
           Grade: {{ review.grade }}
         </div>
         <div ng-if="review.is_crawled" class="label">
-          <a class="ui top right attached tiny teal label">Outside Source</a>
+          <a class="ui top right attached tiny label">Outside Source</a>
         </div>
       </div>
       <div class="text">
