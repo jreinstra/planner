@@ -75,8 +75,9 @@ class Course(models.Model):
     
     department = models.ForeignKey(Department, related_name="courses")
     
-    average_rating = models.FloatField(null=True, blank=True, default=None)
+    average_rating = models.IntegerField(default=0)
     grade_distribution = JSONField(default=None)
+    median_grade = models.CharField(max_length=2, null=True, blank=True, default=None)
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
