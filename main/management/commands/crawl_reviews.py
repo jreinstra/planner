@@ -37,7 +37,7 @@ def main():
             r.course = course_query[0].course
             r.rating = review["rating"]
             r.grade = review["grade"]
-            r.text = review["text"]
+            r.text = review["text"].replace("<div>", "").replace("</div>", "")
             r.is_crawled = True
             r.created_at = str_to_timestamp(review["created_at"])
             r.updated_at = str_to_timestamp(review["updated_at"])

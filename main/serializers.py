@@ -7,6 +7,14 @@ class CommentRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         return [CommentSerializer(item).data for item in value.get_queryset()]
     
+    
+class ReviewRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        print type(value)
+        q = value.get_queryset().order_by('-created_at')[:10]
+        return [ReviewSerializer(item).data for item in q]
+    
+    
 class ContentObjectRelatedField(serializers.Field):
     CLASS_NAMES = {
         "course": Course,
@@ -49,6 +57,7 @@ class VotesField(serializers.Field):
         
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
+    reviews = ReviewRelatedField(read_only=True)
     
     class Meta:
         model = Course
@@ -59,7 +68,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'grade_distribution', 'median_grade'
         )
         read_only_fields = (
-            'comments', 'average_rating', 'grade_distribution', 'id'
+            'comments', 'reviews', 'average_rating', 'grade_distribution', 'id'
         )
         depth = 1
         
