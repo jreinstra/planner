@@ -14,7 +14,7 @@ class ReviewRelatedField(serializers.RelatedField):
             text="No review written."
         ).exclude(
             text=""
-        ).order_by('-created_at')[:15]
+        ).order_by('-created_at')[:5]
         return [ReviewSerializer(item).data for item in q]
     
     

@@ -35,6 +35,10 @@
   display: none !important;
 }
 
+textarea {
+    height: 50px !important;
+}
+
 
 /* Footer stuff */
 html, body {
