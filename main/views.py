@@ -137,6 +137,11 @@ class InstructorViewSet(viewsets.ReadOnlyModelViewSet):
 class DegreeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Degree.objects.all()
     serializer_class = DegreeSerializer
+    
+    
+class DepartmentViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
         
         
 class ReviewViewSet(viewsets.ModelViewSet):

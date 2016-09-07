@@ -93,6 +93,14 @@ class DegreeSerializer(serializers.ModelSerializer):
         )
         
         
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = (
+            'code', 'name', 'school', 'description_html'
+        )
+        
+        
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
