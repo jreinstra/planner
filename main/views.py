@@ -51,6 +51,8 @@ class Search(APIView):
                         "title": entry.title,
                         "description": entry.course.description,
                         "average_rating": entry.course.average_rating,
+                        "min_units": entry.course.min_units,
+                        "max_units": entry.course.max_units,
                         "id": course_id
                     })
                     course_ids.append(course_id)
