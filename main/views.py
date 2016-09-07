@@ -84,7 +84,7 @@ class Login(APIView):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            user = User.objects.create(username=username, name=result["name"])
+            user = User.objects.create(username=username)
             
         try:
             result_token = user.auth_token.key
