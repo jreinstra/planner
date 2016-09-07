@@ -10,8 +10,11 @@ class CommentRelatedField(serializers.RelatedField):
     
 class ReviewRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        print type(value)
-        q = value.get_queryset().order_by('-created_at')[:10]
+        q = value.get_queryset().exclude(
+            text="No review written."
+        ).exclude(
+            text=""
+        ).order_by('-created_at')[:15]
         return [ReviewSerializer(item).data for item in q]
     
     
@@ -77,7 +80,7 @@ class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
         fields = (
-            'sunet', 'name', 'email', 'phone_number', 'bio', 'sections'
+            'sunet', 'name', 'email', 'phone_number', 'bio', 'sections', 'courses'
         )
         depth = 1
         
@@ -90,11 +93,19 @@ class DegreeSerializer(serializers.ModelSerializer):
         )
         
         
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = (
+            'code', 'name', 'school', 'description_html'
+        )
+        
+        
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
         fields = ('id', 'degrees', 'years')
-        read_only_fields = ('id',)
+        read_only_fields = ('id', 'years')
         
         
 class PlanYearSerializer(serializers.ModelSerializer):

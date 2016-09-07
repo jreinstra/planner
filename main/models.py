@@ -142,6 +142,13 @@ class Instructor(models.Model):
     def email(self):
         return self.sunet + "@stanford.edu"
     
+    def courses(self):
+        result = []
+        for section in self.sections.all():
+            if section.course not in result:
+                result.append(section.course)
+        return [(str(c.codes.all()[0]) + ": " + c.title, c.id) for c in result]
+    
     def save(self, *args, **kwargs):
         update_fields(self)
         return super(Instructor, self).save(*args, **kwargs)
