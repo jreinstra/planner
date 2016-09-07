@@ -193,6 +193,7 @@
       $state.go('home');
     });
     
+    $scope.loading = true;
     // Create A Default Plan With Major ID
     $http.get(BASE_URL + '/api/plans/')
       .then(function(response) {
@@ -301,6 +302,7 @@
         };*/
         
         console.log($scope.years);
+        $scope.loading = false;
       }, function(response) {
         console.log(response);
         alert('Could not connect to server.');
@@ -343,14 +345,14 @@
         $scope.result = [];
         return;
       }
-      $scope.loading = true;
+      $scope.loading_search = true;
       $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
         .then(function(response) {
           $scope.result = response.data
-          $scope.loading = false;
+          $scope.loading_search = false;
         }, function(response) {
           alert('Could not connect to server.');
-          $scope.loading = false;
+          $scope.loading_search = false;
         });
     };
     
