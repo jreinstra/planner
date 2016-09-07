@@ -8,6 +8,8 @@ from django.core.management.base import BaseCommand
 
 from main.models import *
 
+NUMBER_IN_BATCH = 20
+
 def populate_departments():
     schools = get_xml("http://explorecourses.stanford.edu/?view=xml-20120105")
     for school in schools.findall("school"):
@@ -31,7 +33,7 @@ def populate_departments():
             dept_obj.save()
                 
 def populate_courses():
-    depts = Department.objects.all()
+    depts = Department.objects.all().order_by('last_crawled')[:NUMBER_IN_BATCH]
     rs = [
         grequests.get(
             "http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code,
@@ -115,6 +117,9 @@ def populate_course(r, **kwargs):
         code.title = course[3].text
         code.course = c
         code.save()
+        
+    dept.last_crawled = time.time()
+    dept.save()
     print "Finished", dept.code
 
 
