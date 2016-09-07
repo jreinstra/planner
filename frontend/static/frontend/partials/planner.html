@@ -1,0 +1,35 @@
+<div id="planner" class="ui four column doubling stackable grid container" style="height: 70vh;">
+  <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
+    <div class="ui header">{{ term | capitalize }}</div>
+    <div>
+      <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" data-as-sortable-item>
+        <div class="ui segment" data-as-sortable-item-handle>
+          <div class="content course-entry">
+            <div class="header">{{ course.code }}&nbsp;&nbsp;&nbsp;<span class="course-title">{{ course.title }}</span></div>
+          </div>
+          <a class="ui top right attached tiny red label" ng-click="deleteCourse(term, $index)">X</a>
+        </div>
+      </li>
+    </div>
+    <a class="ui top right attached teal label">{{ courses_units[term].min_units }}</a>
+  </div>
+  <div class="ui segment column" style="margin: 0;">
+    <div class="ui icon input" style="width: 100%;">
+      <input type="text" placeholder="Search for classess..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
+      <i class="search icon"></i>
+    </div>
+    <div as-sortable="cloneCoursesOptions" ng-model="result" style="max-height: 100%; overflow-y: scroll;">
+      <li ng-repeat="course in result" ui-sref="course({id: course.id})" data-as-sortable-item>
+        <div class="ui segment" data-as-sortable-item-handle>
+          <div class="content course-entry">
+            <div class="header">{{ course.code }}&nbsp;&nbsp;&nbsp;<span class="course-title">{{ course.title }}</span></div>
+          </div>
+        </div>
+      </li>
+      <div class="ui active loader" ng-if="loading">
+        <div class="ui loader"></div>
+      </div>
+      <div class="item" ng-if="result == false">No classes to show.</div>
+    </div>
+  </div>
+</div>

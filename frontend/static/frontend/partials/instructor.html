@@ -1,13 +1,15 @@
-<div ng-show="loading" class="ui active inverted dimmer">
+<div class="ui text container">
+  <div ng-show="loading" class="ui active inverted dimmer">
     <div class="ui text loader">Loading instructor</div>
-</div>
-<div ng-hide="loading">
+  </div>
+  <div ng-hide="loading">
     <h1 class="ui header">{{ result.name }}</h1>
     <img width="150px" src="http://explorecourses.stanford.edu/instructorPhoto?sunet={{ result.sunet }}">
     <p ng-if="result.phone_number"><strong>Phone number</strong>: {{ result.phone_number }}</p>
     <p ng-if="result.email"><strong>Email</strong>: <a href="mailto:{{ result.email }}">{{ result.email }}</a></p>
     <div ng-if="result.bio">
-        <h2 class="ui header">Personal Bio</h2>
-        <p>{{ result.bio }}</p>
+      <h2 class="ui header">Personal Bio</h2>
+      <p>{{ result.bio }}</p>
     </div>
+  </div>
 </div>

@@ -229,10 +229,10 @@ class PlanYear(models.Model):
     plan = models.ForeignKey(Plan, related_name="years")
     year = models.CharField(max_length=10)
     
-    summer = models.ManyToManyField(Course, related_name="plans_summer")
-    autumn = models.ManyToManyField(Course, related_name="plans_autumn")
-    winter = models.ManyToManyField(Course, related_name="plans_winter")
-    spring = models.ManyToManyField(Course, related_name="plans_spring")
+    summer = models.ManyToManyField(Course, blank=True, related_name="plans_summer")
+    autumn = models.ManyToManyField(Course, blank=True, related_name="plans_autumn")
+    winter = models.ManyToManyField(Course, blank=True, related_name="plans_winter")
+    spring = models.ManyToManyField(Course, blank=True, related_name="plans_spring")
     
     
 def update_fields(self):

@@ -1,29 +1,31 @@
-<h1 class="ui center aligned header">Welcome to Cardinal Planner</h1>
-<p class="ui text text-center">Start by searching for a class</p>
-<div class="ui text center aligned container">
-  <div class="ui large icon input" style="width: 50%;">
-    <input type="text" placeholder="Search for classess..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
-    <i class="search icon"></i>
+<div class="ui text container">
+  <h1 class="ui center aligned header">Welcome to Cardinal Planner</h1>
+  <p class="ui text text-center">Start by searching for a class</p>
+  <div class="ui text center aligned container">
+    <div class="ui large icon input" style="width: 50%;">
+      <input type="text" placeholder="Search for classess..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
+      <i class="search icon"></i>
+    </div>
   </div>
-</div>
-<div class="ui container" ng-show="result">
-  <br>
-  <div class="ui segment middle aligned divided selection list">
-    <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
-      <div class="content course-entry">
-        <div class="ui right floated rating">
-          <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
-        </div>
-        <div class="header">
-            {{ course.code }}<br>
-            <span class="course-title">{{ course.title }}</span>
+  <div class="ui container" ng-show="result">
+    <br>
+    <div class="ui segment middle aligned divided selection list">
+      <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
+        <div class="content course-entry">
+          <div class="ui right floated rating">
+            <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
           </div>
-        <p>{{ course.description | limitTo:200 }}</p>
+          <div class="header">
+              {{ course.code }}<br>
+              <span class="course-title">{{ course.title }}</span>
+            </div>
+          <p>{{ course.description | limitTo:200 }}</p>
+        </div>
       </div>
+      <div class="ui active loader" ng-if="loading">
+        <div class="ui loader"></div>
+      </div>
+      <div class="item" ng-if="result == false">No classes to show.</div>
     </div>
-    <div class="ui active loader" ng-if="loading">
-      <div class="ui loader"></div>
-    </div>
-    <div class="item" ng-if="result == false">No classes to show.</div>
   </div>
 </div>
