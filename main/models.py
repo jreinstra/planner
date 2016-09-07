@@ -221,20 +221,18 @@ class Degree(models.Model):
         )
 
 class Plan(models.Model):
-    student = models.OneToOneField(User, related_name="plan")
+    student = models.ForeignKey(User, related_name="plans")
     degrees = models.ManyToManyField(Degree, related_name="plans")
     
-class PlanQuarter(models.Model):
-    TERMS = (
-        ("Fall", "Fall"),
-        ("Winter", "Winter"),
-        ("Spring", "Spring")
-    )
-    
-    plan = models.ForeignKey(Plan, related_name="quarters")
+class PlanYear(models.Model):
+    student = models.ForeignKey(User, related_name="plan_years")
+    plan = models.ForeignKey(Plan, related_name="years")
     year = models.CharField(max_length=10)
-    term = models.CharField(max_length=6, choices=TERMS)
-    courses = models.ManyToManyField(Course, related_name="plan_quarters")
+    
+    summer = models.ManyToManyField(Course, related_name="plans_summer")
+    autumn = models.ManyToManyField(Course, related_name="plans_autumn")
+    winter = models.ManyToManyField(Course, related_name="plans_winter")
+    spring = models.ManyToManyField(Course, related_name="plans_spring")
     
     
 def update_fields(self):

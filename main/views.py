@@ -168,7 +168,7 @@ class PlanViewSet(viewsets.ModelViewSet):
     serializer_class = PlanSerializer
     
     def get_queryset(self):
-        return Plan.objects.filter(student=self.request.user)
+        return self.request.user.plans.all()
     
     def perform_create(self, serializer):
         serializer.save(student=self.request.user)
@@ -177,16 +177,16 @@ class PlanViewSet(viewsets.ModelViewSet):
         serializer.save(student=self.request.user)
         
         
-class PlanQuarterViewSet(viewsets.ModelViewSet):
+class PlanYearViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     
-    serializer_class = PlanQuarterSerializer
+    serializer_class = PlanYearSerializer
     
     def get_queryset(self):
-        return self.request.user.plan.quarters.all()
+        return PlanYear.objects.filter(student=self.request.user)
     
     def perform_create(self, serializer):
-        serializer.save(plan=self.request.user.plan)
+        serializer.save(student=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(plan=self.request.user.plan)
+        serializer.save(student=self.request.user)

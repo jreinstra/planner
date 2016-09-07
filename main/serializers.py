@@ -93,15 +93,18 @@ class DegreeSerializer(serializers.ModelSerializer):
 class PlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plan
-        fields = ('id', 'degrees', 'quarters')
+        fields = ('id', 'degrees', 'years')
         read_only_fields = ('id',)
         
         
-class PlanQuarterSerializer(serializers.ModelSerializer):
+class PlanYearSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PlanQuarter
-        fields = ('id', 'plan', 'year', 'term', 'courses')
-        read_only_fields = ('id', 'plan')
+        model = PlanYear
+        fields = (
+            'id', 'plan', 'year', 'summer', 'autumn', 'winter',
+            'spring'
+        )
+        read_only_fields = ('id',)
         
         
 class ReviewSerializer(serializers.ModelSerializer):

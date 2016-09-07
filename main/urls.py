@@ -10,8 +10,8 @@ router.register(r'instructors', views.InstructorViewSet, base_name="instructors"
 router.register(r'courses', views.CourseViewSet, base_name="courses")
 router.register(r'degrees', views.DegreeViewSet, base_name="degrees")
 
-router.register(r'plan', views.PlanViewSet, base_name="plan")
-router.register(r'plan_quarters', views.PlanQuarterViewSet, base_name="plan_quarters")
+router.register(r'plans', views.PlanViewSet, base_name="plans")
+router.register(r'plan_years', views.PlanYearViewSet, base_name="plan_years")
 
 urlpatterns = [
     # API routes
