@@ -35,12 +35,16 @@ class Search(APIView):
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
 
-            entry_query = get_query(query_string, ['code', 'alt_code', 'title',])
-
+            entry_query = get_query(query_string, ['code', 'alt_code',])
             found_entries = CourseCode.objects.filter(entry_query)
+            
             if found_entries.count() == 0:
-                entry_query = get_query(query_string, ['description',])
+                entry_query = get_query(query_string, ['title'])
                 found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
+                
+                if len(found_entries) == 0:
+                    entry_query = get_query(query_string, ['description'])
+                    found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
             
             course_ids = []
             results = []
