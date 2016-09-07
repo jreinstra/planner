@@ -27,7 +27,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="section in result.sections">
+            <tr ng-repeat="section in result.sections | filter:{'enroll_status':'Open'}">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>{{ section.enroll_status }}</td>

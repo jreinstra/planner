@@ -10,7 +10,6 @@ class CommentRelatedField(serializers.RelatedField):
     
 class ReviewRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        print type(value)
         q = value.get_queryset().exclude(
             text="No review written."
         ).exclude(
