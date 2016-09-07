@@ -1,4 +1,5 @@
 import json
+import requests
 
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -70,10 +71,16 @@ class Login(APIView):
             raise ValidationError("POST param 'fb_access_token' is required.")
         access_token = request.data["fb_access_token"][:30]
         
+        r = requests.get("https://graph.facebook.com/me?access_token=" + request.data["fb_access_token"])
+        if r.status_code != 200:
+            raise ValidationError("Invalid FB access token.")
+        result = r.json()
+        username = result["id"]
+        
         try:
-            user = User.objects.get(username=access_token)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
-            user = User.objects.create(username=access_token)
+            user = User.objects.create(username=username, name=result["name"])
             
         try:
             result_token = user.auth_token.key
