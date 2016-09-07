@@ -57,8 +57,15 @@ def main():
                 instructor.bio = main_elements[1].get_text()
 
             for element in soup.find(id="profileNavigation").findAll("span"):
+                print "text:", element.get_text()
                 if "I'm-not-a-bot@" not in element.get_text():
                     instructor.phone_number = element.get_text()
+                else:
+                    instructor.email = element.get_text().replace(
+                        "I'm-not-a-bot", ""
+                    ).replace(
+                        "document.write('", ""
+                    ).replace("');", "")
 
         instructor.is_updated = True
         instructor.save()

@@ -130,6 +130,7 @@ class CourseSection(models.Model):
 class Instructor(models.Model):
     sunet = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
+    email = models.CharField(max_length=250, default="")
     phone_number = models.CharField(max_length=15, default="")
     bio = models.TextField(default="")
     
@@ -139,9 +140,6 @@ class Instructor(models.Model):
     updated_at = models.IntegerField()
     
     comments = GenericRelation(Comment)
-    
-    def email(self):
-        return self.sunet + "@stanford.edu"
     
     def courses(self):
         result = []
