@@ -15,7 +15,15 @@
             </div>
           </li>
         </div>
-        <a class="ui top right attached teal label">{{ courses_units[term].max_units }} Units</a>
+        <a class="ui top right attached label" ng-class="
+                                                         {
+                                                         green: (courses_units[term].max_units > 12 && courses_units[term].max_units < 18),
+                                                         orange: ((courses_units[term].max_units >= 18 && courses_units[term].max_units <= 20) || (courses_units[term].max_units >= 6 && courses_units[term].max_units <= 12)),
+                                                         red: (courses_units[term].max_units < 6 || courses_units[term].max_units > 20),
+                                                         }
+                                                         ">
+            {{ courses_units[term].max_units }} Units
+          </a>
       </div>
       <div class="ui segment column" style="margin: 0;">
         <div class="ui icon input" style="width: 100%;">
