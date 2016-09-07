@@ -18,14 +18,6 @@ window.fbAsyncInit = function() {
   //
   // These three cases are handled in the callback function.
 
-  FB.getLoginStatus(function(response) {
-    console.log(response)
-    var scope = angular.element($("#login")).scope();
-    scope.$apply(function(){
-        scope.getAuthToken(response);
-    })
-  });
-
 };
 
 // Load the SDK asynchronously
