@@ -10,4 +10,8 @@
         <h2 class="ui header">Personal Bio</h2>
         <p>{{ result.bio }}</p>
     </div>
+    <h2>Current Courses</h2>
+    <ul ng-repeat="course in result.courses">
+        <a ui-sref="course({id: course[1]})"><li>{{ course[0] }}</li></a>
+    </ul>
 </div>

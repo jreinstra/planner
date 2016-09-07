@@ -80,7 +80,7 @@ class InstructorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instructor
         fields = (
-            'sunet', 'name', 'email', 'phone_number', 'bio', 'sections'
+            'sunet', 'name', 'email', 'phone_number', 'bio', 'sections', 'courses'
         )
         depth = 1
         
