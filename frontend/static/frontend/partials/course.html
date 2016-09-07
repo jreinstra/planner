@@ -16,12 +16,13 @@
     </div>
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
-    <h2 class="ui header">Sections</h2>
+    <h2 class="ui header">Open Sections</h2>
     <table class="ui celled table">
         <thead>
             <tr>
                 <th>Term</th>
-                <th>Schedule</th>
+                <th>Days</th>
+                <th>Time</th>
                 <th>Enrollment</th>
                 <th>Instructor</th>
             </tr>
@@ -30,6 +31,9 @@
             <tr ng-repeat="section in result.sections | filter:{'enroll_status':'Open'}">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
+                <td>
+                    {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
+                </td>
                 <td>{{ section.enroll_status }}</td>
                 <td><a ui-sref="instructor({sunet: section.instructor})">{{ section.instructor }}</a></td>
             </tr>
