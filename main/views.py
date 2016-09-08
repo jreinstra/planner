@@ -44,11 +44,18 @@ class Search(APIView):
 
                 if found_entries.count() == 0:
                     entry_query = get_query(query_string, ['title'])
-                    found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
+                    found_courses = Course.objects.filter(entry_query)
 
-                    if len(found_entries) == 0:
+                    if found_courses.count() == 0:
                         entry_query = get_query(query_string, ['description'])
-                        found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
+                        found_courses = Course.objects.filter(entry_query)
+                        
+                    found_entries = []
+                    for course in found_courses:
+                        try:
+                            found_entries.append(course.codes.all()[0])
+                        except IndexError:
+                            pass
             
             course_ids = []
             results = []
