@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^search/$', views.Search.as_view(), name="api_search"),
     url(r'^login/$', views.Login.as_view(), name="login"),
     url(r'^vote/$', views.Vote.as_view(), name="vote"),
+    url(r'^stats/$', views.PlannerStats.as_view(), name="stats"),
     
     # API router
     url(r'^', include(router.urls))

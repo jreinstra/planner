@@ -126,6 +126,18 @@ class Vote(APIView):
         elif vote_type == "downvote":
             obj.downvotes.add(request.user)
         return Response(obj_objs[1](obj).data)
+    
+    
+class PlannerStats(APIView):
+    def get(self, request):
+        result = {
+            "num_users": User.objects.all().count(),
+            "num_plans": Plan.objects.all().count(),
+            "num_reviews": Review.objects.all().count(),
+            "num_courses": Course.objects.all().count(),
+            "num_comments": Comment.objects.all().count()
+        }
+        return Response(result)
         
         
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):    
