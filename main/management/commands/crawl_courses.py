@@ -67,8 +67,11 @@ def populate_course(r, **kwargs):
         c.max_units = int(course[9].text)
         c.department = dept
         c.save()
+        
+        code_str = course[1].text + " " + course[2].text
+        
         for section in course[11].findall("section"):
-            section_id = int(section[0].text)
+            section_id = code_str.replace(" ", "_") + "_" + section[0].text
 
             if CourseSection.objects.filter(id=section_id).exists() is False:
                 se = CourseSection()
@@ -105,8 +108,7 @@ def populate_course(r, **kwargs):
             se.end_time = schedule[3].text or ""
             se.days = get_days(schedule[5].text)
             se.save()
-
-        code_str = course[1].text + " " + course[2].text
+        
         code = CourseCode.objects.filter(code=code_str)
         if code.exists() is False:
             code = CourseCode()

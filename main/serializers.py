@@ -71,7 +71,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'grade_distribution', 'median_grade'
         )
         read_only_fields = (
-            'comments', 'reviews', 'average_rating', 'grade_distribution', 'id'
+            'comments', 'reviews', 'average_rating', 'grade_distribution', 'id', 'sections'
         )
         depth = 1
         
