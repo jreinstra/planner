@@ -181,7 +181,7 @@
       });
   })
   
-  .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, BASE_URL, AuthenticationService) {
+  .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, AuthenticationService) {
     
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
       if (!$rootScope.loggedIn) {
@@ -323,10 +323,12 @@
       }
       
       if (typeof($scope.selected_plan_year) != "undefined" && $scope.finishedInitialLoad == true) {
+        $scope.saving = true;
         $http.put(BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/', {plan: $scope.selected_plan_year.plan, year: $scope.selected_plan_year.year, autumn: $scope.courses_ids.autumn, winter: $scope.courses_ids.winter, spring: $scope.courses_ids.spring})
           .then(function(response) {
             console.log(response.data);
             console.log('Updated plan year.');
+            $scope.saving = false;
         }, function(response) {
           alert('Could not connect to server.');
         });
@@ -355,6 +357,19 @@
           $scope.loading_search = false;
         });
     };
+    
+    $window.onbeforeunload = function (event) {
+      if ($scope.saving) {
+        var message = 'Changes you made may not be saved.';
+        if (typeof event == 'undefined') {
+          event = window.event;
+        }
+        if (event) {
+          event.returnValue = message;
+        }
+        return message;
+      }
+    }
     
     $scope.cloneCoursesOptions = {
       accept: function (sourceItemHandleScope, destSortableScope) {
