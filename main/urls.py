@@ -15,6 +15,8 @@ router.register(r'departments', views.DepartmentViewSet, base_name="departments"
 router.register(r'plans', views.PlanViewSet, base_name="plans")
 router.register(r'plan_years', views.PlanYearViewSet, base_name="plan_years")
 
+router.register(r'user', views.UserViewSet, base_name="user")
+
 urlpatterns = [
     # API routes
     url(r'^search/$', views.Search.as_view(), name="api_search"),

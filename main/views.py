@@ -90,11 +90,12 @@ class Login(APIView):
             raise ValidationError("Invalid FB access token.")
         result = r.json()
         username = result["id"]
+        name = result["name"].split(" ")
         
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            user = User.objects.create(username=username)
+            user = User.objects.create(username=username, first_name=name[0], last_name=name[-1])
             
         try:
             result_token = user.auth_token.key
@@ -228,3 +229,12 @@ class PlanYearViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(student=self.request.user)
+        
+        
+class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
