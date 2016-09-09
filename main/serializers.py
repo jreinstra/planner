@@ -128,8 +128,9 @@ class PlanYearSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlanYear
         fields = (
-            'id', 'plan', 'year', 'summer', 'autumn', 'winter',
-            'spring', 'course_data'
+            'id', 'plan', 'year', 'summer', 'autumn', 'winter', 'spring',
+            'summer_sections', 'autumn_sections', 'winter_sections',
+            'spring_sections', 'course_data'
         )
         read_only_fields = ('id', 'course_data')
         

@@ -245,6 +245,11 @@ class PlanYear(models.Model):
     winter = models.ManyToManyField(Course, blank=True, related_name="plans_winter")
     spring = models.ManyToManyField(Course, blank=True, related_name="plans_spring")
     
+    summer_sections = models.ManyToManyField(CourseSection, blank=True, related_name="plans_summer")
+    autumn_sections = models.ManyToManyField(CourseSection, blank=True, related_name="plans_autumn")
+    winter_sections = models.ManyToManyField(CourseSection, blank=True, related_name="plans_winter")
+    spring_sections = models.ManyToManyField(CourseSection, blank=True, related_name="plans_spring")
+    
     
 def update_fields(self):
     if not self.created_at:
