@@ -77,6 +77,28 @@ class Search(APIView):
             return Response(results)
         else:
             raise ValidationError("Search parameter 'q' is required.")
+            
+            
+class SearchDegrees(APIView):
+    def get(self, request):
+        query_string = ''
+        found_entries = None
+        
+        limit = request.GET.get("limit", 10)
+        
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise ValidationError("Parameter 'limit' must be an integer.")
+            
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+            
+            entry_query = get_query(query_string, ['name',])
+            found_entries = Degree.objects.filter(entry_query)
+            return Response([DegreeSerializer(d).data for d in found_entries[:limit]])
+        else:
+            raise ValidationError("Search parameter 'q' is required.")
         
         
 class Login(APIView):    
