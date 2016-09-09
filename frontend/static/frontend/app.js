@@ -107,7 +107,13 @@
         $scope.result = response.data;
         $scope.loading = false;
       }, function(response) {
-        alert('Could not connect to server.');
+        if (response.status == 404) {
+          $rootScope.errorStatus = response.status;
+          $rootScope.errorMessage = "Could not find course with given course id: " + $state.params.id;
+          $state.go('error');
+        } else {
+          alert('Could not connect to server.');
+        }
         $scope.loading = false;
       });
     
@@ -429,6 +435,10 @@
         url: '/planner/',
         templateUrl: 'static/frontend/partials/planner.html',
         controller: 'PlannerCtrl'
+      })
+      .state('error', {
+        url: '/error/',
+        templateUrl: 'static/frontend/partials/error.html',
       });
       
     $locationProvider.hashPrefix('!');
