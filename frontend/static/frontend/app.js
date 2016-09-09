@@ -107,7 +107,13 @@
         $scope.result = response.data;
         $scope.loading = false;
       }, function(response) {
-        alert('Could not connect to server.');
+        if (response.status == 404) {
+          $rootScope.errorStatus = response.status;
+          $rootScope.errorMessage = "Could not find course with given course id: " + $state.params.id;
+          $state.go('error');
+        } else {
+          alert('Could not connect to server.');
+        }
         $scope.loading = false;
       });
     
@@ -181,7 +187,7 @@
       });
   })
   
-  .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, BASE_URL, AuthenticationService) {
+  .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, AuthenticationService) {
     
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
       if (!$rootScope.loggedIn) {
@@ -323,10 +329,12 @@
       }
       
       if (typeof($scope.selected_plan_year) != "undefined" && $scope.finishedInitialLoad == true) {
+        $scope.saving = true;
         $http.put(BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/', {plan: $scope.selected_plan_year.plan, year: $scope.selected_plan_year.year, autumn: $scope.courses_ids.autumn, winter: $scope.courses_ids.winter, spring: $scope.courses_ids.spring})
           .then(function(response) {
             console.log(response.data);
             console.log('Updated plan year.');
+            $scope.saving = false;
         }, function(response) {
           alert('Could not connect to server.');
         });
@@ -355,6 +363,19 @@
           $scope.loading_search = false;
         });
     };
+    
+    $window.onbeforeunload = function (event) {
+      if ($scope.saving) {
+        var message = 'Changes you made may not be saved.';
+        if (typeof event == 'undefined') {
+          event = window.event;
+        }
+        if (event) {
+          event.returnValue = message;
+        }
+        return message;
+      }
+    }
     
     $scope.cloneCoursesOptions = {
       accept: function (sourceItemHandleScope, destSortableScope) {
@@ -414,6 +435,10 @@
         url: '/planner/',
         templateUrl: 'static/frontend/partials/planner.html',
         controller: 'PlannerCtrl'
+      })
+      .state('error', {
+        url: '/error/',
+        templateUrl: 'static/frontend/partials/error.html',
       });
       
     $locationProvider.hashPrefix('!');
