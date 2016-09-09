@@ -56,6 +56,20 @@ class ContentObjectRelatedField(serializers.Field):
 class VotesField(serializers.Field):
     def to_representation(self, value):
         return value.all().count()
+    
+    
+class CourseDataField(serializers.Field):
+    SEASONS = ["autumn", "winter", "spring", "summer"]
+    
+    def get_attribute(self, obj):
+        return obj
+    
+    def to_representation(self, obj):
+        result = {}
+        for season in self.SEASONS:
+            result[season] = [CourseSerializer(c).data for c in getattr(obj, season).all()]
+            
+        return result
             
         
 class CourseSerializer(serializers.ModelSerializer):
@@ -109,13 +123,15 @@ class PlanSerializer(serializers.ModelSerializer):
         
         
 class PlanYearSerializer(serializers.ModelSerializer):
+    course_data = CourseDataField(read_only=True)
+    
     class Meta:
         model = PlanYear
         fields = (
             'id', 'plan', 'year', 'summer', 'autumn', 'winter',
-            'spring'
+            'spring', 'course_data'
         )
-        read_only_fields = ('id',)
+        read_only_fields = ('id', 'course_data')
         
         
 class ReviewSerializer(serializers.ModelSerializer):
