@@ -35,27 +35,26 @@ class Search(APIView):
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
             
-            entry_query = get_query(query_string.replace(" ", ""), ['alt_code',])
-            found_entries = CourseCode.objects.filter(entry_query)
+            code_string = query_string.upper().replace(" ", "")
+            found_entries = list(CourseCode.objects.filter(alt_code=code_string))
             
-            if found_entries.count() == 0:
-                entry_query = get_query(query_string, ['code', 'alt_code',])
-                found_entries = CourseCode.objects.filter(entry_query)
+            entry_query = get_query(query_string, ['code', 'alt_code',])
+            found_entries += list(CourseCode.objects.filter(entry_query))
 
-                if found_entries.count() == 0:
-                    entry_query = get_query(query_string, ['title'])
+            if len(found_entries) == 0:
+                entry_query = get_query(query_string, ['title'])
+                found_courses = Course.objects.filter(entry_query)
+
+                if found_courses.count() == 0:
+                    entry_query = get_query(query_string, ['description'])
                     found_courses = Course.objects.filter(entry_query)
 
-                    if found_courses.count() == 0:
-                        entry_query = get_query(query_string, ['description'])
-                        found_courses = Course.objects.filter(entry_query)
-                        
-                    found_entries = []
-                    for course in found_courses:
-                        try:
-                            found_entries.append(course.codes.all()[0])
-                        except IndexError:
-                            pass
+                found_entries = []
+                for course in found_courses:
+                    try:
+                        found_entries.append(course.codes.all()[0])
+                    except IndexError:
+                        pass
             
             course_ids = []
             results = []
