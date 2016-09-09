@@ -35,27 +35,26 @@ class Search(APIView):
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
             
-            entry_query = get_query(query_string.replace(" ", ""), ['alt_code',])
-            found_entries = CourseCode.objects.filter(entry_query)
+            code_string = query_string.upper().replace(" ", "")
+            found_entries = list(CourseCode.objects.filter(alt_code=code_string))
             
-            if found_entries.count() == 0:
-                entry_query = get_query(query_string, ['code', 'alt_code',])
-                found_entries = CourseCode.objects.filter(entry_query)
+            entry_query = get_query(query_string, ['code', 'alt_code',])
+            found_entries += list(CourseCode.objects.filter(entry_query))
 
-                if found_entries.count() == 0:
-                    entry_query = get_query(query_string, ['title'])
+            if len(found_entries) == 0:
+                entry_query = get_query(query_string, ['title'])
+                found_courses = Course.objects.filter(entry_query)
+
+                if found_courses.count() == 0:
+                    entry_query = get_query(query_string, ['description'])
                     found_courses = Course.objects.filter(entry_query)
 
-                    if found_courses.count() == 0:
-                        entry_query = get_query(query_string, ['description'])
-                        found_courses = Course.objects.filter(entry_query)
-                        
-                    found_entries = []
-                    for course in found_courses:
-                        try:
-                            found_entries.append(course.codes.all()[0])
-                        except IndexError:
-                            pass
+                found_entries = []
+                for course in found_courses:
+                    try:
+                        found_entries.append(course.codes.all()[0])
+                    except IndexError:
+                        pass
             
             course_ids = []
             results = []
@@ -78,6 +77,28 @@ class Search(APIView):
             return Response(results)
         else:
             raise ValidationError("Search parameter 'q' is required.")
+            
+            
+class SearchDegrees(APIView):
+    def get(self, request):
+        query_string = ''
+        found_entries = None
+        
+        limit = request.GET.get("limit", 10)
+        
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise ValidationError("Parameter 'limit' must be an integer.")
+            
+        if ('q' in request.GET) and request.GET['q'].strip():
+            query_string = request.GET['q']
+            
+            entry_query = get_query(query_string, ['name',])
+            found_entries = Degree.objects.filter(entry_query)
+            return Response([DegreeSerializer(d).data for d in found_entries[:limit]])
+        else:
+            raise ValidationError("Search parameter 'q' is required.")
         
         
 class Login(APIView):    
@@ -91,11 +112,12 @@ class Login(APIView):
             raise ValidationError("Invalid FB access token.")
         result = r.json()
         username = result["id"]
+        name = result["name"].split(" ")
         
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            user = User.objects.create(username=username)
+            user = User.objects.create(username=username, first_name=name[0], last_name=name[-1])
             
         try:
             result_token = user.auth_token.key
@@ -229,3 +251,12 @@ class PlanYearViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(student=self.request.user)
+        
+        
+class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)

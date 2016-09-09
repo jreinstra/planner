@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from django.contrib.auth.models import User
 from main.models import *
 
 
@@ -103,7 +104,7 @@ class DegreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Degree
         fields = (
-            'id', 'department', 'degree_type'
+            'id', 'department', 'degree_type', 'name'
         )
         
         
@@ -122,14 +123,22 @@ class PlanSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'years')
         
         
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'email')
+        read_only_fields = ('id', 'username')
+        
+        
 class PlanYearSerializer(serializers.ModelSerializer):
     course_data = CourseDataField(read_only=True)
     
     class Meta:
         model = PlanYear
         fields = (
-            'id', 'plan', 'year', 'summer', 'autumn', 'winter',
-            'spring', 'course_data'
+            'id', 'plan', 'year', 'summer', 'autumn', 'winter', 'spring',
+            'summer_sections', 'autumn_sections', 'winter_sections',
+            'spring_sections', 'course_data'
         )
         read_only_fields = ('id', 'course_data')
         
