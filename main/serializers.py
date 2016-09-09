@@ -103,7 +103,7 @@ class DegreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Degree
         fields = (
-            'id', 'department', 'degree_type'
+            'id', 'department', 'degree_type', 'name'
         )
         
         

@@ -222,11 +222,14 @@ class Degree(models.Model):
     department = models.ForeignKey(Department, related_name="degrees")
     degree_type = models.IntegerField(choices=DEGREE_TYPES)
     
-    def __str__(self):
+    def name(self):
         return "%s in %s" % (
             self.DEGREE_DICT[self.degree_type],
             self.department.name
         )
+    
+    def __str__(self):
+        return self.human_name()
 
 class Plan(models.Model):
     student = models.ForeignKey(User, related_name="plans")
