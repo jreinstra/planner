@@ -34,17 +34,28 @@ class Search(APIView):
             
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
-
-            entry_query = get_query(query_string, ['code', 'alt_code',])
+            
+            entry_query = get_query(query_string.replace(" ", ""), ['alt_code',])
             found_entries = CourseCode.objects.filter(entry_query)
             
             if found_entries.count() == 0:
-                entry_query = get_query(query_string, ['title'])
-                found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
-                
-                if len(found_entries) == 0:
-                    entry_query = get_query(query_string, ['description'])
-                    found_entries = [course.codes.all()[0] for course in Course.objects.filter(entry_query)]
+                entry_query = get_query(query_string, ['code', 'alt_code',])
+                found_entries = CourseCode.objects.filter(entry_query)
+
+                if found_entries.count() == 0:
+                    entry_query = get_query(query_string, ['title'])
+                    found_courses = Course.objects.filter(entry_query)
+
+                    if found_courses.count() == 0:
+                        entry_query = get_query(query_string, ['description'])
+                        found_courses = Course.objects.filter(entry_query)
+                        
+                    found_entries = []
+                    for course in found_courses:
+                        try:
+                            found_entries.append(course.codes.all()[0])
+                        except IndexError:
+                            pass
             
             course_ids = []
             results = []
@@ -122,6 +133,18 @@ class Vote(APIView):
         elif vote_type == "downvote":
             obj.downvotes.add(request.user)
         return Response(obj_objs[1](obj).data)
+    
+    
+class PlannerStats(APIView):
+    def get(self, request):
+        result = {
+            "num_users": User.objects.all().count(),
+            "num_plans": Plan.objects.all().count(),
+            "num_reviews": Review.objects.all().count(),
+            "num_courses": Course.objects.all().count(),
+            "num_comments": Comment.objects.all().count()
+        }
+        return Response(result)
         
         
 class CourseViewSet(viewsets.ReadOnlyModelViewSet):    
