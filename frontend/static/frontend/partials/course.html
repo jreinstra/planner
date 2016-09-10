@@ -6,14 +6,23 @@
     <h1 class="ui header">
       {{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
     </h1>
-    <div class="sub header">
-      Rating:
-      <div class="ui massive star rating">
-          <sm-rating model="result.average_rating" total="5" type="star" disabled="true"></sm-rating>
-      </div>
       <br>
-      Median grade: <strong>{{ result.median_grade }}</strong>
+    <div class="ui two column stackable grid">
+        <div class="ui column">
+          Rating:
+          <div ng-if="result.average_rating" class="ui massive star rating">
+              <sm-rating model="result.average_rating" total="5" type="star" disabled="true"></sm-rating>
+          </div>
+            <strong ng-if="!result.average_rating">No ratings.</strong>
+          <br>
+          Median grade: <strong>{{ result.median_grade || "No grade data." }}</strong>
+        </div>
+        <div class="ui column">
+            Units: <strong>{{ result.min_units }} to {{ result.max_units }}</strong><br>
+            Grading: <strong>{{ result.grading }}</strong>
+        </div>
     </div>
+      
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
     <h2 class="ui header">Open Sections</h2>
@@ -43,6 +52,7 @@
       <br>
     <h2 class="ui dividing header">Recent Reviews</h2>
     <div class="ui comments">
+        <em ng-if="result.reviews.length == 0">No reviews found.</em>
       <div ng-repeat="review in result.reviews" class="comment">
         <div class="content">
           <div class="metadata">
@@ -66,7 +76,7 @@
   </div>
   <div ng-if="loggedIn && canPostReview" class="ui comments">
       <br>
-      <h2 class="ui dividing header">Add your own review</h2>
+      <h3 class="ui dividing header">Write a review</h3>
       <div class="ui two column grid">
         <div class="column">
           <select ng-model="$parent.grade" class="ui dropdown">
@@ -102,10 +112,13 @@
   <div ng-if="!loggedIn && canPostReview" class="ui warning message">You must be logged in to add a review.</div>
   <div ng-if="!canPostReview" class="ui success message">You have posted a review for this course. Thank you!</div>
     
-    <br>
-    <h2 class="ui dividing header">Comments</h2>
+    <br><br>
+    <h2 class="ui dividing header">Questions</h2>
+    <em ng-if="result.comments.length == 0">No questions found.</em>
     <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
     <div ng-if="loggedIn" class="ui comments">
+        <br>
+        <h3 class="ui dividing header">Ask a question</h3>
       <div ng-if="replyingTo" class="ui segment">
         <a href="" ng-click="cancelReply()" class="ui red top right attached small label">cancel</a>
         Replying to <b>{{ replyingTo.author }}'s</b> comment - <span sm-time-ago="replyingTo.created_at" class="reply-date"></span>
@@ -118,7 +131,7 @@
           <textarea ng-model="$parent.newReply"></textarea>
         </div>
         <div class="ui blue labeled submit icon button" ng-click="addReply()">
-          <i class="icon edit"></i> {{ replyingTo ? 'Add Reply' : 'Add Comment' }}
+          <i class="icon edit"></i> {{ replyingTo ? 'Add Answer' : 'Add Question' }}
         </div>
       </form>
     </div>
