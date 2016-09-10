@@ -69,7 +69,7 @@ def populate_course(r, **kwargs):
         c.save()
         
         for section in course[11].findall("section"):
-            section_id = c.id + "_" + section[0].text
+            section_id = str(c.id) + "_" + section[0].text
 
             if CourseSection.objects.filter(id=section_id).exists() is False:
                 se = CourseSection()
