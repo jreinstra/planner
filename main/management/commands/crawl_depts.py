@@ -1,54 +1,50 @@
-import os
 import requests
 from bs4 import BeautifulSoup
 
 from django.core.management.base import BaseCommand
 
-from main.models import School, Department, Degree
+from main.models import Department, Degree
+
+BASE_URL = "http://exploredegrees.stanford.edu/"
 
 def main():
-    for school in School.objects.all():
-        school_slug = school.name.replace(" ", "").replace(",", "").replace("&", "and").lower()
-        school_url = "http://exploredegrees.stanford.edu/%s/" % school_slug
+    r = requests.get(BASE_URL)
 
-        r = requests.get(school_url)
-        if r.status_code == 200:
-            print "** Updating %s **" % school.name
+    soup = BeautifulSoup(r.text, 'html.parser')
 
+    for item in soup.findAll("a"):
+        link = item.get("href")
+        if link[0] == "/":
+            full_url = BASE_URL + link[1:]
+
+            r = requests.get(full_url)
             soup = BeautifulSoup(r.text, 'html.parser')
-            school.description_html = str(soup.find(id="textcontainer"))
-            school.save()
 
-            for dept in Department.objects.filter(school=school):
-                dept_slug = dept.name.replace(" ", "").replace(",", "").replace("&", "and").lower()
-                dept_url = school_url + dept_slug + "/"
+            course_block = soup.find(class_="courseblocktitle")
+            if course_block is not None:
+                code = course_block.strong.text.replace(u'\xa0', " ").split("  ")[0].split(" ")[0]
+                dept = Department.objects.get(code=code)
 
-                r = requests.get(dept_url)
-                if r.status_code == 200:
-                    print "Updating %s..." % dept.code
-                    soup = BeautifulSoup(r.text, 'html.parser')
-                    dept.description_html = str(soup.find(id="textcontainer"))
-
-                    if soup.find(id="bachelorstextcontainer") is not None:
-                        degree = Degree(department=dept, degree_type=1)
-                        degree.save()
-
-                    if soup.find(id="minortextcontainer") is not None:
-                        degree = Degree(department=dept, degree_type=2)
-                        degree.save()
-
-                    if soup.find(id="coterminalmasterstextcontainer") is not None:
-                        degree = Degree(department=dept, degree_type=3)
-                        degree.save()
-                else:
-                    print "Skip %s... (%s)" % (dept.name, r.status_code)
-
-                dept.is_updated = True
+                print "Updating %s..." % dept.name
+                dept.description_html = str(soup.find(id="textcontainer"))
                 dept.save()
-        else:
-            print "** Skip %s **" % school.name
-        
-        
+
+                if soup.find(id="bachelorstextcontainer") is not None or \
+                   soup.find(id="bachelortextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=1)
+                    degree.save()
+
+                if soup.find(id="minortextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=2)
+                    degree.save()
+
+                if soup.find(id="coterminalmasterstextcontainer") is not None:
+                    degree = Degree(department=dept, degree_type=3)
+                    degree.save()
+
+                print "\tdone"
+
+                
 class Command(BaseCommand):
     def handle(self, *args, **options):
         main()
