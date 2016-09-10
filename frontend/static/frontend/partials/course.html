@@ -35,7 +35,7 @@
                     {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
                 </td>
                 <td>{{ section.enroll_status }}</td>
-                <td><a ui-sref="instructor({sunet: section.instructor})">{{ section.instructor }}</a></td>
+                <td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
             </tr>
         </tbody>
     </table>

@@ -19,6 +19,16 @@ class ReviewRelatedField(serializers.RelatedField):
         return [ReviewSerializer(item).data for item in q]
     
     
+class CodeRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return [CodeSerializer(item).data for item in value.get_queryset()]
+    
+    
+class SectionRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return [InlineSectionSerializer(item).data for item in value.get_queryset()]
+    
+    
 class ContentObjectRelatedField(serializers.Field):
     CLASS_NAMES = {
         "course": Course,
@@ -76,6 +86,8 @@ class CourseDataField(serializers.Field):
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     reviews = ReviewRelatedField(read_only=True)
+    codes = CodeRelatedField(read_only=True)
+    sections = SectionRelatedField(read_only=True)
     
     class Meta:
         model = Course
@@ -86,9 +98,8 @@ class CourseSerializer(serializers.ModelSerializer):
             'grade_distribution', 'median_grade'
         )
         read_only_fields = (
-            'comments', 'reviews', 'average_rating', 'grade_distribution', 'id', 'sections'
+            'average_rating', 'grade_distribution', 'id', 'sections', 'comments', 'reviews'
         )
-        depth = 1
         
         
 class InstructorSerializer(serializers.ModelSerializer):
@@ -96,6 +107,26 @@ class InstructorSerializer(serializers.ModelSerializer):
         model = Instructor
         fields = (
             'sunet', 'name', 'email', 'phone_number', 'bio', 'sections', 'courses'
+        )
+        depth = 1
+        
+        
+class CodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseCode
+        fields = (
+            'code', 'alt_code', 'title', 'course'
+        )
+        
+        
+class InlineSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseSection
+        fields = (
+            'id', 'year', 'term', 'section_number', 'num_enrolled',
+            'max_enrolled', 'num_waitlist', 'max_waitlist', 'enroll_status',
+            'instructor', 'start_date', 'end_date', 'start_time', 'end_time',
+            'days'
         )
         depth = 1
         
