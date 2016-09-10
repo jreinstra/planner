@@ -163,7 +163,7 @@
 
       $http.post(BASE_URL + '/api/reviews/', {course: $state.params.id, rating: $scope.rating, grade:$scope.grade, text: $scope.newReview})
         .then(function(response) {
-          $scope.result.reviews.push(response.data);
+          $scope.result.reviews.unshift(response.data);
           $scope.newReview = '';
           $scope.canPostReview= false;
       }, function(response) {
