@@ -205,7 +205,7 @@
       .then(function(response) {
         console.log(response.data);
         if (response.data.count == 0) {
-          $http.post(BASE_URL + '/api/plans/', {degrees: [1], years:[]})
+          $http.post(BASE_URL + '/api/plans/', {degrees: [500], years:[]})
             .then(function(response) {
               console.log(response.data);
               $scope.plans.push(response.data);

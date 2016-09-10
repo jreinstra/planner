@@ -9,8 +9,14 @@
           <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" data-as-sortable-item>
             <div class="ui segment" data-as-sortable-item-handle>
               <div class="content course-entry">
-                <div class="header">{{ course.code || course.codes[0].code }}&nbsp;&nbsp;&nbsp;<span class="course-title">{{ course.title }}</span></div>
-              </div>
+                <div class="header">
+                    <strong>{{ course.code || course.codes[0].code }}</strong><br>
+                    <span class="course-title">{{ course.title }}</span>
+                </div>
+              </div><br ng-if="course.average_rating">
+                <div class="ui bottom left attached tiny label" ng-if="course.average_rating">
+                    <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
+                </div>
               <a class="ui top right attached tiny red label" ng-click="deleteCourse(term, $index)">X</a>
             </div>
           </li>
@@ -34,7 +40,14 @@
           <li ng-repeat="course in result" ui-sref="course({id: course.id})" data-as-sortable-item>
             <div class="ui segment" data-as-sortable-item-handle>
               <div class="content course-entry">
-                <div class="header">{{ course.code }}&nbsp;&nbsp;&nbsp;<span class="course-title">{{ course.title }}</span></div>
+                <div class="header">
+                    <strong>{{ course.code }}</strong><br>
+                    <span class="course-title">{{ course.title }}</span></div>
+                      <br ng-if="course.average_rating">
+                    <div class="ui bottom left attached tiny label" ng-if="course.average_rating">
+                        <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
+                  </div>
+                </div>
               </div>
             </div>
           </li>

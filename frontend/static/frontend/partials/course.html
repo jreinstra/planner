@@ -18,7 +18,11 @@
           Median grade: <strong>{{ result.median_grade || "No grade data." }}</strong>
         </div>
         <div class="ui column">
-            Units: <strong>{{ result.min_units }} to {{ result.max_units }}</strong><br>
+            Units: 
+            <strong>
+                {{ result.min_units }}
+                <span ng-if="result.min_units != result.max_units"> to {{ result.max_units }}</span>
+            </strong><br>
             Grading: <strong>{{ result.grading }}</strong>
         </div>
     </div>
