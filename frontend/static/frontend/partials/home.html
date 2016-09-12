@@ -7,7 +7,7 @@
       <i class="search icon"></i>
     </div>
   </div>
-  <div class="ui container" ng-show="result">
+  <div class="ui container" ng-show="result" ng-if="search.length > 0">
     <br>
     <div class="ui segment middle aligned divided selection list">
       <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
@@ -25,7 +25,7 @@
       <div class="ui active loader" ng-if="loading">
         <div class="ui loader"></div>
       </div>
-      <div class="item" ng-if="result == false">No classes to show.</div>
+      <div ng-if="result == false">No classes found.</div>
     </div>
   </div>
 </div>
