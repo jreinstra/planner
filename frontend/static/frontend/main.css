@@ -40,6 +40,10 @@ textarea {
     height: 50px !important;
 }
 
+#reviewInstructor {
+    margin-left: 15px !important;
+}
+
 
 /* Footer stuff */
 html, body {

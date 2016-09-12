@@ -7,7 +7,7 @@
       <i class="search icon"></i>
     </div>
   </div>
-  <div class="ui container" ng-show="result" ng-if="search.length > 0">
+  <div class="ui container" ng-show="result && search.length > 0">
     <br>
     <div class="ui segment middle aligned divided selection list">
       <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">

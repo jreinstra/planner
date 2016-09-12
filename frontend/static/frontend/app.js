@@ -153,21 +153,29 @@
     };
     
     $scope.addReview = function() {
-      if (!$scope.newReview) {
-        return alert("Please fill out the review." + $scope.rating + $scope.grade);
-      }
-      
       if (typeof $scope.rating == "undefined" || typeof $scope.grade == "undefined" || $scope.grade == "") {
         return alert("Please fill out your grade and rating.");
       }
+      else if (typeof $scope.newReview == "undefined" || $scope.newReview == "") {
+        return alert("Please fill out a review in the text box."); 
+      }
 
-      $http.post(BASE_URL + '/api/reviews/', {course: $state.params.id, rating: $scope.rating, grade:$scope.grade, text: $scope.newReview})
+      $http.post(
+          BASE_URL + '/api/reviews/',
+          {
+              course: $state.params.id,
+              rating: $scope.rating,
+              grade:$scope.grade,
+              instructor:$scope.instructor,
+              text: $scope.newReview
+          }
+      )
         .then(function(response) {
           $scope.result.reviews.unshift(response.data);
           $scope.newReview = '';
           $scope.canPostReview= false;
       }, function(response) {
-        alert('Could not connect to server.');
+        alert('Server error: ' + response.data);
       });
     };
     

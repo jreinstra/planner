@@ -39,8 +39,8 @@
                 <th>Instructor</th>
             </tr>
         </thead>
-        <tbody ng-repeat="section in result.sections">
-            <tr ng-if="section.enroll_status == 'Open' && section.instructor != null">
+        <tbody>
+            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.instructor != null">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
@@ -63,8 +63,11 @@
               <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
             </div>
             <div ng-show="review.grade" class="grade">
-              Grade: {{ review.grade }}
+              Grade: <strong>{{ review.grade }}</strong>
             </div>
+              <div ng-show="review.instructor">
+                <a ui-sref="instructor({sunet: review.instructor.sunet })">{{ review.instructor.name }}</a>
+              </div>
             <div ng-if="review.is_crawled" class="label">
               <a class="ui top right attached tiny label">Outside Source</a>
             </div>
@@ -99,6 +102,12 @@
             <option value="CR">Credit</option>
             <option value="NC" selected="">No credit</option>
           </select>
+            <select ng-model="$parent.instructor" id="reviewInstructor" class="ui dropdown">
+                <option value="">Instructor</option>
+                <option ng-repeat="instructor in result.instructors" value="{{ instructor[0] }}">
+                    {{ instructor[1] }}
+                </option>
+            </select>
         </div>
         <div class="right aligned column"><sm-rating model="$parent.rating" total="5" type="huge star"></sm-rating></div>
       </div>

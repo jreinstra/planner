@@ -81,6 +81,14 @@ class Course(models.Model):
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
     
+    def instructors(self):
+        result = []
+        for section in self.sections.all():
+            instructor = section.instructor
+            if instructor is not None and instructor not in result:
+                result.append(instructor)
+        return [(i.sunet, i.name) for i in result]
+    
     def save(self, *args, **kwargs):
         update_fields(self)
         return super(Course, self).save(*args, **kwargs)
@@ -185,6 +193,7 @@ class Review(models.Model):
     
     author = models.ForeignKey(User, related_name="reviews")
     course = models.ForeignKey(Course, related_name="reviews")
+    instructor = models.ForeignKey(Instructor, related_name="reviews", null=True, blank=True)
     comments = GenericRelation(Comment)
     
     rating = models.IntegerField(choices=RATING_OPTIONS)
@@ -198,6 +207,9 @@ class Review(models.Model):
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
+    
+    def instructor_name(self):
+        return self.instructor.name if self.instructor else None
     
     def save(self, *args, **kwargs):
         if self.is_crawled is False:
