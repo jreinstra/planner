@@ -5,6 +5,5 @@ from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name="frontend/index.html"), name="index"),
-    url(r'^(?!api).*$', RedirectView.as_view(url='/'))
+    url(r'^(?!api).*$', TemplateView.as_view(template_name="frontend/index.html"), name="index")
 ]
