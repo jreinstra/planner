@@ -33,7 +33,7 @@ def populate_departments():
             dept_obj.save()
                 
 def populate_courses():
-    depts = Department.objects.filter(code="CS")#all().order_by('last_crawled')[:NUMBER_IN_BATCH]
+    depts = Department.objects.all().order_by('last_crawled')[:NUMBER_IN_BATCH]
     rs = [
         grequests.get(
             "http://explorecourses.stanford.edu/search?view=xml-20140630&filter-coursestatus-Active=on&page=0&catalog=&q=" + dept.code,

@@ -36,18 +36,16 @@
                 <th>Term</th>
                 <th>Days</th>
                 <th>Time</th>
-                <th>Enrollment</th>
                 <th>Instructor</th>
             </tr>
         </thead>
-        <tbody>
-            <tr ng-repeat="section in result.sections | filter:{'enroll_status':'Open'}">
+        <tbody ng-repeat="section in result.sections">
+            <tr ng-if="section.enroll_status == 'Open' && section.instructor != null">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
                     {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
                 </td>
-                <td>{{ section.enroll_status }}</td>
                 <td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
             </tr>
         </tbody>
