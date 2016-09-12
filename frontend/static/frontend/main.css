@@ -1,9 +1,10 @@
 #navbar, #footer {
-    border-radius:0;
+    border-radius: 0;
     background-color: #8c1515;
 }
 
 #navbar {
+    margin-top: 0;
     margin-bottom: 5em;
 }
 
