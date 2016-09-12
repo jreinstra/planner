@@ -159,11 +159,19 @@ class Vote(APIView):
     
 class PlannerStats(APIView):
     def get(self, request):
+        nr = Review.objects.all().count()
+        nc = Course.objects.all().count()
+        
+        nr_floored = nr / 100 * 100
+        nc_floored = nc / 100 * 100
+        
         result = {
             "num_users": User.objects.all().count(),
             "num_plans": Plan.objects.all().count(),
-            "num_reviews": Review.objects.all().count(),
-            "num_courses": Course.objects.all().count(),
+            "num_reviews": nr,
+            "num_courses": nc,
+            "num_reviews_floored": nr_floored,
+            "num_courses_floored": nc_floored,
             "num_comments": Comment.objects.all().count()
         }
         return Response(result)

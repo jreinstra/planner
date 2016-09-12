@@ -71,6 +71,15 @@
   })
   
   .controller('HomeCtrl', function($rootScope, $scope, $state, $http, BASE_URL){
+      $http.get(BASE_URL + '/api/stats/').then(
+            function(response) {
+                $scope.stats = response.data;
+            },
+            function(response) {
+                $scope.stats = null;   
+            }
+        );
+      
     $scope.update = function() {
       if ($scope.search == "") {
         $scope.result = [];

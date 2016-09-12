@@ -1,6 +1,6 @@
 <div class="ui text container">
   <h1 class="ui center aligned header">Welcome to Cardinal Planner</h1>
-  <p class="ui text text-center">Start by searching for a class</p>
+  <p class="ui text text-center" ng-show="stats">Browse {{ stats.num_reviews_floored }}+ reviews on over {{ stats.num_courses_floored }} courses.</p>
   <div class="ui text center aligned container">
     <div class="ui large icon input" style="width: 50%;">
       <input type="text" placeholder="Search for classes..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
