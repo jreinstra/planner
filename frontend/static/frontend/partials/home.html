@@ -1,13 +1,13 @@
 <div class="ui text container">
   <h1 class="ui center aligned header">Welcome to Cardinal Planner</h1>
-  <p class="ui text text-center">Start by searching for a class</p>
+  <p class="ui text text-center" ng-show="stats">Browse {{ stats.num_reviews_floored }}+ reviews on over {{ stats.num_courses_floored }} courses.</p>
   <div class="ui text center aligned container">
     <div class="ui large icon input" style="width: 50%;">
       <input type="text" placeholder="Search for classes..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 250}">
       <i class="search icon"></i>
     </div>
   </div>
-  <div class="ui container" ng-show="result">
+  <div class="ui container" ng-show="result && search.length > 0">
     <br>
     <div class="ui segment middle aligned divided selection list">
       <div class="item" ng-repeat="course in result" ui-sref="course({id: course.id})">
@@ -25,7 +25,7 @@
       <div class="ui active loader" ng-if="loading">
         <div class="ui loader"></div>
       </div>
-      <div class="item" ng-if="result == false">No classes to show.</div>
+      <div ng-if="result == false">No classes found.</div>
     </div>
   </div>
 </div>
