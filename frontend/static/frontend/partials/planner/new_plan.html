@@ -1,0 +1,22 @@
+<div class="ui modal">
+  <div class="header">
+    Create a New Plan
+  </div>
+  <div class="content">
+    <sm-dropdown class="fluid multiple search selection" model="selected_degrees" items="degrees" label="item.name" value="item.id" default-text="'Select Predicted Majors'"></sm-dropdown>
+    Class of: 
+    <div class="ui right icon input">
+      <input ng-model="grad_year" type="text" name="grad_year" placeholder="Graduation Year">
+      <i class="student icon"></i>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+      Back
+    </div>
+    <div class="ui positive right labeled icon button">
+      Create
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
