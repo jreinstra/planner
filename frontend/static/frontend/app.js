@@ -427,10 +427,7 @@
   
     $urlRouterProvider.otherwise('/');
   
-    $locationProvider.html5Mode({
-      enabled: false,
-      requireBase: false
-    });
+    $locationProvider.html5Mode(true);
   
     $stateProvider
       .state('home', {
