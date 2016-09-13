@@ -26,6 +26,12 @@
             Grading: <strong>{{ result.grading }}</strong>
         </div>
     </div>
+    
+    <div ng-if="hasPlan" class="ui floating labeled icon dropdown button">
+      <div class="text">Add to Planner</div>
+      <i class="dropdown icon"></i>
+      <sm-menu items="plan_years_menu" label="item.label" description="item.description" icon="item.icon" children="item.children" divider="item.divider" on-click="handlePlanClick(item, $event)"></sm-menu>
+    </div>
       
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
