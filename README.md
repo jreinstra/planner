@@ -1,7 +1,7 @@
 # Cardinal Planner
 This is the main code repository for the cardinal planner project.
 
-View current production version: https://cardinal-planner.herokuapp.com/
+View current production version: http://cardinalplanner.com/
 
 ## Setting up your local environment
 

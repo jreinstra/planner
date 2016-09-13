@@ -141,7 +141,7 @@
 
                     $http.put(BASE_URL + '/api/plan_years/' + $scope.plan_year.id + '/', $scope.post_data)
                       .then(function(response) {
-                        $scope.planText = "Added.";
+                        $scope.planText = "Added";
                         setTimeout(function() {
                             $scope.planText = "Add to Planner";
                         }, 1000);
@@ -153,7 +153,10 @@
                 $scope.planText = "Add to Planner";
 
                 $scope.plan_years = $.grep(plan_years.data.results, function(e){ return $scope.plan.years.includes(e.id); });
-
+                $scope.plan_years.sort(function(a, b) {
+                    return parseInt(a.year.substring(0, 5)) - parseInt(b.year.substring(0, 5));
+                });
+                
                 $scope.plan_years_menu = [];
                 for (var i in $scope.plan_years) {
                   $scope.plan_years_menu.push(
