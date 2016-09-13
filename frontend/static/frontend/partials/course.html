@@ -6,7 +6,13 @@
     <h1 class="ui header">
       {{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
     </h1>
-      <br>
+      
+    <div ng-if="hasPlan" class="ui floating labeled icon dropdown green button" sm-dropdown-bind="{action: 'hide'}">
+      <div class="text">{{ planText }}</div>
+      <i class="dropdown icon"></i>
+      <sm-menu items="plan_years_menu" label="item.label" description="item.description" icon="item.icon" children="item.children" divider="item.divider" on-click="handlePlanClick(item, $event)"></sm-menu>
+    </div>
+    <br><br>
     <div class="ui two column stackable grid">
         <div class="ui column">
           Rating:
@@ -26,12 +32,6 @@
             Grading: <strong>{{ result.grading }}</strong>
         </div>
     </div>
-    
-    <div ng-if="hasPlan" class="ui floating labeled icon dropdown button">
-      <div class="text">Add to Planner</div>
-      <i class="dropdown icon"></i>
-      <sm-menu items="plan_years_menu" label="item.label" description="item.description" icon="item.icon" children="item.children" divider="item.divider" on-click="handlePlanClick(item, $event)"></sm-menu>
-    </div>
       
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
@@ -48,7 +48,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.component != 'DIS'">
-                <td>{{ section.term }} {{ section.year }} {{section.component }}</td>
+                <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
                     {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}

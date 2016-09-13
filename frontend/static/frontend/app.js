@@ -98,61 +98,76 @@
     return $scope;
   })
   
-  .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course, plans, plan_years){
+  .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course){
     
     // Add to Plan
     
-    $scope.selectedQuarter = '';
-    $scope.selectedYear = '';
-    
-    $scope.handlePlanClick = function(item, $event) {
-      if (!['Autumn', 'Winter', 'Spring'].includes(item)) {
-        alert('Please Select a Quarter');
-        $event.preventDefault();
-      }
-      
-      if ($scope.selectedQuarter == '') {
-        $scope.selectedQuarter = item;
-      } else {
-        $scope.selectedYear = item;
-        
-        $scope.plan_year = $.grep(plan_years.data.results, function(e){ return e.year == $scope.selectedYear })[0];
-        $scope.new_course_list = $scope.plan_year.courses;
-        $scope.new_course_list.push($state.params.id);
-        
-        $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year};
-        $scope.post_data[$scope.selectedQuarter.toLowerCase()] = $scope.new_course_list;
-        
-        $http.post(BASE_URL + '/api/plan_years/', $scope.post_data)
-          .then(function(response) {
-            alert('Course Added To Plan.');
-        }, function(response) {
-          alert('Could not connect to server.');
-        });
-      }
-      
+    if($rootScope.loggedIn) {
+        console.log("logged in:", $rootScope.loggedIn);
+        $http({method: "GET", url: BASE_URL + '/api/plans/'}).then(function(response) {
+            var plans = response;
+            $scope.planText = "Loading plan...";
+            $scope.hasPlan = false;
+            if (plans.data.results.length > 0) {
+              $scope.hasPlan = true;
+              $scope.plan = plans.data.results[0];
+            }
+
+            $http({method: "GET", url: BASE_URL + '/api/plan_years/'}).then(function(response) {
+                var plan_years = response;
+                
+                $scope.selectedQuarter = '';
+                $scope.selectedYear = '';
+
+                $scope.handlePlanClick = function(item, $event) {
+                  console.log(item, item.label, ['Autumn', 'Winter', 'Spring'].includes(item.label));
+                  if (!['Autumn', 'Winter', 'Spring'].includes(item.label) && $scope.selectedQuarter == '') {
+                    alert('Please Select a Quarter');
+                  }
+                  
+                  if ($scope.selectedQuarter == '') {
+                    $scope.selectedQuarter = item.label;
+                  } else {
+                    $scope.selectedYear = item.label;
+                    $scope.plan_year = $.grep(plan_years.data.results, function(e){ return e.year == $scope.selectedYear })[0];
+                    console.log(plan_years.data.results, $scope.plan_year);
+                    var quarterKey = $scope.selectedQuarter.toLowerCase();
+                      
+                    $scope.new_course_list = $scope.plan_year[quarterKey];
+                    $scope.new_course_list.push($state.params.id);
+
+                    $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year};
+                    $scope.post_data[quarterKey] = $scope.new_course_list;
+
+                    $http.put(BASE_URL + '/api/plan_years/' + $scope.plan_year.id + '/', $scope.post_data)
+                      .then(function(response) {
+                        $scope.planText = "Added.";
+                        setTimeout(function() {
+                            $scope.planText = "Add to Planner";
+                        }, 1000);
+                    }, function(response) {
+                      alert('Could not connect to server.');
+                    });
+                  }
+                }
+                $scope.planText = "Add to Planner";
+
+                $scope.plan_years = $.grep(plan_years.data.results, function(e){ return $scope.plan.years.includes(e.id); });
+
+                $scope.plan_years_menu = [];
+                for (var i in $scope.plan_years) {
+                  $scope.plan_years_menu.push(
+                    {label: $scope.plan_years[i].year, children: [
+                      {label: 'Autumn'},
+                      {label: 'Winter'},
+                      {label: 'Spring'},
+                    ]}
+                  );
+                }
+                console.log($scope.plan_years_menu);
+            }, function(response) {})
+        }, function(response) {})
     }
-    
-    $scope.hasPlan = false;
-    
-    if (plans.data.results.length > 0) {
-      $scope.hasPlan = true;
-      $scope.plan = plans.data.results[0];
-    }
-    
-    $scope.plan_years = $.grep(plan_years.data.results, function(e){ return $scope.plan.years.includes(e.id); });
-    
-    $scope.plan_years_menu = [];
-    for (var i in $scope.plan_years) {
-      $scope.plan_years_menu.push(
-        {label: $scope.plan_years[i].year, children: [
-          {label: 'Autumn'},
-          {label: 'Winter'},
-          {label: 'Spring'},
-        ]}
-      );
-    }
-    console.log($scope.plan_years_menu);
     
     // Comments
     $scope.reply = true;
@@ -489,12 +504,6 @@
         resolve: {
           'course': function($stateParams, $http, BASE_URL) {
             return $http({method: 'GET', url: BASE_URL + '/api/courses/' + $stateParams.id});
-          },
-          'plans': function($http, BASE_URL) {
-            return $http({method: "GET", url: BASE_URL + '/api/plans/'})
-          },
-          'plan_years': function($http, BASE_URL, plans) {
-            return $http({method: "GET", url: BASE_URL + '/api/plan_years/'})
           },
           'title': function($rootScope, course) {
             $rootScope.title = course.data.title;
