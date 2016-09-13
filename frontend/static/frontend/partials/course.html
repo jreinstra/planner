@@ -30,6 +30,7 @@
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
     <h2 class="ui header">Open Sections</h2>
+      <em>Discussion sections will be added soon.</em>
     <table class="ui celled table">
         <thead>
             <tr>
@@ -40,8 +41,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.instructor != null">
-                <td>{{ section.term }} {{ section.year }}</td>
+            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.component != 'DIS'">
+                <td>{{ section.term }} {{ section.year }} {{section.component }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
                     {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}

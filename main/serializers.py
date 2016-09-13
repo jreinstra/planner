@@ -126,7 +126,7 @@ class InlineSectionSerializer(serializers.ModelSerializer):
             'id', 'year', 'term', 'section_number', 'num_enrolled',
             'max_enrolled', 'num_waitlist', 'max_waitlist', 'enroll_status',
             'instructor', 'start_date', 'end_date', 'start_time', 'end_time',
-            'days'
+            'days', 'component'
         )
         depth = 1
         

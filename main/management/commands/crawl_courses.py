@@ -80,6 +80,7 @@ def populate_course(r, **kwargs):
             se.year = section[1].text.split(" ")[0]
             se.term = section[1].text.split(" ")[1]
             se.section_number = int(section[6].text)
+            se.component = section[7].text
             se.num_enrolled = int(section[8].text)
             se.max_enrolled = int(section[9].text)
             se.num_waitlist = int(section[10].text)

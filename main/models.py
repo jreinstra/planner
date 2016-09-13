@@ -112,6 +112,7 @@ class CourseSection(models.Model):
     year = models.CharField(max_length=10)
     term = models.CharField(max_length=15)
     section_number = models.IntegerField()
+    component = models.CharField(max_length=4, default="")
     
     # These will need to be crawled more frequently
     num_enrolled = models.IntegerField()
