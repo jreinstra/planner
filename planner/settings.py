@@ -123,7 +123,6 @@ STATICFILES_DIRS = (
 )
 
 SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 try:
     from local_settings import *
