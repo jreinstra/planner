@@ -1,0 +1,14 @@
+<div class="ui text container">
+  <div class="ui header">
+    Graduation Requirements
+  </div>
+  
+  Total Units Planned: {{ total_units }} / 180
+  
+  Total General Requirements:
+  
+  <ul>
+    <li ng-repeat="(k, v) in total_general_requirements">{{ k }} - {{ v }}</li>
+  </ul>
+  
+</div>

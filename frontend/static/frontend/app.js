@@ -477,6 +477,36 @@
     ;
   })
   
+  .controller('GradReqsCtrl', function($rootScope, $scope, $state, $http, BASE_URL, plans, plan_years) {
+    
+    $scope.plan = plans.data.results[0];
+    $scope.plan_years = $.grep(plan_years.data.results, function(e){ return e.plan == $scope.plan.id; })
+
+    $scope.total_units = 0;
+    $scope.total_general_requirements = {};
+    $scope.terms = ['autumn', 'winter', 'spring'];
+    
+    for (var i in $scope.plan_years) {
+      for (var j in $scope.terms) {
+        $scope.total_units += $scope.plan_years[i].course_data[$scope.terms[j]].reduce(function(total, current) {
+          return total + current.max_units;
+        }, 0);
+        
+        $scope.plan_years[i].course_data[$scope.terms[j]].forEach(function(e, i, a) {
+          e.general_requirements.split(', ').forEach(function(e, i, a) {
+            if (!(e in $scope.total_general_requirements)) {
+              $scope.total_general_requirements[e] = 1;
+            } else {
+              $scope.total_general_requirements[e]++;
+            }
+          });
+        });
+      }
+    }
+    
+    
+  })
+  
   .filter('capitalize', function() {
       return function(input) {
         return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
@@ -506,7 +536,7 @@
         controller: 'CourseCtrl',
         resolve: {
           'course': function($stateParams, $http, BASE_URL) {
-            return $http({method: 'GET', url: BASE_URL + '/api/courses/' + $stateParams.id});
+            return $http({method: 'GET', url: BASE_URL + '/api/courses/' + $stateParams.id + '/'});
           },
           'title': function($rootScope, course) {
             $rootScope.title = course.data.title;
@@ -552,6 +582,22 @@
           },
           'title': function($rootScope) {
             $rootScope.title = "New Plan";
+          }
+        }
+      })
+      .state('grad_reqs', {
+        url: '/grad_reqs',
+        templateUrl: 'static/frontend/partials/grad_reqs.html',
+        controller: 'GradReqsCtrl',
+        resolve: {
+          'plans': function($http, BASE_URL) {
+            return $http({method: "GET", url: BASE_URL + '/api/plans/'})
+          },
+          'plan_years': function($http, BASE_URL, plans) {
+            return $http({method: "GET", url: BASE_URL + '/api/plan_years/'})
+          },
+          'title': function($rootScope) {
+            $rootScope.title = "Graduation Requirements";
           }
         }
       })
