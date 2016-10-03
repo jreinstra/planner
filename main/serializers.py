@@ -26,7 +26,15 @@ class CodeRelatedField(serializers.RelatedField):
     
 class SectionRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return [InlineSectionSerializer(item).data for item in value.get_queryset()]
+        result = []
+        term_sections = []
+        for item in value.get_queryset():
+            data = InlineSectionSerializer(item).data
+            term_section = data["term"] + "_-_" + str(data["section_number"])
+            if term_section not in term_sections:
+                result.append(data)
+                term_sections.append(term_section)
+        return result
     
     
 class ContentObjectRelatedField(serializers.Field):
