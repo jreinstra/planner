@@ -24,6 +24,16 @@ class CodeRelatedField(serializers.RelatedField):
         return [CodeSerializer(item).data for item in value.get_queryset()]
     
     
+class CodeRelatedFieldUseful(serializers.RelatedField):
+    def to_representation(self, value):
+        return [CodeSerializerUseful(item).data for item in value.get_queryset()]
+    
+    
+class UsefulRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return [CodeSerializer(item.codes.all()[0]).data for item in value.get_queryset()]
+    
+    
 class SectionRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         result = []
@@ -94,7 +104,8 @@ class CourseDataField(serializers.Field):
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     reviews = ReviewRelatedField(read_only=True)
-    codes = CodeRelatedField(read_only=True)
+    codes = CodeRelatedFieldUseful(read_only=True)
+    prerequisites = CodeRelatedField(read_only=True)
     sections = SectionRelatedField(read_only=True)
     
     class Meta:
@@ -103,7 +114,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'general_requirements',
             'repeatable', 'grading', 'min_units', 'max_units', 'department',
             'sections', 'reviews', 'comments', 'codes', 'average_rating',
-            'grade_distribution', 'median_grade', 'instructors'
+            'grade_distribution', 'median_grade', 'instructors', 'prerequisites'
         )
         read_only_fields = (
             'average_rating', 'grade_distribution', 'id', 'sections', 'comments', 'reviews'
@@ -124,6 +135,16 @@ class CodeSerializer(serializers.ModelSerializer):
         model = CourseCode
         fields = (
             'code', 'alt_code', 'title', 'course'
+        )
+        
+        
+class CodeSerializerUseful(serializers.ModelSerializer):
+    useful_for = UsefulRelatedField(read_only=True)
+    
+    class Meta:
+        model = CourseCode
+        fields = (
+            'code', 'alt_code', 'title', 'course', 'useful_for'
         )
         
         

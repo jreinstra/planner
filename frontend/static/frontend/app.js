@@ -116,6 +116,7 @@
             
             $scope.selectedQuarter = '';
             $scope.selectedYear = '';
+            $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
 
             $scope.handlePlanClick = function(item, $event) {
               console.log(item, item.label, ['Autumn', 'Winter', 'Spring'].includes(item.label));
@@ -126,7 +127,7 @@
               if ($scope.selectedQuarter == '') {
                 $scope.selectedQuarter = item.label;
               } else {
-                $scope.selectedYear = item.label;
+                $scope.selectedYear = item.value;
                 $scope.plan_year = $.grep(plan_years.data.results, function(e){ return e.year == $scope.selectedYear })[0];
                 console.log(plan_years.data.results, $scope.plan_year);
                 var quarterKey = $scope.selectedQuarter.toLowerCase();
@@ -158,7 +159,7 @@
             $scope.plan_years_menu = [];
             for (var i in $scope.plan_years) {
               $scope.plan_years_menu.push(
-                {label: $scope.plan_years[i].year, children: [
+                {label: $scope.years_names[i], value:$scope.plan_years[i].year, children: [
                   {label: 'Autumn'},
                   {label: 'Winter'},
                   {label: 'Spring'},
@@ -195,6 +196,13 @@
     $scope.canPostReview = true;
 
     $scope.result = course.data;
+    $scope.result.useful_for = [];
+    for(var i in $scope.result.codes) {
+        var code = $scope.result.codes[i];
+        for(var j in code.useful_for) {
+            $scope.result.useful_for.push(code.useful_for[j])
+        }
+    }
     
     // Add Logic Here To Check If User canPostReview
     
@@ -321,18 +329,22 @@
       }));
       
       $scope.years.sort();
+      $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
       
       $scope.tabs = {};
       
       for (var i in $scope.years) {
-        $scope.tabs[$scope.years[i]] = $scope.years[i];
+        $scope.tabs[$scope.years[i]] = $scope.years_names[i];
       }
       
-      $scope.selected_plan_year = $scope.plan_years[0];
-      $scope.selected_year = $scope.years[0];
+      $scope.selected_plan_year = $scope.plan_years[1];
+        $scope.selected_year = $scope.years[1];
       
       $scope.$watch('selected_year', function(selected_year) {
-        $scope.selected_plan_year = $.grep($scope.plan_years, function(e){ return e.year == $scope.selected_year; })[0];
+        $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
+            console.log("E: " + e.year + " " + $scope.selected_year);
+            return e.year == $scope.selected_year;
+        })[0];
 
         $scope.courses = $scope.selected_plan_year.course_data
         delete $scope.courses['summer'];
