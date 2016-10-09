@@ -196,6 +196,13 @@
     $scope.canPostReview = true;
 
     $scope.result = course.data;
+    $scope.result.useful_for = [];
+    for(var i in $scope.result.codes) {
+        var code = $scope.result.codes[i];
+        for(var j in code.useful_for) {
+            $scope.result.useful_for.push(code.useful_for[j])
+        }
+    }
     
     // Add Logic Here To Check If User canPostReview
     
