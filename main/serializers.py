@@ -95,6 +95,7 @@ class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     reviews = ReviewRelatedField(read_only=True)
     codes = CodeRelatedField(read_only=True)
+    prerequisites = CodeRelatedField(read_only=True)
     sections = SectionRelatedField(read_only=True)
     
     class Meta:
@@ -103,7 +104,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'general_requirements',
             'repeatable', 'grading', 'min_units', 'max_units', 'department',
             'sections', 'reviews', 'comments', 'codes', 'average_rating',
-            'grade_distribution', 'median_grade', 'instructors'
+            'grade_distribution', 'median_grade', 'instructors', 'prerequisites'
         )
         read_only_fields = (
             'average_rating', 'grade_distribution', 'id', 'sections', 'comments', 'reviews'

@@ -35,6 +35,10 @@
       
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
+    <div ng-if="result.prerequisites.length > 0">
+        <h2 class="ui header" style="margin-bottom: 4px;">Prerequisites</h2>
+        <button ng-repeat="prereq in result.prerequisites" ui-sref="course({id: prereq.course})" class="ui blue button" style="margin-top: 10px;">{{ prereq.code }}</button>
+    </div>
     <h2 class="ui header">Open Sections</h2>
       <em>Discussion sections will be added soon.</em>
     <table class="ui celled table">
