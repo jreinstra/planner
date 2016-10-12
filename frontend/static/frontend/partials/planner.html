@@ -4,7 +4,7 @@
   </div>
   <div ng-hide="loading">
     <sm-tab-menu tabs="tabs" active="selected_year" class="pointing secondary"></sm-tab-menu>
-    <sm-tab name="{{ year }}" ng-repeat="year in year_names"></sm-tab>
+    <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
     <div id="planner" class="ui four column doubling stackable grid container" style="height: 70vh;">
       <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
         <div class="ui header">{{ term | capitalize }}</div>

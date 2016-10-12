@@ -337,14 +337,15 @@
         $scope.tabs[$scope.years[i]] = $scope.years_names[i];
       }
       
-      $scope.selected_plan_year = $scope.plan_years[1];
-        $scope.selected_year = $scope.years[1];
+      $scope.selected_plan_year = $scope.plan_years[0];
+      $scope.selected_year = $scope.years[0];
       
       $scope.$watch('selected_year', function(selected_year) {
         $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
-            console.log("E: " + e.year + " " + $scope.selected_year);
+            //console.log("E: " + e.year + " " + $scope.selected_year);
             return e.year == $scope.selected_year;
         })[0];
+          console.log("result: " + $scope.selected_plan_year);
 
         $scope.courses = $scope.selected_plan_year.course_data
         delete $scope.courses['summer'];
