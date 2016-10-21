@@ -1,6 +1,8 @@
 import json
 import requests
 
+from django.core.cache import cache
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
@@ -16,6 +18,8 @@ from rest_framework.exceptions import ValidationError
 from main.utils import get_query
 from main.models import *
 from main.serializers import *
+
+CACHE_TIMEOUT = 24 * 60 * 60 # one day
 
 # Create your views here.
 
@@ -34,6 +38,10 @@ class Search(APIView):
             
         if ('q' in request.GET) and request.GET['q'].strip():
             query_string = request.GET['q']
+            cache_key = "search_%s_%s" % (query_string, limit)
+            cache_result = cache.get(cache_key)
+            if cache_result is not None:
+                return Response(json.loads(cache_result))
             
             code_string = query_string.upper().replace(" ", "")
             found_entries = list(CourseCode.objects.filter(alt_code=code_string))
@@ -74,6 +82,8 @@ class Search(APIView):
                     
                     if len(results) == limit:
                         break
+                        
+            cache.set(cache_key, json.dumps(results), CACHE_TIMEOUT)
             return Response(results)
         else:
             raise ValidationError("Search parameter 'q' is required.")
