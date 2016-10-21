@@ -99,6 +99,17 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Caching
+
+# Make sure to update your local_settings.py to the new sample for local dev
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
