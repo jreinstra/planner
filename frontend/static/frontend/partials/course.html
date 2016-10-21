@@ -40,6 +40,7 @@
         <button ng-repeat="prereq in result.prerequisites" ui-sref="course({id: prereq.course})" class="ui blue button" style="margin-top: 10px;">{{ prereq.code }}</button>
     </div>
       <br>
+      
     <div ng-if="result.useful_for.length > 0">
         <h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
         <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
