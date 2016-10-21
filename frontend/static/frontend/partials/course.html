@@ -46,7 +46,6 @@
         <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
     </div>
     <h2 class="ui header">Open Sections</h2>
-      <em>Discussion sections will be added soon.</em>
     <table class="ui celled table">
         <thead>
             <tr>
@@ -64,6 +63,28 @@
                     {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
                 </td>
                 <td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2 class="ui header">Discussion Sections</h2>
+      <em>Not all classes use Axess to enroll for discussion sections, so this is not necessarily an accurate list.</em>
+    <table class="ui celled table">
+        <thead>
+            <tr>
+                <th>Term</th>
+                <th>Days</th>
+                <th>Time</th>
+                <th>Section #</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.component == 'DIS'  && section.days != ''">
+                <td>{{ section.term }} {{ section.year }}</td>
+                <td>{{ section.days.split(' ').join(', ') }}</td>
+                <td>
+                    {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
+                </td>
+                <td>{{ section.section_number }}</td>
             </tr>
         </tbody>
     </table>
