@@ -438,6 +438,75 @@
     }
   })
   
+  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plans) {
+    $http({method: "GET", url: BASE_URL + '/api/plan_years/'}).then(function(response) {
+        var plan_years = response;
+        $scope.plans = plans.data.results;
+        $scope.terms = ['autumn', 'winter', 'spring'];
+
+        $scope.courses = {
+        'autumn':[],
+        'winter':[],
+        'spring':[]
+        };
+
+        $scope.courses_ids = {
+        'autumn':[],
+        'winter':[],
+        'spring':[]
+        };
+
+        $scope.courses_units = {
+        'autumn':{
+          'min_units': 0,
+          'max_units': 0,
+        },
+        'winter':{
+          'min_units': 0,
+          'max_units': 0,
+        },
+        'spring':{
+          'min_units': 0,
+          'max_units': 0,
+        }
+        }
+
+        // Get Plan Years
+        $scope.plan_years = plan_years.data.results;
+
+        $scope.years = _.uniq($scope.plan_years.map(function(py) {
+        return py.year;
+        }));
+
+        $scope.years.sort();
+        $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
+
+        $scope.tabs = {};
+
+        for (var i in $scope.years) {
+        $scope.tabs[$scope.years[i]] = $scope.years_names[i];
+        }
+
+        $scope.selected_plan_year = $scope.plan_years[0];
+        $scope.selected_year = $scope.years[0];
+
+        $scope.$watch('selected_year', function(selected_year) {
+        $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
+            //console.log("E: " + e.year + " " + $scope.selected_year);
+            return e.year == $scope.selected_year;
+        })[0];
+          console.log("result: " + $scope.selected_plan_year);
+
+        $scope.courses = $scope.selected_plan_year.course_data
+        delete $scope.courses['summer'];
+        });
+
+        $scope.deleteCourse = function(term, index) {
+        $scope.courses[term].splice(index, 1);
+        }
+    }, function(response) {});
+  })
+  
   .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
     $scope.degrees = degrees.data.results;
     $scope.selected_degrees = [];
@@ -594,6 +663,19 @@
           },
           'title': function($rootScope) {
             $rootScope.title = "Four Year Planner";
+          }
+        }
+      })
+      .state('plan', {
+        url: '/plan/:plan_id',
+        templateUrl: 'static/frontend/partials/plan.html',
+        controller: 'PlanCtrl',
+        resolve: {
+          'plan': function($stateParams, $http, BASE_URL) {
+            return $http({method: "GET", url: BASE_URL + '/api/public_plans/' + $stateParams.plan_id})
+          },
+          'title': function($rootScope) {
+            $rootScope.title = "Four Year Plan";
           }
         }
       })

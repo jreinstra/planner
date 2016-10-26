@@ -11,6 +11,8 @@ router.register(r'courses', views.CourseViewSet, base_name="courses")
 router.register(r'degrees', views.DegreeViewSet, base_name="degrees")
 router.register(r'departments', views.DepartmentViewSet, base_name="departments")
 
+router.register(r'public_plans', views.PublicPlanViewSet, base_name="public_plans")
+router.register(r'public_plan_years', views.PublicPlanYearViewSet, base_name="public_plan_years")
 
 router.register(r'plans', views.PlanViewSet, base_name="plans")
 router.register(r'plan_years', views.PlanYearViewSet, base_name="plan_years")
