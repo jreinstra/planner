@@ -22,6 +22,7 @@ def main():
                 r = CourseCode.objects.filter(code__in=[course.department.code + " " + token, prev_token + " " + token])
                 for entry in r:
                     course.prerequisites.add(entry)
+                prev_token = token
         if num_finished % 100 == 0:
             print "Finished %s of %s courses." % (num_finished, num_total)
         num_finished += 1
