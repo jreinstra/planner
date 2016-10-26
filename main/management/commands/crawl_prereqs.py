@@ -11,7 +11,7 @@ def main():
     for course in courses:
         d = course.description
         if "requisite" in d:
-            tokens = [s.upper().replace(".", "").replace(",", "") for s in d[d.index("requisite"):].split(" ")]
+            tokens = [s.upper().replace(".", "").replace(",", "").replace(";", "") for s in d[d.index("requisite"):].split(" ")]
             prev_token = ""
             results = set()
             for token in tokens:
