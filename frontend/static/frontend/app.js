@@ -438,10 +438,10 @@
     }
   })
   
-  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plans) {
-    $http({method: "GET", url: BASE_URL + '/api/plan_years/'}).then(function(response) {
+  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plan) {
+    $scope.plans = [plan.data];
+    $http({method: "GET", url: BASE_URL + '/api/public_plan_years/?plan=' + $scope.plans[0].id}).then(function(response) {
         var plan_years = response;
-        $scope.plans = plans.data.results;
         $scope.terms = ['autumn', 'winter', 'spring'];
 
         $scope.courses = {
@@ -473,6 +473,8 @@
 
         // Get Plan Years
         $scope.plan_years = plan_years.data.results;
+        console.log("Plan years:");
+        console.log($scope.plan_years);
 
         $scope.years = _.uniq($scope.plan_years.map(function(py) {
         return py.year;
@@ -572,7 +574,6 @@
   })
   
   .controller('GradReqsCtrl', function($rootScope, $scope, $state, $http, BASE_URL, plans, plan_years) {
-    
     $scope.plan = plans.data.results[0];
     $scope.plan_years = $.grep(plan_years.data.results, function(e){ return e.plan == $scope.plan.id; })
 
@@ -672,7 +673,7 @@
         controller: 'PlanCtrl',
         resolve: {
           'plan': function($stateParams, $http, BASE_URL) {
-            return $http({method: "GET", url: BASE_URL + '/api/public_plans/' + $stateParams.plan_id})
+            return $http({method: "GET", url: BASE_URL + '/api/public_plans/' + $stateParams.plan_id + "/"})
           },
           'title': function($rootScope) {
             $rootScope.title = "Four Year Plan";
