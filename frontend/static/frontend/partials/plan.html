@@ -8,9 +8,8 @@
     <div id="planner" class="ui three column doubling stackable grid container" style="min-height: 70vh;">
       <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
         <div class="ui header">{{ term | capitalize }}</div>
-        <div>
-          <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" data-as-sortable-item>
-            <div class="ui segment" data-as-sortable-item-handle>
+        <div ng-repeat="course in courses[term]" ui-sref="course({id: course.id})">
+            <div class="ui segment">
               <div class="content course-entry">
                 <div class="header">
                     <strong>{{ course.code || course.codes[0].code }}</strong><br>
@@ -20,9 +19,7 @@
                 <div class="ui bottom left attached tiny label" ng-if="course.average_rating">
                     <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
                 </div>
-              <a class="ui top right attached tiny red label" ng-click="deleteCourse(term, $index)">X</a>
             </div>
-          </li>
         </div>
         <a class="ui top right attached label" ng-class="
                                                          {

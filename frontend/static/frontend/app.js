@@ -486,6 +486,7 @@
         $scope.tabs = {};
 
         for (var i in $scope.years) {
+            console.log($scope.years[i], $scope.years_names[i]);
         $scope.tabs[$scope.years[i]] = $scope.years_names[i];
         }
 
@@ -493,15 +494,34 @@
         $scope.selected_year = $scope.years[0];
 
         $scope.$watch('selected_year', function(selected_year) {
+            console.log("calling selected year");
         $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
-            //console.log("E: " + e.year + " " + $scope.selected_year);
+            console.log("E: " + e.year + " " + $scope.selected_year);
             return e.year == $scope.selected_year;
         })[0];
-          console.log("result: " + $scope.selected_plan_year);
+          console.log("result: ", $scope.selected_plan_year);
 
         $scope.courses = $scope.selected_plan_year.course_data
         delete $scope.courses['summer'];
         });
+        
+        $scope.$watch('courses', function(courses) {
+        console.log(courses);
+        for (var key in courses) {
+          $scope.courses_ids[key] = $scope.courses[key].map(function(course) {
+            return course.id;
+          });
+          $scope.courses_units[key]['min_units'] = $scope.courses[key].map(function(course) {
+            return course.min_units;
+          }).reduce(function(a, b) { return a + b; }, 0);
+          $scope.courses_units[key]['max_units'] = $scope.courses[key].map(function(course) {
+            return course.max_units;
+          }).reduce(function(a, b) { return a + b; }, 0);
+        }
+        
+        console.log($scope.courses_ids);
+        console.log($scope.courses_units);
+      }, true)
 
         $scope.deleteCourse = function(term, index) {
         $scope.courses[term].splice(index, 1);
