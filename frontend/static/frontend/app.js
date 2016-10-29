@@ -495,6 +495,7 @@
 
         $scope.$watch('selected_year', function(selected_year) {
             console.log("calling selected year");
+            console.log(selected_year);
         $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
             console.log("E: " + e.year + " " + $scope.selected_year);
             return e.year == $scope.selected_year;
