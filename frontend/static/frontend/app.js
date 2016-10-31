@@ -442,10 +442,8 @@
     }
   })
   
-  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plan) {
-    $scope.plans = [plan.data];
-    $http({method: "GET", url: BASE_URL + '/api/public_plan_years/?plan=' + $scope.plans[0].id}).then(function(response) {
-        var plan_years = response;
+  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plan, plan_years) {
+        $scope.plans = [plan.data];
         $scope.terms = ['autumn', 'winter', 'spring'];
 
         $scope.courses = {
@@ -495,7 +493,7 @@
         }
 
         $scope.selected_plan_year = $scope.plan_years[0];
-        $scope.selected_year = $scope.years[3];
+        $scope.selected_year = $scope.years[0];
         console.log("selected....ee.e.", $scope.selected_year, $scope.selected_plan_year);
 
         $scope.$watch('selected_year', function(selected_year) {
@@ -511,7 +509,7 @@
         delete $scope.courses['summer'];
             console.log("done selected year!");
         });
-        
+
         $scope.$watch('courses', function(courses) {
             console.log("calling courses");
         console.log(courses);
@@ -526,15 +524,13 @@
             return course.max_units;
           }).reduce(function(a, b) { return a + b; }, 0);
         }
-        
+
         console.log($scope.courses_ids);
         console.log($scope.courses_units);
-            
+
             console.log("done courses!");
       }, true)
         console.log("done loading!");
-    }, function(response) {});
-      console.log("done request!");
   })
   
   .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
@@ -701,7 +697,12 @@
         controller: 'PlanCtrl',
         resolve: {
           'plan': function($stateParams, $http, BASE_URL) {
+              console.log(BASE_URL + '/api/public_plans/' + $stateParams.plan_id + "/");
             return $http({method: "GET", url: BASE_URL + '/api/public_plans/' + $stateParams.plan_id + "/"})
+          },
+          'plan_years': function($stateParams, $http, BASE_URL) {
+              console.log(BASE_URL + '/api/public_plan_years/?plan=' + $stateParams.plan_id);
+              return $http({method: "GET", url: BASE_URL + '/api/public_plan_years/?plan=' + $stateParams.plan_id})
           },
           'title': function($rootScope) {
             $rootScope.title = "Four Year Plan";
