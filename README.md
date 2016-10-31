@@ -1,13 +1,13 @@
 # Cardinal Planner
 This is the main code repository for the cardinal planner project.
 
-View current production version: http://cardinalplanner.com/
+View current production version: https://www.cardinalplanner.com/
 
 ## Setting up your local environment
 
 Follow the below checklist to setup your local Django environment:
 
-- Set up and enter a [new virtual environment
+1. Set up and enter a [new virtual environment
 ](https://hackercodex.com/guide/python-development-environment-on-mac-osx/)- Clone the repository into a new folder
 - Go into the new folder
 - Install all pip requirements: `pip install -r requirements.txt`

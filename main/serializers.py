@@ -1,12 +1,29 @@
+import json
+
 from rest_framework import serializers
+
+from django.core.cache import cache
 
 from django.contrib.auth.models import User
 from main.models import *
 
+CACHE_TIMEOUT = 24 * 60 * 60 # one day
+
+def cached_serializer_get(prefix, item, serializer):
+    cache_string = prefix + "_" + str(item.pk)
+    cache_result = cache.get(cache_string)
+    
+    if cache_result is not None:
+        return json.loads(cache_result)
+    else:
+        result = serializer(item).data
+        cache.set(cache_string, json.dumps(result), CACHE_TIMEOUT)
+        return result
+
 
 class CommentRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return [CommentSerializer(item).data for item in value.get_queryset()]
+        return [cached_serializer_get("comment", item, CommentSerializer) for item in value.get_queryset()]
     
     
 class ReviewRelatedField(serializers.RelatedField):
@@ -16,17 +33,35 @@ class ReviewRelatedField(serializers.RelatedField):
         ).exclude(
             text=""
         ).order_by('-created_at')[:5]
-        return [ReviewSerializer(item).data for item in q]
+        return [cached_serializer_get("review", item, ReviewSerializer) for item in q]
     
     
 class CodeRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return [CodeSerializer(item).data for item in value.get_queryset()]
+        return [cached_serializer_get("code", item, CodeSerializer) for item in value.get_queryset()]
+    
+    
+class CodeRelatedFieldUseful(serializers.RelatedField):
+    def to_representation(self, value):
+        return [cached_serializer_get("code_useful", item, CodeSerializerUseful) for item in value.get_queryset()]
+    
+    
+class UsefulRelatedField(serializers.RelatedField):
+    def to_representation(self, value):
+        return [cached_serializer_get("code", item.codes.all()[0], CodeSerializer) for item in value.get_queryset()]
     
     
 class SectionRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        return [InlineSectionSerializer(item).data for item in value.get_queryset()]
+        result = []
+        term_sections = []
+        for item in value.get_queryset():
+            data = cached_serializer_get("inline_section", item, InlineSectionSerializer)
+            term_section = data["term"] + "_-_" + str(data["section_number"])
+            if term_section not in term_sections:
+                result.append(data)
+                term_sections.append(term_section)
+        return result
     
     
 class ContentObjectRelatedField(serializers.Field):
@@ -78,7 +113,7 @@ class CourseDataField(serializers.Field):
     def to_representation(self, obj):
         result = {}
         for season in self.SEASONS:
-            result[season] = [CourseSerializer(c).data for c in getattr(obj, season).all()]
+            result[season] = [cached_serializer_get("course", c, CourseSerializer) for c in getattr(obj, season).all()]
             
         return result
             
@@ -86,7 +121,8 @@ class CourseDataField(serializers.Field):
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
     reviews = ReviewRelatedField(read_only=True)
-    codes = CodeRelatedField(read_only=True)
+    codes = CodeRelatedFieldUseful(read_only=True)
+    prerequisites = CodeRelatedField(read_only=True)
     sections = SectionRelatedField(read_only=True)
     
     class Meta:
@@ -95,7 +131,7 @@ class CourseSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'general_requirements',
             'repeatable', 'grading', 'min_units', 'max_units', 'department',
             'sections', 'reviews', 'comments', 'codes', 'average_rating',
-            'grade_distribution', 'median_grade', 'instructors'
+            'grade_distribution', 'median_grade', 'instructors', 'prerequisites'
         )
         read_only_fields = (
             'average_rating', 'grade_distribution', 'id', 'sections', 'comments', 'reviews'
@@ -116,6 +152,16 @@ class CodeSerializer(serializers.ModelSerializer):
         model = CourseCode
         fields = (
             'code', 'alt_code', 'title', 'course'
+        )
+        
+        
+class CodeSerializerUseful(serializers.ModelSerializer):
+    useful_for = UsefulRelatedField(read_only=True)
+    
+    class Meta:
+        model = CourseCode
+        fields = (
+            'code', 'alt_code', 'title', 'course', 'useful_for'
         )
         
         

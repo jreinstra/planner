@@ -5,7 +5,7 @@
   <div ng-hide="loading">
     <sm-tab-menu tabs="tabs" active="selected_year" class="pointing secondary"></sm-tab-menu>
     <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
-    <div id="planner" class="ui four column doubling stackable grid container" style="height: 70vh;">
+    <div id="planner" class="ui four column doubling stackable grid container" style="min-height: 70vh;">
       <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
         <div class="ui header">{{ term | capitalize }}</div>
         <div>
@@ -24,7 +24,7 @@
             </div>
           </li>
         </div>
-        <a class="ui top right attached label" ng-class="
+        <a data-tooltip="Around 15 units is ideal!" data-inverted="" class="ui top right attached label" ng-class="
                                                          {
                                                          green: (courses_units[term].max_units > 13 && courses_units[term].max_units < 18),
                                                          orange: ((courses_units[term].max_units >= 12 && courses_units[term].max_units <= 13) || (courses_units[term].max_units >= 18 && courses_units[term].max_units <= 20)),
@@ -57,7 +57,7 @@
           <div class="ui active loader" ng-if="loading_search">
             <div class="ui loader"></div>
           </div>
-          <div class="item" ng-if="result == false">No classes to show.</div>
+          <div class="item" ng-if="result == false && search.length > 0">No classes to show.</div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ beautifulsoup4==4.5.0
 dj-database-url==0.4.1
 dj-static==0.0.6
 Django==1.9.8
+django-sslify==0.2.7
 django-toolbelt==0.0.1
 djangorestframework==3.4.1
 funcsigs==1.0.2

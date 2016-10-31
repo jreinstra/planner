@@ -67,6 +67,8 @@ class Course(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
     
+    prerequisites = models.ManyToManyField('CourseCode', related_name="useful_for")
+    
     general_requirements = models.CharField(max_length=100)
     repeatable = models.BooleanField()
     grading = models.CharField(max_length=40)
