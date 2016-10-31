@@ -241,6 +241,18 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
         
         
+class PublicPlanViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Plan.objects.all()
+    serializer_class = PlanSerializer
+    
+    
+class PublicPlanYearViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PlanYearSerializer
+    
+    def get_queryset(self):
+        return PlanYear.objects.filter(plan=self.request.GET.get("plan"))
+        
+        
 class PlanViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     

@@ -3,6 +3,8 @@
     <div class="ui text loader">Loading plan</div>
   </div>
   <div ng-hide="loading">
+      <strong>Shareable Link to your Plan: </strong><br>
+      <a href="https://www.cardinalplanner.com/plan/{{ plans[0].id }}">https://www.cardinalplanner.com/plan/{{ plans[0].id }}</a>
     <sm-tab-menu tabs="tabs" active="selected_year" class="pointing secondary"></sm-tab-menu>
     <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
     <div id="planner" class="ui four column doubling stackable grid container" style="min-height: 70vh;">

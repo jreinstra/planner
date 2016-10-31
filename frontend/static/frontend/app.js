@@ -323,6 +323,8 @@
       
       // Get Plan Years
       $scope.plan_years = plan_years.data.results;
+        console.log("Plan year:");
+        console.log($scope.plan_years);
       
       $scope.years = _.uniq($scope.plan_years.map(function(py) {
         return py.year;
@@ -341,6 +343,7 @@
       $scope.selected_year = $scope.years[0];
       
       $scope.$watch('selected_year', function(selected_year) {
+          console.log("calling selected year");
         $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
             //console.log("E: " + e.year + " " + $scope.selected_year);
             return e.year == $scope.selected_year;
@@ -352,6 +355,7 @@
       });
       
       $scope.$watch('courses', function(courses) {
+          console.log("calling courses");
         console.log(courses);
         for (var key in courses) {
           $scope.courses_ids[key] = $scope.courses[key].map(function(course) {
@@ -438,6 +442,97 @@
     }
   })
   
+  .controller('PlanCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plan, plan_years) {
+        $scope.plans = [plan.data];
+        $scope.terms = ['autumn', 'winter', 'spring'];
+
+        $scope.courses = {
+        'autumn':[],
+        'winter':[],
+        'spring':[]
+        };
+
+        $scope.courses_ids = {
+        'autumn':[],
+        'winter':[],
+        'spring':[]
+        };
+
+        $scope.courses_units = {
+        'autumn':{
+          'min_units': 0,
+          'max_units': 0,
+        },
+        'winter':{
+          'min_units': 0,
+          'max_units': 0,
+        },
+        'spring':{
+          'min_units': 0,
+          'max_units': 0,
+        }
+        }
+
+        // Get Plan Years
+        $scope.plan_years = plan_years.data.results;
+        console.log("Plan years:");
+        console.log($scope.plan_years);
+
+        $scope.years = _.uniq($scope.plan_years.map(function(py) {
+        return py.year;
+        }));
+
+        $scope.years.sort();
+        $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
+
+        $scope.tabs = {};
+
+        for (var i in $scope.years) {
+            console.log("tab:::", $scope.years[i], $scope.years_names[i]);
+        $scope.tabs[$scope.years[i]] = $scope.years_names[i];
+        }
+
+        $scope.selected_plan_year = $scope.plan_years[0];
+        $scope.selected_year = $scope.years[0];
+        console.log("selected....ee.e.", $scope.selected_year, $scope.selected_plan_year);
+
+        $scope.$watch('selected_year', function(selected_year) {
+            console.log("calling selected year");
+            console.log(selected_year);
+        $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
+            console.log("E: " + e.year + " " + $scope.selected_year);
+            return e.year == $scope.selected_year;
+        })[0];
+          console.log("result: ", $scope.selected_plan_year);
+
+        $scope.courses = $scope.selected_plan_year.course_data
+        delete $scope.courses['summer'];
+            console.log("done selected year!");
+        });
+
+        $scope.$watch('courses', function(courses) {
+            console.log("calling courses");
+        console.log(courses);
+        for (var key in courses) {
+          $scope.courses_ids[key] = $scope.courses[key].map(function(course) {
+            return course.id;
+          });
+          $scope.courses_units[key]['min_units'] = $scope.courses[key].map(function(course) {
+            return course.min_units;
+          }).reduce(function(a, b) { return a + b; }, 0);
+          $scope.courses_units[key]['max_units'] = $scope.courses[key].map(function(course) {
+            return course.max_units;
+          }).reduce(function(a, b) { return a + b; }, 0);
+        }
+
+        console.log($scope.courses_ids);
+        console.log($scope.courses_units);
+
+            console.log("done courses!");
+      }, true)
+        console.log("done loading!");
+  })
+  
   .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
     $scope.degrees = degrees.data.results;
     $scope.selected_degrees = [];
@@ -503,7 +598,6 @@
   })
   
   .controller('GradReqsCtrl', function($rootScope, $scope, $state, $http, BASE_URL, plans, plan_years) {
-    
     $scope.plan = plans.data.results[0];
     $scope.plan_years = $.grep(plan_years.data.results, function(e){ return e.plan == $scope.plan.id; })
 
@@ -616,6 +710,24 @@
           },
           'title': function($rootScope) {
             $rootScope.title = "Four Year Planner";
+          }
+        }
+      })
+      .state('plan', {
+        url: '/plan/:plan_id',
+        templateUrl: 'static/frontend/partials/plan.html',
+        controller: 'PlanCtrl',
+        resolve: {
+          'plan': function($stateParams, $http, BASE_URL) {
+              console.log(BASE_URL + '/api/public_plans/' + $stateParams.plan_id + "/");
+            return $http({method: "GET", url: BASE_URL + '/api/public_plans/' + $stateParams.plan_id + "/"})
+          },
+          'plan_years': function($stateParams, $http, BASE_URL) {
+              console.log(BASE_URL + '/api/public_plan_years/?plan=' + $stateParams.plan_id);
+              return $http({method: "GET", url: BASE_URL + '/api/public_plan_years/?plan=' + $stateParams.plan_id})
+          },
+          'title': function($rootScope) {
+            $rootScope.title = "Four Year Plan";
           }
         }
       })
