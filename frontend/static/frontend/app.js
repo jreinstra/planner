@@ -482,10 +482,24 @@
     $scope.plan = plans.data.results[0];
     $scope.plan_years = $.grep(plan_years.data.results, function(e){ return e.plan == $scope.plan.id; })
 
+    $scope.required_ways = {
+      'WAY-A-II': 2,
+      'WAY-AQR': 1,
+      'WAY-CE': 2,
+      'WAY-ED': 1,
+      'WAY-ER': 1,
+      'WAY-FR': 1,
+      'WAY-SI': 2,
+      'WAY-SMA': 2
+    };
+    
+    $scope.requirements = [];
+    $scope.classes_ways = {};
+
     $scope.total_units = 0;
     $scope.total_general_requirements = {};
     $scope.terms = ['autumn', 'winter', 'spring'];
-    
+        
     for (var i in $scope.plan_years) {
       for (var j in $scope.terms) {
         $scope.total_units += $scope.plan_years[i].course_data[$scope.terms[j]].reduce(function(total, current) {
@@ -493,18 +507,26 @@
         }, 0);
         
         $scope.plan_years[i].course_data[$scope.terms[j]].forEach(function(e, i, a) {
-          e.general_requirements.split(', ').forEach(function(e, i, a) {
-            if (!(e in $scope.total_general_requirements)) {
-              $scope.total_general_requirements[e] = 1;
+          if (e.general_requirements == "") {
+            return;
+          }
+          $scope.classes_ways[e.codes[0].code] = {};
+          
+          e.general_requirements.split(', ').forEach(function(e2, i, a) {
+            if (_.indexOf($scope.requirements, e2) == -1) {
+              $scope.requirements.splice(_.sortedIndex($scope.requirements, e2), 0, e2);
+            }
+            $scope.classes_ways[e.codes[0].code][e2] = true;
+            
+            if (!(e2 in $scope.total_general_requirements)) {
+              $scope.total_general_requirements[e2] = 1;
             } else {
-              $scope.total_general_requirements[e]++;
+              $scope.total_general_requirements[e2]++;
             }
           });
         });
       }
     }
-    
-    
   })
   
   .filter('capitalize', function() {
