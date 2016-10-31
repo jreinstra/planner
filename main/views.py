@@ -247,7 +247,6 @@ class PublicPlanViewSet(viewsets.ReadOnlyModelViewSet):
     
     
 class PublicPlanYearViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = PlanYear.objects.all()
     serializer_class = PlanYearSerializer
     
     def get_queryset(self):

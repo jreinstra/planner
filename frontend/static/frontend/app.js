@@ -323,6 +323,8 @@
       
       // Get Plan Years
       $scope.plan_years = plan_years.data.results;
+        console.log("Plan year:");
+        console.log($scope.plan_years);
       
       $scope.years = _.uniq($scope.plan_years.map(function(py) {
         return py.year;
@@ -341,6 +343,7 @@
       $scope.selected_year = $scope.years[0];
       
       $scope.$watch('selected_year', function(selected_year) {
+          console.log("calling selected year");
         $scope.selected_plan_year = $.grep($scope.plan_years, function(e){
             //console.log("E: " + e.year + " " + $scope.selected_year);
             return e.year == $scope.selected_year;
@@ -352,6 +355,7 @@
       });
       
       $scope.$watch('courses', function(courses) {
+          console.log("calling courses");
         console.log(courses);
         for (var key in courses) {
           $scope.courses_ids[key] = $scope.courses[key].map(function(course) {
@@ -486,12 +490,13 @@
         $scope.tabs = {};
 
         for (var i in $scope.years) {
-            console.log($scope.years[i], $scope.years_names[i]);
+            console.log("tab:::", $scope.years[i], $scope.years_names[i]);
         $scope.tabs[$scope.years[i]] = $scope.years_names[i];
         }
 
         $scope.selected_plan_year = $scope.plan_years[0];
-        $scope.selected_year = $scope.years[0];
+        $scope.selected_year = $scope.years[3];
+        console.log("selected....ee.e.", $scope.selected_year, $scope.selected_plan_year);
 
         $scope.$watch('selected_year', function(selected_year) {
             console.log("calling selected year");
@@ -504,9 +509,11 @@
 
         $scope.courses = $scope.selected_plan_year.course_data
         delete $scope.courses['summer'];
+            console.log("done selected year!");
         });
         
         $scope.$watch('courses', function(courses) {
+            console.log("calling courses");
         console.log(courses);
         for (var key in courses) {
           $scope.courses_ids[key] = $scope.courses[key].map(function(course) {
@@ -522,12 +529,12 @@
         
         console.log($scope.courses_ids);
         console.log($scope.courses_units);
+            
+            console.log("done courses!");
       }, true)
-
-        $scope.deleteCourse = function(term, index) {
-        $scope.courses[term].splice(index, 1);
-        }
+        console.log("done loading!");
     }, function(response) {});
+      console.log("done request!");
   })
   
   .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
