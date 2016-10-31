@@ -5,10 +5,20 @@
   
   Total Units Planned: {{ total_units }} / 180
   
-  Total General Requirements:
-  
-  <ul>
-    <li ng-repeat="(k, v) in total_general_requirements">{{ k }} - {{ v }}</li>
-  </ul>
-  
+  <table class="ui definition table">
+    <thead>
+      <tr>
+        <th></th>
+        <th ng-repeat="(code, v) in classes_ways">{{ code }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="(way, amount) in required_ways">
+        <td>{{ way }}</td>
+        <td ng-repeat="(code, v) in classes_ways">
+          <i ng-if="v.hasOwnProperty(way)" class="checkmark icon"></i>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
