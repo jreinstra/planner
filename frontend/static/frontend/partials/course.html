@@ -33,7 +33,7 @@
             Satisfies: <strong>{{ result.general_requirements }}</strong>
         </div>
     </div>
-      
+      <div id="gradePlot" ng-show="grade_total > 10" style="height: 300px;"><!-- Plotly chart will be drawn inside this DIV --></div>
     <h2 class="ui header">Description</h2>
     <p>{{ result.description }}</p>
     <div ng-if="result.prerequisites.length > 0">

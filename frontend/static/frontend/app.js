@@ -99,8 +99,30 @@
   })
   
   .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course){
-    
-    // Add to Plan
+    $scope.result = course.data;
+    var grade_dist = JSON.parse($scope.result.grade_distribution);
+      var x = [];
+      var y = [];
+      $scope.grade_total = 0;
+    for(var i in grade_dist) {
+        var item = grade_dist[i];
+        x.push(item[0]);
+        y.push(item[1]);
+        $scope.grade_total += item[1];
+    }
+      if($scope.grade_total > 10) {
+        // Add to Plan
+        var data = [{
+            x: x,
+            y: y,
+            type: 'bar'
+        }];
+
+        var layout = {
+          title: 'Grade Distribution for ' + $scope.result.codes[0].code
+        };
+        Plotly.newPlot('gradePlot', data, layout);
+      }
     
     if($rootScope.loggedIn) {
         console.log("logged in:", $rootScope.loggedIn);
@@ -195,7 +217,6 @@
     // Reviews
     $scope.canPostReview = true;
 
-    $scope.result = course.data;
     $scope.result.useful_for = [];
     for(var i in $scope.result.codes) {
         var code = $scope.result.codes[i];
