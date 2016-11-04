@@ -57,7 +57,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.component != 'DIS'">
+            <tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
@@ -67,8 +67,8 @@
             </tr>
         </tbody>
     </table>
-    <h2 class="ui header">Discussion Sections</h2>
-      <em>Not all classes use Axess to enroll for discussion sections, so this is not necessarily an accurate list.</em>
+    <h2 class="ui header">Open Discussion Sections</h2>
+      <em>Not all classes use Axess to enroll in discussion sections, so this is not necessarily an accurate list.</em>
     <table class="ui celled table">
         <thead>
             <tr>
@@ -79,7 +79,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="section in result.sections" ng-if="section.enroll_status == 'Open' && section.component == 'DIS'  && section.days != ''">
+            <tr ng-repeat="section in result.sections" ng-if="section.component == 'DIS'  && section.days != ''">
                 <td>{{ section.term }} {{ section.year }}</td>
                 <td>{{ section.days.split(' ').join(', ') }}</td>
                 <td>
