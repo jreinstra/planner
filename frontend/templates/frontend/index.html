@@ -62,11 +62,11 @@ olark.identify('1617-170-10-2916');/*]]>*/</script><noscript><a href="https://ww
         Cardinal Planner
       </a>
       <a ui-sref="home" class="item">Home</a>
-      <div class="right item" ng-controller="LoginCtrl">
+      <div class="right menu" ng-controller="LoginCtrl">
         <a ng-if="loggedIn" ui-sref="planner" class="item">My Planner</a>
           <a ng-if="loggedIn" ui-sref="grad_reqs" class="item">Grad Requirements</a>
-        <a ng-if="!loggedIn" id="login" class="ui inverted button" ng-click="login()" ng-init="init()">Login with Facebook</a>
-        <a ng-if="loggedIn" id="logout" class="ui inverted button" ng-click="logout()">Logout</a>
+        <a ng-if="!loggedIn" id="login" class="item" ng-click="login()" ng-init="init()">Login with Facebook</a>
+        <a ng-if="loggedIn" id="logout" class="item" ng-click="logout()">Logout</a>
       </div>
     </div>
   </div>
