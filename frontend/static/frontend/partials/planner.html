@@ -9,13 +9,9 @@
     <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
     <div id="planner" class="ui four column doubling stackable grid container" style="min-height: 70vh;">
       <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column term-div" style="margin: 0;">
-        <div class="ui header">{{ term | capitalize }}</div>
-        <div>
-          <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" class="course-div" data-as-sortable-item>
-      <div ng-repeat="term in terms" class="ui segment column term-div" style="margin: 0;">
         <div as-sortable="coursesOptions" ng-model="courses[term]">
           <div class="ui header">{{ term | capitalize }}</div>
-          <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" data-as-sortable-item>
+          <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" class="course-div" data-as-sortable-item>
             <div class="ui segment" data-as-sortable-item-handle>
               <div class="content course-entry">
                 <div class="header">
