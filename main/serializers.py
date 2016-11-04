@@ -53,15 +53,15 @@ class UsefulRelatedField(serializers.RelatedField):
     
 class SectionRelatedField(serializers.RelatedField):
     def to_representation(self, value):
-        result = []
         term_sections = []
-        for item in value.get_queryset():
+        terms = {"Autumn":[], "Winter":[], "Spring":[], "Summer":[]}
+        for item in value.get_queryset().filter(enroll_status="Open").order_by("section_number"):
             data = cached_serializer_get("inline_section", item, InlineSectionSerializer)
             term_section = data["term"] + "_-_" + str(data["section_number"])
             if term_section not in term_sections:
-                result.append(data)
+                terms[item.term].append(data)
                 term_sections.append(term_section)
-        return result
+        return terms["Summer"] + terms["Autumn"] + terms["Winter"] + terms["Spring"]
     
     
 class ContentObjectRelatedField(serializers.Field):
