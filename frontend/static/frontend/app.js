@@ -5,6 +5,10 @@
   
   .constant('BASE_URL', '.')
   
+  .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.latencyThreshold = 300;
+  }])
+  
   .factory('AuthenticationService', ['$rootScope', '$http', '$cookies', 'BASE_URL', function($rootScope, $http, $cookies, BASE_URL) {
     var factory = {};
       
