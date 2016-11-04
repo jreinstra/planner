@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  angular.module('cardinalPlanner', ['ui.router', 'as.sortable', 'ngCookies'])
+  angular.module('cardinalPlanner', ['ui.router', 'as.sortable', 'ngCookies', 'angular-loading-bar'])
   
   .constant('BASE_URL', '.')
   
