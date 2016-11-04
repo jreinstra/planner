@@ -25,6 +25,16 @@
     margin-top: 0.5em;
 }
 
+.course-div {
+    margin-bottom: 7px;
+}
+
+.term-div {
+    margin-top: 10px !important;
+    margin-right: 7px !important;
+    width: calc(25% - 7px) !important;
+}
+
 
 .ui.threaded.comments .comment .comments {
     padding: 0px 0px 8px 8px !important;

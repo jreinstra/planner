@@ -6,9 +6,9 @@
     <sm-tab-menu tabs="tabs" active="selected_year" class="pointing secondary"></sm-tab-menu>
     <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
     <div id="planner" class="ui three column doubling stackable grid container" style="min-height: 70vh;">
-      <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
+      <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column term-div" style="margin: 0;">
         <div class="ui header">{{ term | capitalize }}</div>
-        <div ng-repeat="course in courses[term]" ui-sref="course({id: course.id})">
+        <div ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" class="course-div">
             <div class="ui segment">
               <div class="content course-entry">
                 <div class="header">
