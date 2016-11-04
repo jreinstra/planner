@@ -3,14 +3,14 @@
     <div class="ui text loader">Loading plan</div>
   </div>
   <div ng-hide="loading">
-      <strong>Shareable Link to your Plan: </strong><br>
-      <a href="https://www.cardinalplanner.com/plan/{{ plans[0].id }}">https://www.cardinalplanner.com/plan/{{ plans[0].id }}</a>
+    <strong>Shareable Link to your Plan: </strong><br>
+    <a href="https://www.cardinalplanner.com/plan/{{ plans[0].id }}">https://www.cardinalplanner.com/plan/{{ plans[0].id }}</a>
     <sm-tab-menu tabs="tabs" active="selected_year" class="pointing secondary"></sm-tab-menu>
     <sm-tab name="{{ year }}" ng-repeat="year in years"></sm-tab>
     <div id="planner" class="ui four column doubling stackable grid container" style="min-height: 70vh;">
-      <div ng-repeat="term in terms" as-sortable="coursesOptions" ng-model="courses[term]" class="ui segment column" style="margin: 0;">
-        <div class="ui header">{{ term | capitalize }}</div>
-        <div>
+      <div ng-repeat="term in terms" class="ui segment column" style="margin: 0;">
+        <div as-sortable="coursesOptions" ng-model="courses[term]">
+          <div class="ui header">{{ term | capitalize }}</div>
           <li ng-repeat="course in courses[term]" ui-sref="course({id: course.id})" data-as-sortable-item>
             <div class="ui segment" data-as-sortable-item-handle>
               <div class="content course-entry">
@@ -25,16 +25,16 @@
               <a class="ui top right attached tiny red label" ng-click="deleteCourse(term, $index)">X</a>
             </div>
           </li>
-        </div>
-        <a data-tooltip="Around 15 units is ideal!" data-inverted="" class="ui top right attached label" ng-class="
-                                                         {
-                                                         green: (courses_units[term].max_units > 13 && courses_units[term].max_units < 18),
-                                                         orange: ((courses_units[term].max_units >= 12 && courses_units[term].max_units <= 13) || (courses_units[term].max_units >= 18 && courses_units[term].max_units <= 20)),
-                                                         red: (courses_units[term].max_units < 12 || courses_units[term].max_units > 20),
-                                                         }
-                                                         ">
+          <a data-tooltip="Around 15 units is ideal!" data-inverted="" class="ui top right attached label" ng-class="
+                                                           {
+                                                           green: (courses_units[term].max_units > 13 && courses_units[term].max_units < 18),
+                                                           orange: ((courses_units[term].max_units >= 12 && courses_units[term].max_units <= 13) || (courses_units[term].max_units >= 18 && courses_units[term].max_units <= 20)),
+                                                           red: (courses_units[term].max_units < 12 || courses_units[term].max_units > 20),
+                                                           }
+                                                           ">
             {{ courses_units[term].max_units }} Units
           </a>
+        </div>
       </div>
       <div class="ui segment column" style="margin: 0;">
         <div class="ui icon input" style="width: 100%;">
@@ -46,22 +46,22 @@
             <div class="ui segment" data-as-sortable-item-handle>
               <div class="content course-entry">
                 <div class="header">
-                    <strong>{{ course.code }}</strong><br>
-                    <span class="course-title">{{ course.title }}</span></div>
-                      <br ng-if="course.average_rating">
-                    <div class="ui bottom left attached tiny label" ng-if="course.average_rating">
-                        <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
-                  </div>
+                  <strong>{{ course.code }}</strong><br>
+                  <span class="course-title">{{ course.title }}</span>
+                </div>
+                <br ng-if="course.average_rating">
+                <div class="ui bottom left attached tiny label" ng-if="course.average_rating">
+                  <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
                 </div>
               </div>
             </div>
           </li>
-          <div class="ui active loader" ng-if="loading_search">
-            <div class="ui loader"></div>
-          </div>
-          <div class="item" ng-if="result == false && search.length > 0">No classes to show.</div>
         </div>
       </div>
+      <div class="ui active loader" ng-if="loading_search">
+        <div class="ui loader"></div>
+      </div>
+      <div class="item" ng-if="result == false && search.length > 0">No classes to show.</div>
     </div>
   </div>
 </div>
