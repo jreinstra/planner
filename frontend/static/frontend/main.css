@@ -79,3 +79,13 @@ html, body {
 #footer {
     margin-bottom:0;
 }
+
+/* Loading Bar */
+#loading-bar-spinner .spinner-icon {
+    border-top-color:  #FFF;
+    border-left-color: #FFF;
+}
+
+#loading-bar .bar {
+    background: #FFF;
+}
