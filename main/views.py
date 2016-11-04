@@ -106,7 +106,16 @@ class SearchDegrees(APIView):
             
             entry_query = get_query(query_string, ['name',])
             found_entries = Degree.objects.filter(entry_query)
-            return Response([DegreeSerializer(d).data for d in found_entries[:limit]])
+            return Response({
+                "success": True,
+                "results":[
+                    {
+                        "name": d.name,
+                        "value": d.id,
+                        "disabled": False
+                    } for d in found_entries[:limit]
+                ]
+            })
         else:
             raise ValidationError("Search parameter 'q' is required.")
         
