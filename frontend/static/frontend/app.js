@@ -558,12 +558,17 @@
         console.log("done loading!");
   })
   
-  .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
-    $scope.degrees = degrees.data.results;
-    $scope.selected_degrees = [];
+  .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL) {
     $scope.grad_year = '';
     
     $scope.successfulNewPlanYears = 0;
+    
+    $('#degree-search')
+      .dropdown({
+        apiSettings: {
+          url: '/api/search_degrees/?q={query}'
+        }
+      });
     
     $scope.denied = function() {
       $state.go('home');
@@ -574,6 +579,9 @@
         alert('Graduation Year Needs To Be a Number');
         event.preventDefault();
       }
+      
+      $scope.selected_degrees = $('#degree-search')
+          .dropdown('get value').split(',').map(parseFloat);
       
       if ($scope.selected_degrees.length == 0) {
         alert('You need to select at least one projected degree.');
@@ -761,9 +769,6 @@
         templateUrl: 'static/frontend/partials/planner/new_plan.html',
         controller: 'PlannerNewPlanCtrl',
         resolve: {
-          'degrees': function($http, BASE_URL, plans) {
-            return $http({method: "GET", url: BASE_URL + '/api/degrees/?limit=1000'})
-          },
           'title': function($rootScope) {
             $rootScope.title = "New Plan";
           }
