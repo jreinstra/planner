@@ -3,7 +3,13 @@
     Create a New Plan
   </div>
   <div class="content">
-    <sm-dropdown class="fluid multiple search selection" model="selected_degrees" items="degrees" label="item.name" value="item.id" default-text="'Select Predicted Majors'"></sm-dropdown><br>
+    <div id="degree-search" class="ui fluid multiple search selection dropdown">
+      <input type="hidden" name="degrees">
+      <i class="dropdown icon"></i>
+      <div class="default text">Degrees</div>
+      <div class="menu">
+      </div>
+    </div>
     <div class="ui right icon input">
       <input ng-model="grad_year" type="text" name="grad_year" placeholder="Graduation Year">
       <i class="student icon"></i>
