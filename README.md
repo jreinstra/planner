@@ -15,6 +15,7 @@ Follow the below checklist to setup your local Django environment:
 - Copy the file `planner/local_settings_sample.py` into `planner/local_settings.py`
 - Start the server by running: `python manage.py runserver`.  It'll be up at `localhost:8080`
 - Create yourself an admin user account for testing: `python manage.py createsuperuser`.
+- Create some test data: `python manage.py setup_data`.
 
 ## Central Goal
 The **central goal** to create the best way (by far) for students to plan their long term and short term schedules.
