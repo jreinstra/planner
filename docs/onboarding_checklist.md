@@ -8,9 +8,9 @@ Follow these steps to get started on Cardinal Planner.
   - May take a long time
 - Follow the checklist on the README to get started.
 - Complete a task
-  - Get a task assigned to you
+  1. Get a task assigned to you
   - Create a local branch
   - Get it working locally
   - Push your changes to Github in a separate branch
-  - Get your pull request approved & merged
+  - Get your pull request approved (by John or Akshay) & merged
   - Make sure it works in production!
