@@ -90,7 +90,7 @@
         return;
       }
       $scope.loading = true;
-      $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+      $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
         .then(function(response) {
           $scope.result = response.data
           $scope.loading = false;
@@ -420,7 +420,7 @@
           return;
         }
         $scope.loading_search = true;
-        $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+        $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
           .then(function(response) {
             $scope.result = response.data
             $scope.loading_search = false;
