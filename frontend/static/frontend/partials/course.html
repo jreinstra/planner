@@ -1,192 +1,192 @@
 <div class="ui text container">
-	<div ng-show="loading" class="ui active inverted dimmer">
-		<div class="ui text loader">Loading course</div>
-	</div>
-	<div ng-hide="loading">
-		<h1 class="ui header">
-			{{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
-		</h1>
+  <div ng-show="loading" class="ui active inverted dimmer">
+    <div class="ui text loader">Loading course</div>
+  </div>
+  <div ng-hide="loading">
+    <h1 class="ui header">
+      {{ result.title }} (<span ng-repeat="code in result.codes">{{ code.code }}{{$last ? '' : ', '}}</span>)
+    </h1>
       
-		<div ng-if="hasPlan" class="ui floating labeled icon dropdown green button" sm-dropdown-bind="{action: 'hide'}">
-			<div class="text">{{ planText }}</div>
-			<i class="dropdown icon"></i>
-			<sm-menu items="plan_years_menu" label="item.label" description="item.description" icon="item.icon" children="item.children" divider="item.divider" on-click="handlePlanClick(item, $event)"></sm-menu>
-		</div>
-		<br><br>
-		<div class="ui two column stackable grid">
-			<div class="ui column">
-				Rating:
-				<div ng-if="result.average_rating" class="ui massive star rating">
-					<sm-rating model="result.average_rating" total="5" type="star" disabled="true"></sm-rating>
-				</div>
-				<strong ng-if="!result.average_rating">No ratings.</strong>
-				<br>
-				Median grade: <strong>{{ result.median_grade || "No grade data." }}</strong>
-			</div>
-			<div class="ui column">
-				Units: 
-				<strong>
-					{{ result.min_units }}
-					<span ng-if="result.min_units != result.max_units"> to {{ result.max_units }}</span>
-				</strong><br>
-				Grading: <strong>{{ result.grading }}</strong><br>
-				Satisfies: <strong>{{ result.general_requirements }}</strong>
-			</div>
-		</div>
-		<h2 class="ui header">Description</h2>
-		<p>{{ result.description }}</p>
-		<div id="gradePlot" ng-show="grade_total > 10" style="height: 300px;"><!-- Plotly chart will be drawn inside this DIV --></div>
-		<div ng-if="result.prerequisites.length > 0">
-			<h2 class="ui header" style="margin-bottom: 4px;">Prerequisites</h2>
-			<button ng-repeat="prereq in result.prerequisites" ui-sref="course({id: prereq.course})" class="ui blue button" style="margin-top: 10px;">{{ prereq.code }}</button>
-		</div>
+    <div ng-if="hasPlan" class="ui floating labeled icon dropdown green button" sm-dropdown-bind="{action: 'hide'}">
+      <div class="text">{{ planText }}</div>
+      <i class="dropdown icon"></i>
+      <sm-menu items="plan_years_menu" label="item.label" description="item.description" icon="item.icon" children="item.children" divider="item.divider" on-click="handlePlanClick(item, $event)"></sm-menu>
+    </div>
+    <br><br>
+    <div class="ui two column stackable grid">
+        <div class="ui column">
+          Rating:
+          <div ng-if="result.average_rating" class="ui massive star rating">
+              <sm-rating model="result.average_rating" total="5" type="star" disabled="true"></sm-rating>
+          </div>
+            <strong ng-if="!result.average_rating">No ratings.</strong>
+          <br>
+          Median grade: <strong>{{ result.median_grade || "No grade data." }}</strong>
+        </div>
+        <div class="ui column">
+            Units: 
+            <strong>
+                {{ result.min_units }}
+                <span ng-if="result.min_units != result.max_units"> to {{ result.max_units }}</span>
+            </strong><br>
+            Grading: <strong>{{ result.grading }}</strong><br>
+            Satisfies: <strong>{{ result.general_requirements }}</strong>
+        </div>
+    </div>
+      <div id="gradePlot" ng-show="grade_total > 10" style="height: 300px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+    <h2 class="ui header">Description</h2>
+    <p>{{ result.description }}</p>
+    <div ng-if="result.prerequisites.length > 0">
+        <h2 class="ui header" style="margin-bottom: 4px;">Prerequisites</h2>
+        <button ng-repeat="prereq in result.prerequisites" ui-sref="course({id: prereq.course})" class="ui blue button" style="margin-top: 10px;">{{ prereq.code }}</button>
+    </div>
+      <br>
+      
+    <div ng-if="result.useful_for.length > 0">
+        <h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
+        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
+    </div>
+	<div ng-if="has_sections">
+        <h2 class="ui header">Open Sections</h2>
+	    <table class="ui celled table">
+		    <thead>
+			    <tr>
+				    <th>Term</th>
+					<th>Days</th>
+					<th>Time</th>
+					<th>Instructor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
+					<td>{{ section.term }} {{ section.year }}</td>
+					<td>{{ section.days.split(' ').join(', ') }}</td>
+					<td>
+						{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
+					</td>
+					<td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
+				</tr>
+			</tbody>
+		</table>
 		<br>
-      
-		<div ng-if="result.useful_for.length > 0">
-			<h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
-			<button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
-		</div>
-		<div ng-if="has_sections">
-			<h2 class="ui header">Open Sections</h2>
+		<div ng-if="has_discussion_sections">
+			<h2 class="ui header">Open Discussion Sections</h2>
+			<em>Not all classes use Axess to enroll in discussion sections, so this is not necessarily an accurate list.</em>
 			<table class="ui celled table">
 				<thead>
 					<tr>
 						<th>Term</th>
 						<th>Days</th>
 						<th>Time</th>
-						<th>Instructor</th>
+						<th>Section #</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
+					<tr ng-repeat="section in result.sections" ng-if="section.component == 'DIS'  && section.days != ''">
 						<td>{{ section.term }} {{ section.year }}</td>
 						<td>{{ section.days.split(' ').join(', ') }}</td>
 						<td>
 							{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
 						</td>
-						<td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
+						<td>{{ section.section_number }}</td>
 					</tr>
 				</tbody>
 			</table>
-			<br>
-			<div ng-if="has_discussion_sections">
-				<h2 class="ui header">Open Discussion Sections</h2>
-				<em>Not all classes use Axess to enroll in discussion sections, so this is not necessarily an accurate list.</em>
-				<table class="ui celled table">
-					<thead>
-						<tr>
-							<th>Term</th>
-							<th>Days</th>
-							<th>Time</th>
-							<th>Section #</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="section in result.sections" ng-if="section.component == 'DIS'  && section.days != ''">
-							<td>{{ section.term }} {{ section.year }}</td>
-							<td>{{ section.days.split(' ').join(', ') }}</td>
-							<td>
-								{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
-							</td>
-							<td>{{ section.section_number }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<h2 class="ui dividing header">Recent Reviews</h2>
-		<div class="ui comments">
-			<em ng-if="result.reviews.length == 0">No reviews found.</em>
-			<div ng-repeat="review in result.reviews" class="comment">
-				<div class="content">
-					<div class="metadata">
-						<div class="date" sm-time-ago="{{ review.created_at * 1000 }}"></div>
-						<div class="rating">
-							<sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
-						</div>
-						<div ng-show="review.grade" class="grade">
-							Grade: <strong>{{ review.grade }}</strong>
-						</div>
-						<div ng-show="review.instructor">
-							<a ui-sref="instructor({sunet: review.instructor.sunet })">{{ review.instructor.name }}</a>
-						</div>
-						<div ng-if="review.is_crawled" class="label">
-							<a class="ui top right attached tiny label">Outside Source</a>
-						</div>
-					</div>
-					<div class="text">
-						{{ review.text }}
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
-	<div ng-if="loggedIn && canPostReview" class="ui comments">
-		<br>
-		<h3 class="ui dividing header">Write a review</h3>
-		<div class="ui two column grid">
-			<div class="column">
-				<select ng-model="$parent.grade" class="ui dropdown">
-					<option value="">Grade</option>
-					<option value="A+">A+</option>
-					<option value="A">A</option>
-					<option value="A-">A-</option>
-					<option value="B+">B+</option>
-					<option value="B">B</option>
-					<option value="B-">B-</option>
-					<option value="C+">C+</option>
-					<option value="C">C</option>
-					<option value="C-">C-</option>
-					<option value="D+">D+</option>
-					<option value="D">D</option>
-					<option value="D-">D-</option>
-					<option value="F">F</option>
-					<option value="CR">Credit</option>
-					<option value="NC" selected="">No credit</option>
-				</select>
-				<select ng-model="$parent.instructor" id="reviewInstructor" class="ui dropdown">
-					<option value="">Instructor</option>
-					<option ng-repeat="instructor in result.instructors" value="{{ instructor[0] }}">
-						{{ instructor[1] }}
-					</option>
-				</select>
-			</div>
-			<div class="right aligned column"><sm-rating model="$parent.rating" total="5" type="huge star"></sm-rating></div>
-		</div>
-		<form class="ui reply form">
-			<div class="field">
-				<textarea ng-model="$parent.newReview"></textarea>
-			</div>
-			<div class="ui blue labeled submit icon button" ng-click="addReview()">
-				<i class="icon edit"></i> Add Review
-			</div>
-		</form>
-	</div>
-	<div ng-if="!loggedIn && canPostReview" class="ui warning message">You must be logged in to add a review.</div>
-	<div ng-if="!canPostReview" class="ui success message">You have posted a review for this course. Thank you!</div>
+    <h2 class="ui dividing header">Recent Reviews</h2>
+    <div class="ui comments">
+        <em ng-if="result.reviews.length == 0">No reviews found.</em>
+      <div ng-repeat="review in result.reviews" class="comment">
+        <div class="content">
+          <div class="metadata">
+            <div class="date" sm-time-ago="{{ review.created_at * 1000 }}"></div>
+            <div class="rating">
+              <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
+            </div>
+            <div ng-show="review.grade" class="grade">
+              Grade: <strong>{{ review.grade }}</strong>
+            </div>
+              <div ng-show="review.instructor">
+                <a ui-sref="instructor({sunet: review.instructor.sunet })">{{ review.instructor.name }}</a>
+              </div>
+            <div ng-if="review.is_crawled" class="label">
+              <a class="ui top right attached tiny label">Outside Source</a>
+            </div>
+          </div>
+          <div class="text">
+            {{ review.text }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="loggedIn && canPostReview" class="ui comments">
+      <br>
+      <h3 class="ui dividing header">Write a review</h3>
+      <div class="ui two column grid">
+        <div class="column">
+          <select ng-model="$parent.grade" class="ui dropdown">
+            <option value="">Grade</option>
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="B-">B-</option>
+            <option value="C+">C+</option>
+            <option value="C">C</option>
+            <option value="C-">C-</option>
+            <option value="D+">D+</option>
+            <option value="D">D</option>
+            <option value="D-">D-</option>
+            <option value="F">F</option>
+            <option value="CR">Credit</option>
+            <option value="NC" selected="">No credit</option>
+          </select>
+            <select ng-model="$parent.instructor" id="reviewInstructor" class="ui dropdown">
+                <option value="">Instructor</option>
+                <option ng-repeat="instructor in result.instructors" value="{{ instructor[0] }}">
+                    {{ instructor[1] }}
+                </option>
+            </select>
+        </div>
+        <div class="right aligned column"><sm-rating model="$parent.rating" total="5" type="huge star"></sm-rating></div>
+      </div>
+    <form class="ui reply form">
+      <div class="field">
+        <textarea ng-model="$parent.newReview"></textarea>
+      </div>
+      <div class="ui blue labeled submit icon button" ng-click="addReview()">
+        <i class="icon edit"></i> Add Review
+      </div>
+    </form>
+  </div>
+  <div ng-if="!loggedIn && canPostReview" class="ui warning message">You must be logged in to add a review.</div>
+  <div ng-if="!canPostReview" class="ui success message">You have posted a review for this course. Thank you!</div>
     
-	<br><br>
-	<h2 class="ui dividing header">Questions</h2>
-	<em ng-if="result.comments.length == 0">No questions found.</em>
-	<sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
-	<div ng-if="loggedIn" class="ui comments">
-		<br>
-		<h3 class="ui dividing header">Ask a question</h3>
-		<div ng-if="replyingTo" class="ui segment">
-			<a href="" ng-click="cancelReply()" class="ui red top right attached small label">cancel</a>
-			Replying to <b>{{ replyingTo.author }}'s</b> comment - <span sm-time-ago="replyingTo.created_at" class="reply-date"></span>
-			<div class="ui secondary segment">
-				<p>{{ replyingTo.text }}</p>
-			</div>
-		</div>
-		<form class="ui reply form">
-			<div class="field">
-				<textarea ng-model="$parent.newReply"></textarea>
-			</div>
-			<div class="ui blue labeled submit icon button" ng-click="addReply()">
-				<i class="icon edit"></i> {{ replyingTo ? 'Add Answer' : 'Add Question' }}
-			</div>
-		</form>
-	</div>
-	<div ng-if="!loggedIn" class="ui warning message">You must be logged in to comment.</div>
+    <br><br>
+    <h2 class="ui dividing header">Questions</h2>
+    <em ng-if="result.comments.length == 0">No questions found.</em>
+    <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
+    <div ng-if="loggedIn" class="ui comments">
+        <br>
+        <h3 class="ui dividing header">Ask a question</h3>
+      <div ng-if="replyingTo" class="ui segment">
+        <a href="" ng-click="cancelReply()" class="ui red top right attached small label">cancel</a>
+        Replying to <b>{{ replyingTo.author }}'s</b> comment - <span sm-time-ago="replyingTo.created_at" class="reply-date"></span>
+        <div class="ui secondary segment">
+          <p>{{ replyingTo.text }}</p>
+        </div>
+      </div>
+      <form class="ui reply form">
+        <div class="field">
+          <textarea ng-model="$parent.newReply"></textarea>
+        </div>
+        <div class="ui blue labeled submit icon button" ng-click="addReply()">
+          <i class="icon edit"></i> {{ replyingTo ? 'Add Answer' : 'Add Question' }}
+        </div>
+      </form>
+    </div>
+    <div ng-if="!loggedIn" class="ui warning message">You must be logged in to comment.</div>
 </div>
