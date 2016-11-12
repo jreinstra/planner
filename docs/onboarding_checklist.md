@@ -13,4 +13,5 @@ Follow these steps to get started on Cardinal Planner.
   - Get it working locally
   - Push your changes to Github in a separate branch
   - Get your pull request approved (by John or Akshay) & merged
-  - Confirm that it works in production!
+  - Confirm that it works in production
+  - Remove all labels and close task (can do this on merge with keywords)

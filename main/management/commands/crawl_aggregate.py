@@ -23,11 +23,12 @@ def main():
             total_reviews = 0
             total_grades = 0
             for review in course.reviews.all():
-                average_rating += review.rating
+                if review.rating != 0:
+                    average_rating += review.rating
+                    total_reviews += 1
                 if review.grade in grade_counts:
                     grade_counts[review.grade] += 1
                     total_grades += 1
-                total_reviews += 1
             average_rating = round(average_rating / total_reviews)
             grade_distribution = [(option[0], grade_counts[option[0]]) for option in Review.GRADE_OPTIONS]
             
