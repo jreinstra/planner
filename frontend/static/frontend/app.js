@@ -104,6 +104,17 @@
   
   .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course){
     $scope.result = course.data;
+	$scope.has_sections = false;
+	$scope.has_discussion_sections = false;
+	if(course.data.sections.length != 0) {
+		$scope.has_sections = true;
+		for(var i = 0; i < course.data.sections.length; i++) {
+			if(course.data.sections[i].component == "DIS") {
+				$scope.has_discussion_sections = true;
+				break;
+			}
+		}
+	}
     var grade_dist = JSON.parse($scope.result.grade_distribution);
       var x = [];
       var y = [];
