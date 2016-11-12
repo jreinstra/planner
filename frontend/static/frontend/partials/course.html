@@ -102,7 +102,7 @@
           <div class="metadata">
             <div class="date" sm-time-ago="{{ review.created_at * 1000 }}"></div>
             <div class="rating">
-              <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
+              <sm-rating model="review.rating" ng-if="review.rating != 0" total="5" type="star" disabled="true"></sm-rating>
             </div>
             <div ng-show="review.grade" class="grade">
               Grade: <strong>{{ review.grade }}</strong>
