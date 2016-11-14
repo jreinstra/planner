@@ -3,6 +3,16 @@ This is the main code repository for the cardinal planner project.
 
 View current production version: https://www.cardinalplanner.com/
 
+## Meeting Schedule
+
+**Location:** Huang B008
+
+**Meeting Times**
+- Sunday 9:00 - 11:30pm
+- Tuesday 9:00 - 11:30pm
+- Thursday 9:00 - 11:30pm
+- Friday 3:00 - 5:30pm
+
 ## Setting up your local environment
 
 Follow the below checklist to setup your local Django environment:
