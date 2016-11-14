@@ -1,6 +1,6 @@
-# Agenda for Friday Meetings
+# Agenda for Team Meetings
 
-This is an outline what to discuss for weekly Friday meetings. Basically, it's a team meeting, standup, and sprint planning meeting all combined into one meeting.
+This is an outline what to discuss for weekly team meetings. Basically, it's a team meeting, standup, and sprint planning meeting all combined into one meeting.
 
 ## 1. How Cardinal Planner is doing
 
