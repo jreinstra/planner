@@ -260,6 +260,8 @@ class PlanYear(models.Model):
     plan = models.ForeignKey(Plan, related_name="years")
     year = models.CharField(max_length=10)
     
+    courses = models.TextField(default="{}")
+    
     summer = models.ManyToManyField(Course, blank=True, related_name="plans_summer")
     autumn = models.ManyToManyField(Course, blank=True, related_name="plans_autumn")
     winter = models.ManyToManyField(Course, blank=True, related_name="plans_winter")

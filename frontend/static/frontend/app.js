@@ -385,8 +385,11 @@
             return e.year == $scope.selected_year;
         })[0];
           console.log("result: " + $scope.selected_plan_year);
-
-        $scope.courses = $scope.selected_plan_year.course_data
+          
+        //$scope.courses_ids = JSON.parse($scope.selected_plan_year.courses);
+        $scope.courses = $scope.selected_plan_year.course_data;
+          console.log($scope.selected_plan_year.courses);
+          console.log($scope.courses_ids);
         delete $scope.courses['summer'];
       });
       
@@ -407,12 +410,20 @@
         
         if (typeof($scope.selected_plan_year) != "undefined") {
           $scope.saving = true;
-          $http.put(BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/', {plan: $scope.selected_plan_year.plan, year: $scope.selected_plan_year.year, autumn: $scope.courses_ids.autumn, winter: $scope.courses_ids.winter, spring: $scope.courses_ids.spring})
+          $http.put(
+              BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/',
+              {
+                  plan: $scope.selected_plan_year.plan,
+                  year: $scope.selected_plan_year.year,
+                  courses:{"autumn":$scope.courses_ids.autumn, "winter": $scope.courses_ids.winter, "spring": $scope.courses_ids.spring}
+              }
+          )
             .then(function(response) {
               console.log(response.data);
               console.log('Updated plan year.');
               $scope.saving = false;
           }, function(response) {
+              console.log(response);
             alert('Could not connect to server.');
           });
         }
