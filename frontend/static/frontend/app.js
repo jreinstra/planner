@@ -419,11 +419,11 @@
               }
           )
             .then(function(response) {
-              console.log(response.data);
+              console.log("success:", response.data);
               console.log('Updated plan year.');
               $scope.saving = false;
           }, function(response) {
-              console.log(response);
+              console.log("response:", response);
             alert('Could not connect to server.');
           });
         }
