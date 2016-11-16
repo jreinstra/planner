@@ -84,14 +84,15 @@ class OrderedCourseRelatedField(serializers.Field):
         try:
             assert type(data) is dict
         except AssertionError:
-            print str(e)
+            print "assertion error:", str(e)
             raise serializers.ValidationError("courses must be a list of IDs")
             
         for season, courses in data.items():
             for value in courses:
                 try:
                     c = Course.objects.get(id=value)
-                except Exception:
+                except Exception as e:
+                    print "exception:", str(e)
                     raise serializers.ValidationError("Course in courses attribute not found.")
         print "internal:", data
         return json.dumps(data)
