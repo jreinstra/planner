@@ -125,6 +125,7 @@ class CourseSection(models.Model):
     
     course = models.ForeignKey(Course, related_name="sections")
     instructor = models.ForeignKey('Instructor', related_name="sections", null=True, blank=True)
+    instructors = models.ManyToManyField('Instructor', related_name="sections_new")
     
     start_date = models.CharField(max_length=31)
     end_date = models.CharField(max_length=30)

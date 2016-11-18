@@ -90,16 +90,25 @@ def populate_course(r, **kwargs):
 
             schedule = section[16][0]
             if len(schedule[6]) > 0:
-                instructor = schedule[6][0]
-                instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
-                if instructor_obj.exists() is False:
-                    instructor_obj = Instructor()
-                    instructor_obj.sunet = instructor[4].text
-                    instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
-                    instructor_obj.save()
-                else:
-                    instructor_obj = instructor_obj[0]
-                se.instructor = instructor_obj
+                
+                firstAdded = False
+                
+                se.instructors.all().delete()
+                for instructor in schedule[6]:
+                    instructor = schedule[6][0]
+                    instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
+                    if instructor_obj.exists() is False:
+                        instructor_obj = Instructor()
+                        instructor_obj.sunet = instructor[4].text
+                        instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
+                        instructor_obj.save()
+                    else:
+                        instructor_obj = instructor_obj[0]
+                    
+                    se.instructors.add(instructor_obj)
+                    if not firstAdded:
+                        se.instructor = instructor_obj
+                        firstAdded = True
 
             se.start_date = schedule[0].text or ""
             se.end_date = schedule[1].text or ""
