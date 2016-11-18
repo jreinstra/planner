@@ -133,6 +133,8 @@ class CourseSection(models.Model):
     end_time = models.CharField(max_length=28)
     days = models.CharField(max_length=100)
     
+    location = models.CharField(max_length=150)
+    
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
     

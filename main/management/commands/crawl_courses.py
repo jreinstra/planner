@@ -43,97 +43,108 @@ def populate_courses():
     grequests.map(rs, size=10)
     
 def populate_course(r, **kwargs):
-    dept = Department.objects.get(code=r.url.split("=")[-1])
-    print "Loading courses for:", dept.code
-    courses = get_xml_r(r)
+    try:
+        dept = Department.objects.get(code=r.url.split("=")[-1])
+        print "Loading courses for:", dept.code
+        courses = get_xml_r(r)
 
-    for course in courses[2].findall("course"):
-        admin = course.findall("administrativeInformation")[0]
-        course_id = int(admin[0].text)
-        # TODO: check if courses of different years have different IDs
-        if Course.objects.filter(id=course_id).exists() is False:
-            c = Course()
-        else:
-            c = Course.objects.get(id=course_id)
-
-        c.id = course_id
-        c.year = course[0].text
-        c.title = course[3].text.split("(")[0].strip()
-        c.description = course[4].text or "No description provided."
-        c.general_requirements = course[5].text or ""
-        c.repeatable = False if course[6].text == "false" else True
-        c.grading = course[7].text
-        c.min_units = int(course[8].text)
-        c.max_units = int(course[9].text)
-        c.department = dept
-        c.save()
-        
-        for section in course[11].findall("section"):
-            section_id = str(c.id) + "_" + section[0].text
-
-            if CourseSection.objects.filter(id=section_id).exists() is False:
-                se = CourseSection()
-                se.id = section_id
+        for course in courses[2].findall("course"):
+            admin = course.findall("administrativeInformation")[0]
+            course_id = int(admin[0].text)
+            # TODO: check if courses of different years have different IDs
+            if Course.objects.filter(id=course_id).exists() is False:
+                c = Course()
             else:
-                se = CourseSection.objects.get(id=section_id)
+                c = Course.objects.get(id=course_id)
 
-            se.year = section[1].text.split(" ")[0]
-            se.term = section[1].text.split(" ")[1]
-            se.section_number = int(section[6].text)
-            se.component = section[7].text
-            se.num_enrolled = int(section[8].text)
-            se.max_enrolled = int(section[9].text)
-            se.num_waitlist = int(section[10].text)
-            se.max_waitlist = int(section[11].text)
-            se.enroll_status = section[12].text
-            se.course = c
+            c.id = course_id
+            c.year = course[0].text
+            c.title = course[3].text.split("(")[0].strip()
+            c.description = course[4].text or "No description provided."
+            c.general_requirements = course[5].text or ""
+            c.repeatable = False if course[6].text == "false" else True
+            c.grading = course[7].text
+            c.min_units = int(course[8].text)
+            c.max_units = int(course[9].text)
+            c.department = dept
+            c.save()
 
-            schedule = section[16][0]
-            if len(schedule[6]) > 0:
+            for section in course[11].findall("section"):
+                section_id = str(c.id) + "_" + section[0].text
+
+                if CourseSection.objects.filter(id=section_id).exists() is False:
+                    se = CourseSection()
+                    se.id = section_id
+                else:
+                    se = CourseSection.objects.get(id=section_id)
+
+                se.year = section[1].text.split(" ")[0]
+                se.term = section[1].text.split(" ")[1]
+                se.section_number = int(section[6].text)
+                se.component = section[7].text
+                se.num_enrolled = int(section[8].text)
+                se.max_enrolled = int(section[9].text)
+                se.num_waitlist = int(section[10].text)
+                se.max_waitlist = int(section[11].text)
+                se.enroll_status = section[12].text
+                se.course = c
+
+                schedule = section[16][0]
                 
-                firstAdded = False
+                se.instructors.clear()
                 
-                se.instructors.all().delete()
-                for instructor in schedule[6]:
-                    instructor = schedule[6][0]
-                    instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
-                    if instructor_obj.exists() is False:
-                        instructor_obj = Instructor()
-                        instructor_obj.sunet = instructor[4].text
-                        instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
-                        instructor_obj.save()
-                    else:
-                        instructor_obj = instructor_obj[0]
+                if len(schedule[6]) > 0:
+                    firstAdded = False
                     
-                    se.instructors.add(instructor_obj)
-                    if not firstAdded:
-                        se.instructor = instructor_obj
-                        firstAdded = True
+                    for instructor in schedule[6]:
+                        instructor_obj = Instructor.objects.filter(sunet=instructor[4].text)
+                        if instructor_obj.exists() is False:
+                            instructor_obj = Instructor()
+                            instructor_obj.sunet = instructor[4].text
+                            instructor_obj.name = (instructor[1].text or "_") + " " + (instructor[3].text or "_")
+                            instructor_obj.save()
+                        else:
+                            instructor_obj = instructor_obj[0]
+                        
+                        if not firstAdded:
+                            se.instructors.add(instructor_obj)
+                            se.instructor = instructor_obj
+                            firstAdded = True
+                        elif instructor[5].text == "PI":
+                            se.instructors.add(instructor_obj)
 
-            se.start_date = schedule[0].text or ""
-            se.end_date = schedule[1].text or ""
-            se.start_time = schedule[2].text or ""
-            se.end_time = schedule[3].text or ""
-            se.days = get_days(schedule[5].text)
-            se.save()
-        
-        
-        code_str = course[1].text + " " + course[2].text
-        code = CourseCode.objects.filter(code=code_str)
-        
-        if code.exists() is False:
-            code = CourseCode()
-        else:
-            code = code[0]
-        code.code = code_str
-        code.alt_code = code_str.replace(" ", "")
-        code.title = course[3].text
-        code.course = c
-        code.save()
-        
-    dept.last_crawled = time.time()
-    dept.save()
-    print "Finished", dept.code
+                se.start_date = schedule[0].text or ""
+                se.end_date = schedule[1].text or ""
+                se.start_time = schedule[2].text or ""
+                se.end_time = schedule[3].text or ""
+                se.location = schedule[4].text or ""
+                se.days = get_days(schedule[5].text)
+                se.save()
+
+
+            code_str = course[1].text + " " + course[2].text
+            code = CourseCode.objects.filter(code=code_str)
+
+            if code.exists() is False:
+                code = CourseCode()
+            else:
+                code = code[0]
+            code.code = code_str
+            code.alt_code = code_str.replace(" ", "")
+            code.title = course[3].text
+            code.course = c
+            code.save()
+
+        dept.last_crawled = time.time()
+        dept.save()
+        print "Finished", dept.code
+    except Exception as e:
+        import sys
+        exc_type, exc_obj, tb = sys.exc_info()
+        f = tb.tb_frame
+        lineno = tb.tb_lineno
+        print "line no.", lineno
+        print "Error loading %s: %s" % (dept.code, str(e))
 
 
 def get_xml(url):
