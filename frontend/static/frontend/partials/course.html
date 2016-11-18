@@ -44,53 +44,56 @@
       
     <div ng-if="result.useful_for.length > 0">
         <h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
-        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
+        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button><br><br>
     </div>
-    <h2 class="ui header">Open Sections</h2>
-    <table class="ui celled table">
-        <thead>
-            <tr>
-                <th>Term</th>
-                <th>Days</th>
-                <th>Time</th>
-                <th>Instructor</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
-                <td>{{ section.term }} {{ section.year }}</td>
-                <td>{{ section.days.split(' ').join(', ') }}</td>
-                <td>
-                    {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
-                </td>
-                <td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <h2 class="ui header">Open Discussion Sections</h2>
-      <em>Not all classes use Axess to enroll in discussion sections, so this is not necessarily an accurate list.</em>
-    <table class="ui celled table">
-        <thead>
-            <tr>
-                <th>Term</th>
-                <th>Days</th>
-                <th>Time</th>
-                <th>Section #</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="section in result.sections" ng-if="section.component == 'DIS'  && section.days != ''">
-                <td>{{ section.term }} {{ section.year }}</td>
-                <td>{{ section.days.split(' ').join(', ') }}</td>
-                <td>
-                    {{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
-                </td>
-                <td>{{ section.section_number }}</td>
-            </tr>
-        </tbody>
-    </table>
-      
-      <br>
+	<div ng-if="has_sections">
+        <h2 class="ui header">Open Sections</h2>
+	    <table class="ui celled table">
+		    <thead>
+			    <tr>
+				    <th>Term</th>
+					<th>Days</th>
+					<th>Time</th>
+					<th>Instructor</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
+					<td>{{ section.term }} {{ section.year }}</td>
+					<td>{{ section.days.split(' ').join(', ') }}</td>
+					<td>
+						{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
+					</td>
+					<td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<div ng-if="has_discussion_sections">
+			<h2 class="ui header">Open Discussion Sections</h2>
+			<em>Not all classes use Axess to enroll in discussion sections, so this is not necessarily an accurate list.</em>
+			<table class="ui celled table">
+				<thead>
+					<tr>
+						<th>Term</th>
+						<th>Days</th>
+						<th>Time</th>
+						<th>Section #</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="section in result.sections" ng-if="section.component == 'DIS'  && section.days != ''">
+						<td>{{ section.term }} {{ section.year }}</td>
+						<td>{{ section.days.split(' ').join(', ') }}</td>
+						<td>
+							{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
+						</td>
+						<td>{{ section.section_number }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
     <h2 class="ui dividing header">Recent Reviews</h2>
     <div class="ui comments">
         <em ng-if="result.reviews.length == 0">No reviews found.</em>
@@ -99,7 +102,7 @@
           <div class="metadata">
             <div class="date" sm-time-ago="{{ review.created_at * 1000 }}"></div>
             <div class="rating">
-              <sm-rating model="review.rating" total="5" type="star" disabled="true"></sm-rating>
+              <sm-rating model="review.rating" ng-if="review.rating != 0" total="5" type="star" disabled="true"></sm-rating>
             </div>
             <div ng-show="review.grade" class="grade">
               Grade: <strong>{{ review.grade }}</strong>

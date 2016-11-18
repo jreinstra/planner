@@ -1,24 +1,26 @@
-<div class="ui text container">
-  <div class="ui header">
+<div class="ui text">
+  <h1 class="ui header">
     Graduation Requirements
+  </h1>
+  
+  <div class="ui text">Total Units Planned: {{ total_units }} / 180</div>
+    <br><br>
+  <div style="overflow-x: scroll;">
+      <table class="ui definition table">
+        <thead>
+          <tr>
+            <th></th>
+            <th ng-repeat="(code, v) in classes_ways">{{ code }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="(way, amount) in required_ways">
+            <td>{{ way }}</td>
+            <td ng-repeat="(code, v) in classes_ways">
+              <i ng-if="v.hasOwnProperty(way)" class="checkmark icon"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
   </div>
-  
-  Total Units Planned: {{ total_units }} / 180
-  
-  <table class="ui definition table">
-    <thead>
-      <tr>
-        <th></th>
-        <th ng-repeat="(code, v) in classes_ways">{{ code }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="(way, amount) in required_ways">
-        <td>{{ way }}</td>
-        <td ng-repeat="(code, v) in classes_ways">
-          <i ng-if="v.hasOwnProperty(way)" class="checkmark icon"></i>
-        </td>
-      </tr>
-    </tbody>
-  </table>
 </div>

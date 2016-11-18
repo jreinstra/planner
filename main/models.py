@@ -125,12 +125,15 @@ class CourseSection(models.Model):
     
     course = models.ForeignKey(Course, related_name="sections")
     instructor = models.ForeignKey('Instructor', related_name="sections", null=True, blank=True)
+    instructors = models.ManyToManyField('Instructor', related_name="sections_new")
     
     start_date = models.CharField(max_length=31)
     end_date = models.CharField(max_length=30)
     start_time = models.CharField(max_length=29)
     end_time = models.CharField(max_length=28)
     days = models.CharField(max_length=100)
+    
+    location = models.CharField(max_length=150)
     
     created_at = models.IntegerField()
     updated_at = models.IntegerField()
@@ -259,6 +262,8 @@ class PlanYear(models.Model):
     student = models.ForeignKey(User, related_name="plan_years")
     plan = models.ForeignKey(Plan, related_name="years")
     year = models.CharField(max_length=10)
+    
+    courses = models.TextField(default="{}")
     
     summer = models.ManyToManyField(Course, blank=True, related_name="plans_summer")
     autumn = models.ManyToManyField(Course, blank=True, related_name="plans_autumn")

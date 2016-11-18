@@ -90,7 +90,7 @@
         return;
       }
       $scope.loading = true;
-      $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+      $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
         .then(function(response) {
           $scope.result = response.data
           $scope.loading = false;
@@ -104,6 +104,17 @@
   
   .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course){
     $scope.result = course.data;
+	$scope.has_sections = false;
+	$scope.has_discussion_sections = false;
+	if(course.data.sections.length != 0) {
+		$scope.has_sections = true;
+		for(var i = 0; i < course.data.sections.length; i++) {
+			if(course.data.sections[i].component == "DIS") {
+				$scope.has_discussion_sections = true;
+				break;
+			}
+		}
+	}
     var grade_dist = JSON.parse($scope.result.grade_distribution);
       var x = [];
       var y = [];
@@ -310,7 +321,6 @@
   })
   
   .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plans, plan_years) {
-    
     // Move outside of Controller in run() if possible / Implement a better way
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
       if (!$rootScope.loggedIn) {
@@ -321,7 +331,11 @@
     $rootScope.$on('loggedOut', function() {
       $state.go('home');
     });
-
+      
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    $scope.baseURL = baseUrl;
+      
     $scope.plans = plans.data.results;
     
     if (plans.data.count == 0 && (typeof($state.params.fromNewPlan) == "undefined" || $state.params.fromNewPlan == false)) {
@@ -385,8 +399,11 @@
             return e.year == $scope.selected_year;
         })[0];
           console.log("result: " + $scope.selected_plan_year);
-
-        $scope.courses = $scope.selected_plan_year.course_data
+          
+        //$scope.courses_ids = JSON.parse($scope.selected_plan_year.courses);
+        $scope.courses = $scope.selected_plan_year.course_data;
+          console.log($scope.selected_plan_year.courses);
+          console.log($scope.courses_ids);
         delete $scope.courses['summer'];
       });
       
@@ -407,12 +424,20 @@
         
         if (typeof($scope.selected_plan_year) != "undefined") {
           $scope.saving = true;
-          $http.put(BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/', {plan: $scope.selected_plan_year.plan, year: $scope.selected_plan_year.year, autumn: $scope.courses_ids.autumn, winter: $scope.courses_ids.winter, spring: $scope.courses_ids.spring})
+          $http.put(
+              BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/',
+              {
+                  plan: $scope.selected_plan_year.plan,
+                  year: $scope.selected_plan_year.year,
+                  courses:{"autumn":$scope.courses_ids.autumn, "winter": $scope.courses_ids.winter, "spring": $scope.courses_ids.spring}
+              }
+          )
             .then(function(response) {
-              console.log(response.data);
+              console.log("success:", response.data);
               console.log('Updated plan year.');
               $scope.saving = false;
           }, function(response) {
+              console.log("response:", response);
             alert('Could not connect to server.');
           });
         }
@@ -431,7 +456,7 @@
           return;
         }
         $scope.loading_search = true;
-        $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+        $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
           .then(function(response) {
             $scope.result = response.data
             $scope.loading_search = false;
@@ -569,12 +594,17 @@
         console.log("done loading!");
   })
   
-  .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL, degrees) {
-    $scope.degrees = degrees.data.results;
-    $scope.selected_degrees = [];
+  .controller('PlannerNewPlanCtrl', function($rootScope, $scope, $state, $http, BASE_URL) {
     $scope.grad_year = '';
     
     $scope.successfulNewPlanYears = 0;
+    
+    $('#degree-search')
+      .dropdown({
+        apiSettings: {
+          url: '/api/search_degrees/?q={query}'
+        }
+      });
     
     $scope.denied = function() {
       $state.go('home');
@@ -585,6 +615,9 @@
         alert('Graduation Year Needs To Be a Number');
         event.preventDefault();
       }
+      
+      $scope.selected_degrees = $('#degree-search')
+          .dropdown('get value').split(',').map(parseFloat);
       
       if ($scope.selected_degrees.length == 0) {
         alert('You need to select at least one projected degree.');
@@ -772,9 +805,6 @@
         templateUrl: 'static/frontend/partials/planner/new_plan.html',
         controller: 'PlannerNewPlanCtrl',
         resolve: {
-          'degrees': function($http, BASE_URL, plans) {
-            return $http({method: "GET", url: BASE_URL + '/api/degrees/?limit=1000'})
-          },
           'title': function($rootScope) {
             $rootScope.title = "New Plan";
           }
