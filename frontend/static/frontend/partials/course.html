@@ -44,7 +44,7 @@
       
     <div ng-if="result.useful_for.length > 0">
         <h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
-        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
+        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button><br><br>
     </div>
 	<div ng-if="has_sections">
         <h2 class="ui header">Open Sections</h2>
