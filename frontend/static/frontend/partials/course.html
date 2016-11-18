@@ -114,6 +114,14 @@
           <div class="text">
             {{ review.text }}
           </div>
+          <div class="text">
+            <i style="color: #939393;">{{ review.upvotes }} out of {{ review.upvotes + review.downvotes }} students found this helpful. Did you find this helpful?</i>
+            <div class="ui mini buttons" style="margin-left: 10px;">
+              <button ng-click="onVote(review, 'review', 'upvote')" class="ui button">Yes</button>
+              <div class="or"></div>
+              <button ng-click="onVote(review, 'review', 'downvote')" class="ui button">No</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -165,7 +173,7 @@
     <br><br>
     <h2 class="ui dividing header">Questions</h2>
     <em ng-if="result.comments.length == 0">No questions found.</em>
-    <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
+    <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" on-up-vote="onVote(comment, 'comment', 'upvote')" on-down-vote="onVote(comment, 'comment', 'downvote')" minimal="minimal" collapsible="collapsible" upvotes="comment.upvotes" downvotes="comment.downvotes" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
     <div ng-if="loggedIn" class="ui comments">
         <br>
         <h3 class="ui dividing header">Ask a question</h3>
