@@ -242,6 +242,17 @@
     
     // Add Logic Here To Check If User canPostReview
     
+    $scope.onVote = function(obj, type_of_obj, type) {
+      $http.post(BASE_URL + '/api/vote/', {obj: type_of_obj, id: obj.id, type: type})
+          .then(function(response) {
+            console.log(response);
+            obj.upvotes = response.data.upvotes;
+            obj.downvotes = response.data.downvotes;
+        }, function(response) {
+          alert('Could not connect to server.');
+        });
+    }
+
     $scope.replyTo = function(comment) {
       $scope.replyingTo = comment;
     };
