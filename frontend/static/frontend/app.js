@@ -310,7 +310,6 @@
   })
   
   .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plans, plan_years) {
-    
     // Move outside of Controller in run() if possible / Implement a better way
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
       if (!$rootScope.loggedIn) {
@@ -321,7 +320,11 @@
     $rootScope.$on('loggedOut', function() {
       $state.go('home');
     });
-
+      
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+    $scope.baseURL = baseUrl;
+      
     $scope.plans = plans.data.results;
     
     if (plans.data.count == 0 && (typeof($state.params.fromNewPlan) == "undefined" || $state.params.fromNewPlan == false)) {
