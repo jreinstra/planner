@@ -106,7 +106,7 @@ def populate_course(r, **kwargs):
                         else:
                             instructor_obj = instructor_obj[0]
                         
-                        if not firstAdded:
+                        if firstAdded is False:
                             se.instructors.add(instructor_obj)
                             se.instructor = instructor_obj
                             firstAdded = True
