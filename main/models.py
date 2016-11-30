@@ -87,9 +87,9 @@ class Course(models.Model):
     def instructors(self):
         result = []
         for section in self.sections.all():
-            instructor = section.instructor
-            if instructor is not None and instructor not in result:
-                result.append(instructor)
+            for instructor in section.instructors.all():
+                if instructor is not None and instructor not in result:
+                    result.append(instructor)
         return [(i.sunet, i.name) for i in result]
     
     def save(self, *args, **kwargs):
