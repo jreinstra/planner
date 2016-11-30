@@ -122,7 +122,7 @@
             {{ review.text }}
           </div>
           <div class="text">
-            <i style="color: #939393;">{{ review.upvotes }} out of {{ review.upvotes + review.downvotes }} students found this helpful. Did you find this helpful?</i>
+            <i style="color: #939393;">{{ review.upvotes[0] }} out of {{ review.upvotes[0] + review.downvotes[0] }} students found this helpful. Did you find this helpful?</i>
             <div class="ui mini buttons" style="margin-left: 10px;">
               <button ng-click="onVote(review, 'review', 'upvote')" class="ui button">Yes</button>
               <div class="or"></div>

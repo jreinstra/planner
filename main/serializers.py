@@ -137,7 +137,7 @@ class ContentObjectRelatedField(serializers.Field):
             
 class VotesField(serializers.Field):
     def to_representation(self, value):
-        return value.all().count()
+        return (value.all().count(), [u.pk for u in value.all()])
     
     
 class CourseDataField(serializers.Field):
