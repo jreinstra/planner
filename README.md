@@ -8,10 +8,10 @@ View current production version: https://www.cardinalplanner.com/
 **Location:** Huang B008
 
 **Meeting Times**
-- Sunday 9:00 - 11:30pm
-- Tuesday 9:00 - 11:30pm
-- Thursday 9:00 - 11:30pm
-- Friday 3:00 - 5:30pm
+- Sunday 9:00pm - 11:30pm
+- Tuesday 9:00pm - 11:30pm
+- Thursday 9:00pm - 11:30pm
+- Friday 3:00pm - 5:30pm
 
 ## Setting up your local environment
 
