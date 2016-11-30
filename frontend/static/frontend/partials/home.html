@@ -1,9 +1,13 @@
 <div class="ui text container">
   <h1 class="ui center aligned header">Welcome to Cardinal Planner</h1>
-  <p class="ui text text-center" ng-show="stats">Browse {{ stats.num_reviews_floored | number }}+ reviews on over {{ stats.num_courses_floored | number }} courses.</p>
+  <!--<p class="ui text text-center" ng-show="stats">Browse {{ stats.num_reviews_floored | number }}+ reviews on over {{ stats.num_courses_floored | number }} courses.</p>-->
+    <p class="ui text text-center" style="color:grey;">
+        Browse thousands of courses and add them to our smart course planner.<br>
+        View your unit totals and WAYS requirements coverage.
+    </p>
   <div class="ui text center aligned container">
     <div class="ui large icon input" style="width: 50%;">
-      <input type="text" placeholder="Search for classes..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 150}">
+      <input type="text" placeholder="Browse classes..." ng-model="search" ng-change="update()" ng-model-options="{debounce: 150}">
       <i class="search icon"></i>
     </div>
   </div>
