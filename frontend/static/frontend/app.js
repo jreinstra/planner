@@ -637,10 +637,11 @@
           }
           
           for (var i in $scope.years) {
-            $http.post(BASE_URL + '/api/plan_years/', {plan: $scope.plan.id, year: $scope.years[i], summer: [], autumn: [], winter: [], spring: []})
+            $http.post(BASE_URL + '/api/plan_years/', {plan: $scope.plan.id, year: $scope.years[i], courses:{}})
               .then(function(response) {
                 $scope.successfulNewPlanYears++;
             }, function(response) {
+                console.log(response);
               alert('Could not connect to server.');
             });
           }
