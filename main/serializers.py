@@ -149,15 +149,17 @@ class CourseDataField(serializers.Field):
     def to_representation(self, obj):
         result = {}
         for season in self.SEASONS:
-            result[season] = [cached_serializer_get("course", Course.objects.get(id=c), CourseDataFieldSerializer) for c in json.loads(obj.courses).get(season, [c.id for c in getattr(obj, season).all()])]
+            result[season] = [cached_serializer_get("course_data", Course.objects.get(id=c), CourseDataFieldSerializer) for c in json.loads(obj.courses).get(season, [c.id for c in getattr(obj, season).all()])]
             
         return result
             
 
 class CourseDataFieldSerializer(serializers.ModelSerializer):
+    codes = CodeRelatedFieldUseful(read_only=True)
+    
     class Meta:
         model = Course
-        fields = ('id', 'min_units', 'max_units')
+        fields = ('id', 'min_units', 'max_units', 'codes', 'title', 'average_rating')
 
         
 class CourseSerializer(serializers.ModelSerializer):
