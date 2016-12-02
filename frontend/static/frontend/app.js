@@ -143,7 +143,7 @@
         console.log("logged in:", $rootScope.loggedIn);
         var plans = null;
         var plan_years = null;
-        
+        console.log("2");
         var doneCallback = function() {
             $scope.hasPlan = false;
             if (plans.data.results.length > 0) {
@@ -154,7 +154,7 @@
             $scope.selectedQuarter = '';
             $scope.selectedYear = '';
             $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
-
+            console.log("1");
             $scope.handlePlanClick = function(item, $event) {
               console.log(item, item.label, ['Autumn', 'Winter', 'Spring'].includes(item.label));
               if (!['Autumn', 'Winter', 'Spring'].includes(item.label) && $scope.selectedQuarter == '') {
@@ -166,15 +166,12 @@
               } else {
                 $scope.selectedYear = item.value;
                 $scope.plan_year = $.grep(plan_years.data.results, function(e){ return e.year == $scope.selectedYear })[0];
-                console.log(plan_years.data.results, $scope.plan_year);
-                var quarterKey = $scope.selectedQuarter.toLowerCase();
+                
+                  var quarterKey = $scope.selectedQuarter.toLowerCase();
+                var courses = JSON.parse($scope.plan_year.courses);
+                courses[quarterKey].push($state.params.id);
 
-                $scope.new_course_list = $scope.plan_year[quarterKey];
-                $scope.new_course_list.push($state.params.id);
-
-                $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year};
-                $scope.post_data[quarterKey] = $scope.new_course_list;
-
+                $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year, courses:courses};
                 $http.put(BASE_URL + '/api/plan_years/' + $scope.plan_year.id + '/', $scope.post_data)
                   .then(function(response) {
                     $scope.planText = "Added";
