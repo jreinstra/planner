@@ -159,7 +159,7 @@ class CourseDataFieldSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Course
-        fields = ('id', 'min_units', 'max_units', 'codes', 'title', 'average_rating')
+        fields = ('id', 'min_units', 'max_units', 'codes', 'title', 'average_rating', 'general_requirements')
 
         
 class CourseSerializer(serializers.ModelSerializer):
