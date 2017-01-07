@@ -6,6 +6,25 @@
 #navbar {
     margin-top: 0;
     margin-bottom: 5em;
+	height: 60px;
+}
+
+#nav-search {
+	display: block;
+	width: 400px;
+	border: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left:15px;
+}
+
+#nav-search-container {
+	margin-top:50px;
+	margin-left:-400px;
+	width:400px;
+	padding-top:5px;
+	padding-bottom:5px;
+	z-index:9999;
 }
 
 .text-center {

@@ -52,7 +52,6 @@ loader: "static.olark.com/jsclient/loader0.js",name:"olark",methods:["configure"
 olark.identify('1617-170-10-2916');/*]]>*/</script><noscript><a href="https://www.olark.com/site/1617-170-10-2916/contact" title="Contact us" target="_blank">Questions? Feedback?</a> powered by <a href="http://www.olark.com?welcome" title="Olark live chat software">Olark live chat software</a></noscript>
 <!-- end olark code -->
 
-    
 </head>
 <body>
   <div id="navbar" class="ui inverted menu">
@@ -62,6 +61,31 @@ olark.identify('1617-170-10-2916');/*]]>*/</script><noscript><a href="https://ww
         Cardinal Planner
       </a>
       <a ui-sref="home" class="item">Home</a>
+	  <div class="ui icon input" ng-controller="NavSearchCtrl" ng-if="!should_hide_search">
+		  <i class="search icon"></i>
+	    <input type="text" id="nav-search" autocomplete="off" placeholder="Search for classes..." ng-model="navsearch" ng-change="navSearchUpdate()" ng-model-options="{debounce: 150}">
+	    <i class="search icon"></i>
+	  	  <div class="ui container" style="width:0px">
+	  	    <br>
+	  	    <div class="ui segment middle aligned divided selection list" ng-show="res && navsearch.length > 0" id="nav-search-container">
+	  	      <div class="item" ng-repeat="course in res | limitTo: 5" ng-click="clear()" ui-sref="course({id: course.id})">
+	  	        <div class="content course-entry">
+	  	          <div ng-if="course.average_rating" class="ui right floated rating">
+	  	            <sm-rating model="course.average_rating" total="5" type="star" disabled="true"></sm-rating>
+	  	          </div>
+	  	          <div class="header">
+	  	              <span ng-bind="course.code"></span><br>
+	  	              <span class="course-title" ng-bind="course.title | limitTo: 58"></span>
+	  	          </div>
+	  	        </div>
+	  	      </div>
+	  	      <div class="ui active loader" ng-if="loading">
+	  	        <div class="ui loader"></div>
+	  	      </div>
+	  	      <div ng-if="res == false">No classes found.</div>
+	  	    </div>
+	  	  </div>
+	  </div>
       <div class="right menu" ng-controller="LoginCtrl">
         <a ng-if="loggedIn" ui-sref="planner" class="item">My Planner</a>
           <a ng-if="loggedIn" ui-sref="grad_reqs" class="item">Grad Requirements</a>
