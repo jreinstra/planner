@@ -44,7 +44,7 @@
       
     <div ng-if="result.useful_for.length > 0">
         <h2 class="ui header" style="margin-bottom: 4px;">Required For</h2>
-        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button>
+        <button ng-repeat="course_code in result.useful_for" ui-sref="course({id: course_code.course})" class="ui green button" style="margin-top: 10px;">{{ course_code.code }}</button><br><br>
     </div>
 	<div ng-if="has_sections">
         <h2 class="ui header">Open Sections</h2>
@@ -54,17 +54,21 @@
 				    <th>Term</th>
 					<th>Days</th>
 					<th>Time</th>
-					<th>Instructor</th>
+					<th>Instructors</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="section in result.sections" ng-if="section.component != 'DIS'">
-					<td>{{ section.term }} {{ section.year }}</td>
+					<td>{{ section.term }}</td>
 					<td>{{ section.days.split(' ').join(', ') }}</td>
 					<td>
 						{{ section.start_time.toLowerCase() }} - {{ section.end_time.toLowerCase() }}
 					</td>
-					<td><a ui-sref="instructor({sunet: section.instructor.sunet})">{{ section.instructor.name }}</a></td>
+					<td>
+                        <span ng-repeat="instructor in section.instructors">
+                            <a ui-sref="instructor({sunet: instructor.sunet})">{{ instructor.name }}</a><br>
+                        </span>
+                    </td>
 				</tr>
 			</tbody>
 		</table>
@@ -117,6 +121,14 @@
           <div class="text">
             {{ review.text }}
           </div>
+          <div class="text">
+            <i style="color: #939393;">{{ review.upvotes[0] }} out of {{ review.upvotes[0] + review.downvotes[0] }} students found this helpful. Did you find this helpful?</i>
+            <div class="ui mini buttons" style="margin-left: 10px;">
+              <button ng-click="onVote(review, 'review', 'upvote')" class="ui button">Yes</button>
+              <div class="or"></div>
+              <button ng-click="onVote(review, 'review', 'downvote')" class="ui button">No</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -168,7 +180,7 @@
     <br><br>
     <h2 class="ui dividing header">Questions</h2>
     <em ng-if="result.comments.length == 0">No questions found.</em>
-    <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" minimal="minimal" collapsible="collapsible" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
+    <sm-comments comments="result.comments" author="" avatar="" date="comment.created_at * 1000" content="comment.text" reply="reply" replies="comment.comments" on-reply="replyTo(comment)" on-up-vote="onVote(comment, 'comment', 'upvote')" on-down-vote="onVote(comment, 'comment', 'downvote')" minimal="minimal" collapsible="collapsible" upvotes="comment.upvotes" downvotes="comment.downvotes" ng-class="{threaded: reply, minimal: minimal}"></sm-comments>
     <div ng-if="loggedIn" class="ui comments">
         <br>
         <h3 class="ui dividing header">Ask a question</h3>

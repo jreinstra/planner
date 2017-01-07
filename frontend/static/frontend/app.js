@@ -75,15 +75,17 @@
   })
   
   .controller('HomeCtrl', function($rootScope, $scope, $state, $http, BASE_URL){
-      $rootScope.should_hide_search = true;
-	  $http.get(BASE_URL + '/api/stats/').then(
+
+      /*$http.get(BASE_URL + '/api/stats/').then(
             function(response) {
                 $scope.stats = response.data;
             },
             function(response) {
                 $scope.stats = null;   
             }
-        );
+        );*/
+      
+    $rootScope.should_hide_search = true;
       
     $scope.update = function() {
       if ($scope.search == "") {
@@ -91,7 +93,7 @@
         return;
       }
       $scope.loading = true;
-      $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+      $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
         .then(function(response) {
 			$scope.result = response.data;
           $scope.loading = false;
@@ -173,7 +175,7 @@
         console.log("logged in:", $rootScope.loggedIn);
         var plans = null;
         var plan_years = null;
-        
+        console.log("2");
         var doneCallback = function() {
             $scope.hasPlan = false;
             if (plans.data.results.length > 0) {
@@ -184,7 +186,7 @@
             $scope.selectedQuarter = '';
             $scope.selectedYear = '';
             $scope.years_names = ["Freshman", "Sophomore", "Junior", "Senior"];
-
+            console.log("1");
             $scope.handlePlanClick = function(item, $event) {
               console.log(item, item.label, ['Autumn', 'Winter', 'Spring'].includes(item.label));
               if (!['Autumn', 'Winter', 'Spring'].includes(item.label) && $scope.selectedQuarter == '') {
@@ -196,15 +198,12 @@
               } else {
                 $scope.selectedYear = item.value;
                 $scope.plan_year = $.grep(plan_years.data.results, function(e){ return e.year == $scope.selectedYear })[0];
-                console.log(plan_years.data.results, $scope.plan_year);
-                var quarterKey = $scope.selectedQuarter.toLowerCase();
+                
+                  var quarterKey = $scope.selectedQuarter.toLowerCase();
+                var courses = JSON.parse($scope.plan_year.courses);
+                courses[quarterKey].push($state.params.id);
 
-                $scope.new_course_list = $scope.plan_year[quarterKey];
-                $scope.new_course_list.push($state.params.id);
-
-                $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year};
-                $scope.post_data[quarterKey] = $scope.new_course_list;
-
+                $scope.post_data = {plan: $scope.plan_year.plan, year: $scope.plan_year.year, courses:courses};
                 $http.put(BASE_URL + '/api/plan_years/' + $scope.plan_year.id + '/', $scope.post_data)
                   .then(function(response) {
                     $scope.planText = "Added";
@@ -272,6 +271,17 @@
     
     // Add Logic Here To Check If User canPostReview
     
+    $scope.onVote = function(obj, type_of_obj, type) {
+      $http.post(BASE_URL + '/api/vote/', {obj: type_of_obj, id: obj.id, type: type})
+          .then(function(response) {
+            console.log(response);
+            obj.upvotes = response.data.upvotes;
+            obj.downvotes = response.data.downvotes;
+        }, function(response) {
+          alert('Could not connect to server.');
+        });
+    }
+
     $scope.replyTo = function(comment) {
       $scope.replyingTo = comment;
     };
@@ -340,7 +350,6 @@
   })
   
   .controller('PlannerCtrl', function($rootScope, $scope, $state, $http, $window, BASE_URL, plans, plan_years) {
-    
     // Move outside of Controller in run() if possible / Implement a better way
     $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams) {
       if (!$rootScope.loggedIn) {
@@ -351,7 +360,11 @@
     $rootScope.$on('loggedOut', function() {
       $state.go('home');
     });
-
+      
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host;
+    $scope.baseURL = baseUrl;
+      
     $scope.plans = plans.data.results;
     
     if (plans.data.count == 0 && (typeof($state.params.fromNewPlan) == "undefined" || $state.params.fromNewPlan == false)) {
@@ -415,8 +428,11 @@
             return e.year == $scope.selected_year;
         })[0];
           console.log("result: " + $scope.selected_plan_year);
-
-        $scope.courses = $scope.selected_plan_year.course_data
+          
+        //$scope.courses_ids = JSON.parse($scope.selected_plan_year.courses);
+        $scope.courses = $scope.selected_plan_year.course_data;
+          console.log($scope.selected_plan_year.courses);
+          console.log($scope.courses_ids);
         delete $scope.courses['summer'];
       });
       
@@ -437,12 +453,20 @@
         
         if (typeof($scope.selected_plan_year) != "undefined") {
           $scope.saving = true;
-          $http.put(BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/', {plan: $scope.selected_plan_year.plan, year: $scope.selected_plan_year.year, autumn: $scope.courses_ids.autumn, winter: $scope.courses_ids.winter, spring: $scope.courses_ids.spring})
+          $http.put(
+              BASE_URL + '/api/plan_years/' + $scope.selected_plan_year.id + '/',
+              {
+                  plan: $scope.selected_plan_year.plan,
+                  year: $scope.selected_plan_year.year,
+                  courses:{"autumn":$scope.courses_ids.autumn, "winter": $scope.courses_ids.winter, "spring": $scope.courses_ids.spring}
+              }
+          )
             .then(function(response) {
-              console.log(response.data);
+              console.log("success:", response.data);
               console.log('Updated plan year.');
               $scope.saving = false;
           }, function(response) {
+              console.log("response:", response);
             alert('Could not connect to server.');
           });
         }
@@ -461,7 +485,7 @@
           return;
         }
         $scope.loading_search = true;
-        $http.get(BASE_URL + '/api/search/?q=' + $scope.search)
+        $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
           .then(function(response) {
             $scope.result = response.data
             $scope.loading_search = false;
@@ -642,10 +666,11 @@
           }
           
           for (var i in $scope.years) {
-            $http.post(BASE_URL + '/api/plan_years/', {plan: $scope.plan.id, year: $scope.years[i], summer: [], autumn: [], winter: [], spring: []})
+            $http.post(BASE_URL + '/api/plan_years/', {plan: $scope.plan.id, year: $scope.years[i], courses:{}})
               .then(function(response) {
                 $scope.successfulNewPlanYears++;
             }, function(response) {
+                console.log(response);
               alert('Could not connect to server.');
             });
           }
