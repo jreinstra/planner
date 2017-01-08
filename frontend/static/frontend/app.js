@@ -75,6 +75,7 @@
   })
   
   .controller('HomeCtrl', function($rootScope, $scope, $state, $http, BASE_URL){
+
       /*$http.get(BASE_URL + '/api/stats/').then(
             function(response) {
                 $scope.stats = response.data;
@@ -84,6 +85,8 @@
             }
         );*/
       
+    $rootScope.should_hide_search = true;
+      
     $scope.update = function() {
       if ($scope.search == "") {
         $scope.result = [];
@@ -92,18 +95,47 @@
       $scope.loading = true;
       $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.search))
         .then(function(response) {
-          $scope.result = response.data
+			$scope.result = response.data;
           $scope.loading = false;
         }, function(response) {
           alert('Could not connect to server.');
           $scope.loading = false;
         });
     };
+	
+	$scope.$on("$destroy", function() {
+		$rootScope.should_hide_search = false;
+	});
+	
     return $scope;
   })
   
+  .controller('NavSearchCtrl', function($rootScope, $scope, $state, $http, BASE_URL) {
+	  $scope.navSearchUpdate = function() {
+		  if ($scope.navsearch == "") {
+			  $scope.res = [];
+			  return;
+		  }
+		  $scope.loading = true;
+		  $http.get(BASE_URL + '/api/search/?q=' + encodeURIComponent($scope.navsearch))
+		  .then(function(response) {
+			  $scope.res = response.data;
+			  $scope.loading = false;
+		  }, function(response) {
+			  alert('Could not connect to server.');
+			  $scope.loading = false;
+		  });
+	  };
+	  
+	  $scope.clear = function() {
+		  $scope.navsearch = null;f
+		  $scope.res = null;
+	  };
+	  return $scope;
+  })
+  
   .controller('CourseCtrl', function($rootScope, $scope, $state, $http, BASE_URL, course){
-    $scope.result = course.data;
+	$scope.result = course.data;
 	$scope.has_sections = false;
 	$scope.has_discussion_sections = false;
 	if(course.data.sections.length != 0) {
