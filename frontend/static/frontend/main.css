@@ -73,6 +73,12 @@ textarea {
     margin-left: 15px !important;
 }
 
+#planner a {
+	color:black;
+	cursor: move;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+}
 
 /* Footer stuff */
 html, body {
