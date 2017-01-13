@@ -111,6 +111,8 @@ class CourseCode(models.Model):
 class CourseSection(models.Model):
     id = models.CharField(max_length=30, primary_key=True)
     
+    starred_by = models.ManyToManyField(User, related_name="starred_courses")
+    
     year = models.CharField(max_length=10)
     term = models.CharField(max_length=15)
     section_number = models.IntegerField()
