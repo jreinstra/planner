@@ -127,17 +127,20 @@ class Login(APIView):
             raise ValidationError("POST param 'fb_access_token' is required.")
         access_token = request.data["fb_access_token"][:30]
         
-        r = requests.get("https://graph.facebook.com/me?access_token=" + request.data["fb_access_token"])
+        r = requests.get("https://graph.facebook.com/me?access_token=" + request.data["fb_access_token"] + "&fields=name,email")
         if r.status_code != 200:
             raise ValidationError("Invalid FB access token.")
         result = r.json()
         username = result["id"]
+        email = result["email"]
         name = result["name"].split(" ")
         
         try:
             user = User.objects.get(username=username)
+            user.email = email
+            user.save()
         except User.DoesNotExist:
-            user = User.objects.create(username=username, first_name=name[0], last_name=name[-1])
+            user = User.objects.create(username=username, first_name=name[0], last_name=name[-1], email=email)
             
         try:
             result_token = user.auth_token.key

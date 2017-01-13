@@ -80,6 +80,12 @@ textarea {
 	cursor: -moz-grab;
 }
 
+#login {
+    background-color: white;
+    font-weight: bold;
+    color: #3b5998;
+}
+
 /* Footer stuff */
 html, body {
   height: 100%;

@@ -9,6 +9,8 @@ from main.models import *
 
 CACHE_TIMEOUT = 24 * 60 * 60 # one day
 
+
+
 def cached_serializer_get(prefix, item, serializer):
     cache_string = prefix + "_" + str(item.pk)
     cache_result = cache.get(cache_string)
@@ -64,6 +66,40 @@ class SectionRelatedField(serializers.RelatedField):
         return terms["Summer"] + terms["Autumn"] + terms["Winter"] + terms["Spring"]
     
     
+class OrderedCourseRelatedField(serializers.Field):
+    SEASONS = ["autumn", "winter", "spring", "summer"]
+    
+    def get_attribute(self, obj):
+        return obj
+    
+    def to_representation(self, obj):
+        courses_loaded = json.loads(obj.courses)
+        return json.dumps(
+            {
+                season:courses_loaded.get(season, [c.id for c in getattr(obj, season).all()]) for season in self.SEASONS
+            }
+        )
+    
+    def to_internal_value(self, data):
+        try:
+            assert type(data) is dict
+        except AssertionError:
+            print "assertion error:", str(e)
+            raise serializers.ValidationError("courses must be a list of IDs")
+            
+        for season, courses in data.items():
+            for value in courses:
+                try:
+                    c = Course.objects.get(id=value)
+                except Exception as e:
+                    print "exception:", str(e)
+                    raise serializers.ValidationError("Course in courses attribute not found.")
+        print "internal:", data
+        return json.dumps(data)
+            
+        
+    
+    
 class ContentObjectRelatedField(serializers.Field):
     CLASS_NAMES = {
         "course": Course,
@@ -101,7 +137,7 @@ class ContentObjectRelatedField(serializers.Field):
             
 class VotesField(serializers.Field):
     def to_representation(self, value):
-        return value.all().count()
+        return (value.all().count(), [u.pk for u in value.all()])
     
     
 class CourseDataField(serializers.Field):
@@ -113,10 +149,18 @@ class CourseDataField(serializers.Field):
     def to_representation(self, obj):
         result = {}
         for season in self.SEASONS:
-            result[season] = [cached_serializer_get("course", c, CourseSerializer) for c in getattr(obj, season).all()]
+            result[season] = [cached_serializer_get("course_data", Course.objects.get(id=c), CourseDataFieldSerializer) for c in json.loads(obj.courses).get(season, [c.id for c in getattr(obj, season).all()])]
             
         return result
             
+
+class CourseDataFieldSerializer(serializers.ModelSerializer):
+    codes = CodeRelatedFieldUseful(read_only=True)
+    
+    class Meta:
+        model = Course
+        fields = ('id', 'min_units', 'max_units', 'codes', 'title', 'average_rating', 'general_requirements')
+
         
 class CourseSerializer(serializers.ModelSerializer):
     comments = CommentRelatedField(read_only=True)
@@ -171,7 +215,7 @@ class InlineSectionSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'year', 'term', 'section_number', 'num_enrolled',
             'max_enrolled', 'num_waitlist', 'max_waitlist', 'enroll_status',
-            'instructor', 'start_date', 'end_date', 'start_time', 'end_time',
+            'instructor', 'instructors', 'start_date', 'end_date', 'start_time', 'end_time',
             'days', 'component'
         )
         depth = 1
@@ -210,12 +254,14 @@ class UserSerializer(serializers.ModelSerializer):
 class PlanYearSerializer(serializers.ModelSerializer):
     course_data = CourseDataField(read_only=True)
     
+    courses = OrderedCourseRelatedField()
+    
     class Meta:
         model = PlanYear
         fields = (
-            'id', 'plan', 'year', 'summer', 'autumn', 'winter', 'spring',
+            'id', 'plan', 'year', 'courses',
             'summer_sections', 'autumn_sections', 'winter_sections',
-            'spring_sections', 'course_data'
+            'spring_sections', 'course_data',
         )
         read_only_fields = ('id', 'course_data')
         
