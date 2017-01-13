@@ -152,6 +152,8 @@ class Login(APIView):
         
         
 class Vote(APIView):
+    permission_classes = (IsAuthenticated,)
+    
     OBJ_CHOICES = {
         "review": (Review, ReviewSerializer),
         "comment":(Comment, CommentSerializer)
@@ -178,6 +180,30 @@ class Vote(APIView):
         elif vote_type == "downvote":
             obj.downvotes.add(request.user)
         return Response(obj_objs[1](obj).data)
+    
+    
+class Star(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def post(self, request):
+        try:
+            c = Course.objects.get(id=request.data["id"])
+        except Course.DoesNotExist, KeyError:
+            raise ValidationError("'id' must be a valid object")
+        
+        c.starred_by.remove(request.user)
+        
+        vote_type = request.data.get("type")
+        if vote_type == "star":
+            c.starred_by.add(request.user)
+        return Response("success")
+    
+    
+class Starred(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request):
+        return Response([c.id for c in request.user.starred_courses.all()])
     
     
 class PlannerStats(APIView):

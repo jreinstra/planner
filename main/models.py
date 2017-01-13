@@ -64,6 +64,8 @@ class Course(models.Model):
     id = models.IntegerField(primary_key=True)
     comments = GenericRelation(Comment)
     
+    starred_by = models.ManyToManyField(User, related_name="starred_courses")
+    
     title = models.CharField(max_length=150)
     description = models.TextField()
     
@@ -110,8 +112,6 @@ class CourseCode(models.Model):
     
 class CourseSection(models.Model):
     id = models.CharField(max_length=30, primary_key=True)
-    
-    starred_by = models.ManyToManyField(User, related_name="starred_courses")
     
     year = models.CharField(max_length=10)
     term = models.CharField(max_length=15)
