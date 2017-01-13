@@ -27,6 +27,8 @@ urlpatterns = [
     url(r'^vote/$', views.Vote.as_view(), name="vote"),
     url(r'^stats/$', views.PlannerStats.as_view(), name="stats"),
     
+    url(r'^star/$', views.Star.as_view(), name="star"),
+    url(r'^starred/$', views.Starred.as_view(), name="starred"),
     
     # API router
     url(r'^', include(router.urls))

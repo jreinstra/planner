@@ -64,6 +64,8 @@ class Course(models.Model):
     id = models.IntegerField(primary_key=True)
     comments = GenericRelation(Comment)
     
+    starred_by = models.ManyToManyField(User, related_name="starred_courses")
+    
     title = models.CharField(max_length=150)
     description = models.TextField()
     
